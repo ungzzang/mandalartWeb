@@ -1,4 +1,4 @@
-package com.green1st.mandalart.common;
+package com.green1st.mandalartWeb.common;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
