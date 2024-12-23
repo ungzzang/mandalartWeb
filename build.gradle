@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    // jBCrypt 라이브러리 추가
+    implementation 'org.mindrot:jbcrypt:0.4'
     // 이메일 전송 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     // validation 유효성 검사 라이브러리
