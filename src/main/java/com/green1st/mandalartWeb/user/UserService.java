@@ -88,15 +88,15 @@ public class UserService {
         //*여기한번 검토*
 
 
-        if(!BCrypt.checkpw(p.getUpw(), userUpdateRes.getUpw())){
-            userUpdateRes.setMessage("비밀번호가 일치하지않습니다.");
+        if(!BCrypt.checkpw(p.getUpw(), duplicateService.checkPassword(p.getUserId()).getEncUpw())){
+            userMessage.setMessage("비밀번호가 일치하지않습니다.");
             return 0;
         }
 
         // 비밀번호 바꿀시
         if(p.getNewUpw() != null) {
             if (p.getNewUpw() != p.getCheckUpw()) {
-                userUpdateRes.setMessage("비밀번호를 다시 입력해주십시오.");
+                userMessage.setMessage("비밀번호를 다시 입력해주십시오.");
                 return 0;
             }
             String hashedPassWord = BCrypt.hashpw(p.getNewUpw(), BCrypt.gensalt());
@@ -109,7 +109,7 @@ public class UserService {
             duplicateReq.setNickName(p.getNickName());
             DuplicateRes duplicateRes = duplicateService.checkNickName(duplicateReq);
             if(duplicateRes != null){
-                userUpdateRes.setMessage("중복된 닉네임입니다.");
+                userMessage.setMessage("중복된 닉네임입니다.");
                 return 0;
             }
         }
