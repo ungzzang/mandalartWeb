@@ -36,8 +36,6 @@ public class MandalartService {
                     completedCount++;
                 }
             }
-
-
             item.setCompletedCount(completedCount);
         }
 

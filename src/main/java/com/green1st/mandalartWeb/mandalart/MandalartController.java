@@ -38,12 +38,7 @@ public class MandalartController {
     @GetMapping
     @Operation(summary = "만다르트 조회" , description = "프로젝트 id는 만다르트가 현재 속해있는 프로젝트")
     public ResultResponse<List<MandalartGetRes>> getMandalart (@ParameterObject @ModelAttribute MandalartGetReq p){
-        List<MandalartGetDto> res = service.getMandalart(p);
-
-        return ResultResponse.<List<MandalartGetRes>>builder()
-                .resultMsg("조회완료")
-                .resultData(res)
-                .build();
+        return null;
     }
 
     @PostMapping
