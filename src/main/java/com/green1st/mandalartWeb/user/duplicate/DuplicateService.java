@@ -40,4 +40,19 @@ public class DuplicateService {
             return res;
         }
     }
+
+    //비밀번호 체크
+    public DuplicateRes checkPassword(String userId){
+        DuplicateRes res = duplicateMapper.checkNickName(userId);
+
+        if(res == null){
+            res.setCheck(1); //중복되는 닉네임없을때
+            res.setMessage("사용가능한 닉네임입니다.");
+            return res;
+        }else {
+            res.setCheck(0); //중복되는 닉네임있을때
+            res.setMessage("중복된 닉네임입니다.");
+            return res;
+        }
+    }
 }
