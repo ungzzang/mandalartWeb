@@ -85,9 +85,8 @@ public class UserService {
             userMessage.setMessage("이메일이 일치하지않습니다.");
             return 0;
         }
+
         //*여기한번 검토*
-
-
         if(!BCrypt.checkpw(p.getUpw(), duplicateService.checkPassword(p.getUserId()).getEncUpw())){
             userMessage.setMessage("비밀번호가 일치하지않습니다.");
             return 0;
@@ -105,9 +104,7 @@ public class UserService {
 
         // 닉네임 바꿀시
         if(p.getNickName() != null) { //*여기검토*
-            DuplicateReq duplicateReq = new DuplicateReq();
-            duplicateReq.setNickName(p.getNickName());
-            DuplicateRes duplicateRes = duplicateService.checkNickName(duplicateReq);
+            DuplicateRes duplicateRes = duplicateService.checkNickName(p.getNickName());
             if(duplicateRes != null){
                 userMessage.setMessage("중복된 닉네임입니다.");
                 return 0;
