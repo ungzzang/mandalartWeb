@@ -41,12 +41,12 @@ public class MandalartService {
             item.setCompletedCount(completedCount);
         }
 
-        MandalartGetRes res = new MandalartGetRes();
-        res.setProjectId(p.getProjectId());
-        res.setMandalartIdGetList(list);
+        MandalartGetRes getRes = new MandalartGetRes();
+        getRes.setProjectId(p.getProjectId());
+        getRes.setMandalartIdGetList(list);
 
         List<MandalartGetRes> resList = new ArrayList<>();
-        resList.add(res);
+        resList.add(getRes);
 
         // completed_fg 완료 처리 했는거 카운트 체크
 
