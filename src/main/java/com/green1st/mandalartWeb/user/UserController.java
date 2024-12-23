@@ -63,10 +63,9 @@ public class UserController {
     public ResultResponse<Integer> patchUser(@RequestBody UserUpdateReq p) {
         int result = userService.patchUser(p);
 
-        UserUpdateRes res = new UserUpdateRes();
         return ResultResponse.<Integer>builder()
                 .statusCode(result == 1 ? "200" : "400")
-                .resultMsg(res.getMessage())
+                .resultMsg(userMessage.getMessage())
                 .resultData(result)
                 .build();
     }
