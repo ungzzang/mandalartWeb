@@ -2,8 +2,6 @@ package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.common.MyFileUtils;
 import com.green1st.mandalartWeb.user.duplicate.DuplicateService;
-import com.green1st.mandalartWeb.user.duplicate.model.DuplicateReq;
-import com.green1st.mandalartWeb.user.duplicate.model.DuplicateRes;
 import com.green1st.mandalartWeb.user.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,8 +102,8 @@ public class UserService {
 
         // 닉네임 바꿀시
         if(p.getNickName() != null) { //*여기검토*
-            DuplicateRes duplicateRes = duplicateService.checkNickName(p.getNickName());
-            if(duplicateRes != null){
+            int check = duplicateService.checkNickName(p.getNickName()).getCheck();
+            if(check == 0){
                 userMessage.setMessage("중복된 닉네임입니다.");
                 return 0;
             }
