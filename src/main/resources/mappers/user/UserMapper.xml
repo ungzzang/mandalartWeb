@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.green.mandarart.user.UserMapper">
+    <insert id="insUser">
+        INSERT INTO user
+        SET user_id = #{userId}
+        , upw = #{upw}
+        , nick_name = #{nickName}
+        , pic = #{pic}
+    </insert>
+
+
+    <select id="selUser">
+        SELECT user_id as userId
+        , nick_name as nickName
+        , upw
+        , pic
+        FROM user
+        WHERE userId = #{userId}
+        AND upw = #{upw}
+    </select>
+
+    <select id="selUser2">
+        SELECT user_id as userId
+        , upw
+        FROM user
+        WHERE user_id = #{userId}
+        AND upw = #{upw}
+    </select>
+
+
+    <select id="selUserInfo">
+        SELECT user_id as userId, nick_name as nickName, pic
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
+    <update id="updUser">
+        UPDATE user
+        <set>
+            <if test=" newUpw != null and newUpw != '' ">
+                upw = #{newUpw}
+            </if>
+            <if test=" nickName != null and nickName != '' ">
+                , nick_name = #{nickName}
+            </if>
+            <if test="picName != null">
+                , pic = #{picName}
+            </if>
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+
+    <delete id="delProjectLikeAndProjectComment">
+        DELETE B, C
+        FROM shared_project A
+        LEFT JOIN shared_project_like B
+        ON A.project_id = B.project_id
+        LEFT JOIN shared_project_comment C
+        ON A.project_id = C.project_id
+        WHERE A.project_id = #{projectId}
+    </delete>
+
+    <delete id="delSharedProject">
+        DELETE FROM shared_project A
+        WHERE project_id = #{projectId}
+    </delete>
+
+    <delete id="delMandalart">
+        DELETE FROM mandalart A
+        WHERE project_id = #{projectId}
+    </delete>
+
+    <delete id="delProject">
+        DELETE FROM project A
+        WHERE project_id = #{projectId}
+        AND user_id
+    </delete>
+
+    <delete id="delUser">
+        DELETE FROM user
+        WHERE user_id = #{userId}
+    </delete>
+
+</mapper>
