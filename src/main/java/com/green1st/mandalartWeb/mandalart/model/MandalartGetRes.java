@@ -15,6 +15,7 @@ public class MandalartGetRes {
     @Schema(description = "만다라트 id 리스트")
     private List<MandalartGetDto> mandalartIdGetList;
     private int completedCount;
+    private List<ColorCodes> colorCodes;
 
     public List<MandalartGetDto> getMandalartIdGetList() {
         return mandalartIdGetList;
@@ -26,5 +27,9 @@ public class MandalartGetRes {
 
     public void setCompletedCount(int completedCount) {
         this.completedCount = completedCount;
+    }
+
+    public void setColorCodes(List<ColorCodes> colorCodes) {
+        this.colorCodes = colorCodes;
     }
 }
