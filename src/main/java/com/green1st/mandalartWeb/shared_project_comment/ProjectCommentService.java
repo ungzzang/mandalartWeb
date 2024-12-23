@@ -3,6 +3,7 @@ package com.green1st.mandalartWeb.shared_project_comment;
 import com.green1st.mandalartWeb.shared_project_comment.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

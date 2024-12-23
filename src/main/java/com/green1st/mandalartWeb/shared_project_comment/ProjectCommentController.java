@@ -37,7 +37,7 @@ public class ProjectCommentController {
 
     @PatchMapping
     @Operation(summary = "프로젝트 댓글 수정")
-    public ResultResponse<Integer> updateSharedProjectComment(@ModelAttribute ProjectCommentPatchReq p) {
+    public ResultResponse<Integer> updateSharedProjectComment(@RequestBody ProjectCommentPatchReq p) {
         int updatedRows = service.updateProjectComment(p);
         if (updatedRows == 0) {
             return ResultResponse.<Integer>builder()
