@@ -14,7 +14,7 @@
         SELECT A.comment_id AS commentId
         , A.content
         , B.user_id AS userId
-        , IFNULL(nick_name, user_id AS nickName
+        , IFNULL(B.nick_name, B.user_id AS nickName
         , B.pic
         FROM shared_project_comment A
         INNER JOIN user B
