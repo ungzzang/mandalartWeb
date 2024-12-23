@@ -1,4 +1,4 @@
-package com.green1st.mandalart.common.model;
+package com.green1st.mandalartWeb.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;

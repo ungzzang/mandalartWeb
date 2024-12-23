@@ -1,4 +1,4 @@
-package com.green1st.mandalart;
+package com.green1st.mandalartWeb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
