@@ -12,15 +12,13 @@
         , order_id AS orderId
         , start_date AS startDate
         , finish_date AS finishDate
-        , COUNT (completed_fg) AS completedCount
         FROM mandalart
         WHERE project_id = #{projectId}
         ORDER BY depth , order_id
     </select>
     <update id="patchMand">
         UPDATE mandalart
-        SET nick_name = #{nickName}
-        , title = #{title}
+        SET title = #{title}
         , contents = #{contents}
         , depth = #{depth}
         , order_id = #{orderId}
