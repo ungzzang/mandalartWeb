@@ -23,7 +23,7 @@
         AND upw = #{upw}
     </select>
 
-    <select id="selUser2">
+    <select id="selUser2"> <!--삭제예정-->
         SELECT user_id as userId
         , upw
         FROM user
