@@ -15,10 +15,10 @@
 
     <insert id="insMandalart">
         INSERT INTO mandalart
-        (project_id, title, dept, order_id)
+        (project_id, title, depth, order_id)
         VALUES
-        <foreach collection="mandalarts" item="mandalart" separator=",">
-            (#{mandalart.projectId}, '', #{mandalart.dept}, #{mandalart.orderId})
+        <foreach collection="list" item="mandalart" separator=",">
+            (#{mandalart.projectId}, '', #{mandalart.depth}, #{mandalart.orderId})
         </foreach>
     </insert>
 </mapper>
