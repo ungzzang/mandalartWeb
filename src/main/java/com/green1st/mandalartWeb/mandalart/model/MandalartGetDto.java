@@ -38,8 +38,6 @@ public class MandalartGetDto {
     private Date startDate;
     @Schema(name = "finish_date" , description = "계획 종료일")
     private Date finishDate;
-    @Schema(name = "completed_fg" , description = "완료 갯수 카운트")
-    private int completedCount;
 
     public int getCompletedFg() {
         return completedFg;
