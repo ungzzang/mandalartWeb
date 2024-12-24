@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.green1st.mandalartWeb.mandalart.util.CalculateColorCode.calculateColorCode;
@@ -20,14 +21,21 @@ public class MandalartService {
 
     public List<MandalartGetRes> getMandalart (MandalartGetReq p , List<MandalartGetDto> list){
         // 프로젝트 id 체크 -> 만다라트 id 부여 -> 하위 테이블 데이터 전부 출력
-        if (p.getProjectId() == 0){
-            return null;
+        if (p.getProjectId() <= 0){
+            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
         }
         // p 데이터 조회 체크
-        List<MandalartGetRes> res = mapper.getMandalart(p);
-        if (list == null || res == null || res.isEmpty()) {
-            log.info("조회된 데이터가 없거나 list가 null입니다.");
-            return res;
+        List<MandalartGetRes> res;
+        try {
+            res = mapper.getMandalart(p);
+        } catch (Exception e) {
+            log.error("만다라트 데이터 조회 중 예외 발생: {}", e.getMessage(), e);
+            throw new RuntimeException("만다라트 데이터 조회 실패", e);
+        }
+
+        if (res == null || res.isEmpty()) {
+            log.info("만다라트 데이터가 없습니다. 프로젝트 ID: {}", p.getProjectId());
+            return Collections.emptyList();
         }
 
         // depth = 0 일 경우 depth0 의 order_id 카운트 - colorCodes 클래스의 titleColor
@@ -39,18 +47,17 @@ public class MandalartService {
 
         for (MandalartGetRes item : res) {
             List<MandalartGetDto> dtoList = item.getMandalartIdGetList();
-            if (dtoList == null || dtoList.isEmpty()) {
-                item.setColor(colorCodes.getDefaultColor().get(0));// 데이터가 없으면 기본 색상
-                continue;
-            }
+
             // 완료 항목 카운트
             int completedCount = 0;
-            for (MandalartGetDto dto : dtoList) {
-                if (dto.getCompletedFg() == 1) {
-                    completedCount++;
-                } else if (dto.getCompletedFg() != 0) {
-                    // completedFg 0 or 1 check
-                    log.warn("예상치 못한 completedFg 값: {}", dto.getCompletedFg());
+            if (dtoList != null && !dtoList.isEmpty()) {
+                for (MandalartGetDto dto : dtoList) {
+                    if (dto.getCompletedFg() == 1) {
+                        completedCount++;
+                    } else if (dto.getCompletedFg() != 0) {
+                        // completedFg 0 or 1 check
+                        log.warn("예상치 못한 completedFg 값: {}", dto.getCompletedFg());
+                    }
                 }
             }
 
