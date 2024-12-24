@@ -19,8 +19,8 @@
         , upw
         , pic
         FROM user
-        WHERE userId = #{userId}
-        AND upw = #{upw}
+        WHERE user_id = #{userId}
+        AND upw = #{upw} <!--비밀번호는 암호화가 되어 있어서 이렇게 하면 안될듯, 빼버리자 그냥-->
     </select>
 
     <select id="selUser2"> <!--삭제예정-->
