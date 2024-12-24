@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Schema(title = "만다라트 조회 정보")
@@ -22,6 +23,8 @@ public class MandalartGetDto {
     private int depth;
     @Schema(name = "order_id" , description = "각 단계별0~7칸 선택 칸")
     private int orderId;
+    @Schema(name = "parent_id" , description = "부모 id")
+    private long parentId;
     @Schema(description = "실천 목표")
     private String title;
     @Schema(description = "세부 내용")
@@ -38,6 +41,8 @@ public class MandalartGetDto {
     private Date startDate;
     @Schema(name = "finish_date" , description = "계획 종료일")
     private Date finishDate;
+    @Schema(description = "자식 노드 리스트")
+    private List<MandalartGetDto> children;
 
     public int getCompletedFg() {
         return completedFg;

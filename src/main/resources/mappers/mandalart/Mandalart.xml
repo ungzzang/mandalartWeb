@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.green1st.mandalartWeb.mandalart.MandalartMapper">
-    <select id="getMand">
+    <select id="getMandalart">
         SELECT mandalart_id AS mandalartId
         , project_id AS projectId
         , title
@@ -12,6 +12,7 @@
         , order_id AS orderId
         , start_date AS startDate
         , finish_date AS finishDate
+        , parent_id AS parentId
         FROM mandalart
         WHERE project_id = #{projectId}
         ORDER BY depth , order_id
@@ -25,6 +26,7 @@
         , completed_fg = #{completedFg}
         , start_date = #{startDate}
         , finish_date = #{finishDate}
+        , parent_id
         WHERE project_id = #{projectId}
         AND mandalart_id = #{mandalartId}
     </update>

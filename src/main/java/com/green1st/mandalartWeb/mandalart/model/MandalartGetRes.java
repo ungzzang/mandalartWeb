@@ -15,7 +15,8 @@ public class MandalartGetRes {
     @Schema(description = "만다라트 id 리스트")
     private List<MandalartGetDto> mandalartIdGetList;
     private int completedCount;
-    private List<ColorCodes> colorCodes;
+    private String color;
+    private int depth;
 
     public List<MandalartGetDto> getMandalartIdGetList() {
         return mandalartIdGetList;
@@ -29,7 +30,17 @@ public class MandalartGetRes {
         this.completedCount = completedCount;
     }
 
-    public void setColorCodes(List<ColorCodes> colorCodes) {
-        this.colorCodes = colorCodes;
+    public String getColor() {
+        return color;
+    }
+    public void setColorCodes(String color) {
+        this.color = color;
+    }
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 }
