@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.green1st.mandalartWeb.project.projectMapper">
+<mapper namespace="com.green1st.mandalartWeb.project.ProjectMapper">
     <insert id="insProject" useGeneratedKeys="true" keyProperty="projectId">
         INSERT INTO project
-        SET user_id = #{user_id}
+        SET user_id = #{userId}
         , title = #{title}
         , content = #{content}
         <if test="pic != null">
@@ -15,6 +15,10 @@
 
     <insert id="insMandalart">
         INSERT INTO mandalart
-        ()
+        (project_id, title, dept, order_id)
+        VALUES
+        <foreach collection="mandalarts" item="mandalart" separator=",">
+            (#{mandalart.projectId}, '', #{mandalart.dept}, #{mandalart.orderId})
+        </foreach>
     </insert>
 </mapper>
