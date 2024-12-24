@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green1st.mandalartWeb.shared_project.SharedProjectMapper">
+    <insert id="insSharedProject" useGeneratedKeys="true" keyProperty="projectId">
+        INSERT INTO shared_project
+        SET project_id =#{projectId}
+        , title = #{title}
+        , content = #{content}
+    </insert>
+
+
+    <select id="selSharedProjectList">
+        SELECT project_id AS projectId, title, pic, created_at AS createDate
+        , (
+            SELECT COUNT(project_id)
+            FROM shared_project_like
+            WHERE project_id = A.project_id
+        )  AS likeCnt
+        , (
+            SELECT COUNT(comment_id)
+            FROM shared_project_comment
+            WHERE project_id = A.project_id
+        ) AS commmentCnt
+        FROM shared_project A LEFT JOIN user B
+        ON A.user_id = B.user_id
+        WHERE 1 = 1
+        <choose>
+            <when test="searchFilter == 1 and searchText != null">
+                AND title LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 2 and searchText != null">
+                AND content LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 3 and searchText != null">
+                AND title LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 4 and searchText != null">
+                AND B.nick_name LIKE '%${searchText}%'
+            </when>
+        </choose>
+        <choose>
+            <when test="orderFilter == 1">
+                ORDER BY created_at DESC
+            </when>
+            <when test="orderFilter == 2">
+                ORDER BY likeCnt DESC
+            </when>
+            <when test="orderFilter == 3">
+                ORDER BY commmentCnt DESC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIdx}, #{size}
+    </select>
+</mapper>

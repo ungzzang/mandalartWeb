@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class MandalartInsDto {
     private long projectId;
+    private long mandalartId;
+    private Long parentId;
     private int depth;
     private int orderId;
 }
