@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
+@Schema(title = "유저정보수정 요청")
 public class UserUpdateReq {
     @Schema(title = "유저이메일", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;

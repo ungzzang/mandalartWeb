@@ -1,11 +1,16 @@
 package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.common.MyFileUtils;
-import com.green1st.mandalartWeb.user.duplicate.DuplicateService;
 import com.green1st.mandalartWeb.user.model.*;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,15 +22,53 @@ import java.io.IOException;
 public class UserService {
     private final UserMapper userMapper;
     private final MyFileUtils myFileUtils;
-    private final DuplicateService duplicateService;
     private final UserMessage userMessage;
+    private final JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private static String FROM_ADDRESS;
+
+
+    //이메일 중복체크
+    public DuplicateEmailRes emailChk(String userId){
+        DuplicateEmailRes res = userMapper.checkEmailPw(userId);
+
+        if(res == null){
+            res = new DuplicateEmailRes();
+            res.setCheck(1); //중복되는 이메일없을때
+            res.setMessage("사용가능한 이메일입니다.");
+            return res;
+        }else {
+            res.setCheck(0); //중복되는 이메일있을때
+            res.setMessage("중복된 이메일입니다.");
+            return res;
+        }
+    }
+
+    //닉네임 중복체크
+    public DuplicateNickNameRes nickNameChk(String nickName){
+        DuplicateNickNameRes res = userMapper.checkNickName(nickName);
+
+        if(res == null){
+            res = new DuplicateNickNameRes();
+            res.setCheck(1); //중복되는 닉네임없을때
+            res.setMessage("사용가능한 닉네임입니다.");
+            return res;
+        }else {
+            res.setCheck(0); //중복되는 닉네임있을때
+            res.setMessage("중복된 닉네임입니다.");
+            return res;
+        }
+    }
+
 
     //회원가입
     public int postSignUp(MultipartFile pic, UserSignUpReq p){
-        if(duplicateService.checkEmail(p.getUserId()).getCheck() == 0){
+        System.out.println(pic);
+        if(emailChk(p.getUserId()).getCheck() == 0){
             userMessage.setMessage("이메일중복체크를 해주세요.");
             return 0;
-        } else if(duplicateService.checkNickName(p.getNickName()).getCheck() == 0){
+        } else if(nickNameChk(p.getNickName()).getCheck() == 0){
             userMessage.setMessage("닉네임중복체크를 해주세요.");
             return 0;
         }
@@ -38,6 +81,7 @@ public class UserService {
 
         int result = userMapper.insUser(p);
         if(pic == null){
+            userMessage.setMessage("회원가입이 완료되었습니다.");
             return result;
         }
 
@@ -59,7 +103,7 @@ public class UserService {
     //로그인
     public UserSignInRes postSignIn(UserSignInReq p){
         UserSignInRes res = userMapper.selUser(p);
-
+        log.info("조회된 회원정보: {}", res);
         if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
             res = new UserSignInRes();
             res.setMessage("아이디 혹은 비밀번호를 확인해 주십시오.");
@@ -75,17 +119,33 @@ public class UserService {
         return userMapper.selUserInfo(p);
     }
 
+    //회원정보수정 전 이메일, 비밀번호 체크
+    public DuplicateEmailRes checkPassword(String userId){
+        DuplicateEmailRes res = userMapper.checkEmailPw(userId);
+
+        //이거 다시 검토*************
+        if(res != null){
+            res.setCheck(0);
+            res.setMessage("이메일 비밀번호 체크완료");
+            return res;
+        }else {
+            res.setCheck(1);
+            res.setMessage("이메일 혹은 비밀번호가 다릅니다.");
+            return res;
+        }
+    }
+
     //회원정보수정
     public int patchUser(UserUpdateReq p){
         // 이메일, 비밀번호 일치 여부 확인
 
-        if(duplicateService.checkEmail(p.getUserId()).getCheck() == 0){
+        if(emailChk(p.getUserId()).getCheck() == 0){
             userMessage.setMessage("이메일이 일치하지않습니다.");
             return 0;
         }
 
         //*여기한번 검토*
-        if(!BCrypt.checkpw(p.getUpw(), duplicateService.checkPassword(p.getUserId()).getEncUpw())){
+        if(!BCrypt.checkpw(p.getUpw(), checkPassword(p.getUserId()).getEncUpw())){
             userMessage.setMessage("비밀번호가 일치하지않습니다.");
             return 0;
         }
@@ -102,7 +162,7 @@ public class UserService {
 
         // 닉네임 바꿀시
         if(p.getNickName() != null) { //*여기검토*
-            int check = duplicateService.checkNickName(p.getNickName()).getCheck();
+            int check = nickNameChk(p.getNickName()).getCheck();
             if(check == 0){
                 userMessage.setMessage("중복된 닉네임입니다.");
                 return 0;
@@ -170,4 +230,6 @@ public class UserService {
         return 1;
     }
     //데이터 내 정보로 할때 객체 선언하면 새로운거라서 다시 수정필요.
+
+    // -------------------------------------------------------
 }
