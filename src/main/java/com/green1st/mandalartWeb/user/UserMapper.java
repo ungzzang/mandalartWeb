@@ -14,7 +14,7 @@ public interface UserMapper {
     UserInfoGetRes selUserInfo(UserInfoGetReq p);
 
     int updUser(UserUpdateReq p);
-    UserUpdateRes selUser2(UserUpdateReq p);
+    UserUpdateRes selUser2(String userId);
 
     int delProjectLikeAndProjectComment(UserDeleteReq p);
     int delSharedProject(UserDeleteReq p);
