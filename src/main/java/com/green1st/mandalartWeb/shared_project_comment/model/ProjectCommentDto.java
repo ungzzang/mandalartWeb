@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.sql.Timestamp;
+
 @Getter
 @ToString
 public class ProjectCommentDto {
