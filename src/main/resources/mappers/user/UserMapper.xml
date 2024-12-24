@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.green.mandarart.user.UserMapper">
+<mapper namespace="com.green1st.mandalartWeb.user.UserMapper">
     <insert id="insUser">
         INSERT INTO user
         SET user_id = #{userId}
