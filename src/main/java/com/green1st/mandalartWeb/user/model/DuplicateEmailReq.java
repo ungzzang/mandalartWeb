@@ -6,10 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(title = "로그인 요청")
-public class UserSignInReq {
-    @Schema(title = "유저이메일")
+@Schema(title = "이메일 중복체크")
+public class DuplicateEmailReq {
     private String userId;
-    @Schema(title = "유저비밀번호")
-    private String upw;
 }

@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
+    DuplicateEmailRes checkEmailPw(String userId);
+    DuplicateNickNameRes checkNickName(String nickName);
+
     int insUser(UserSignUpReq p);
     UserSignInRes selUser(UserSignInReq p);
 
@@ -18,4 +21,7 @@ public interface UserMapper {
     int delMandalart(UserDeleteReq p);
     int delProject(UserDeleteReq p);
     int delUser(UserDeleteReq p);
+
+
+    int insPassword(TempPasswordDto tempPassword);
 }
