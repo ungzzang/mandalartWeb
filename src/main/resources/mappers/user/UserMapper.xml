@@ -4,6 +4,27 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.green1st.mandalartWeb.user.UserMapper">
+
+    <select id="checkEmailPw">
+        SELECT user_id as userId, upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="checkNickName">
+        SELECT nick_name as nickName
+        FROM user
+        WHERE nick_name = #{nickName}
+    </select>
+
+    <select id="checkPassWord">
+        SELECT upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
+
     <insert id="insUser">
         INSERT INTO user
         SET user_id = #{userId}
@@ -20,7 +41,6 @@
         , pic
         FROM user
         WHERE user_id = #{userId}
-        AND upw = #{upw} <!--비밀번호는 암호화가 되어 있어서 이렇게 하면 안될듯, 빼버리자 그냥-->
     </select>
 
     <select id="selUser2"> <!--삭제예정-->
@@ -86,5 +106,13 @@
         DELETE FROM user
         WHERE user_id = #{userId}
     </delete>
+
+
+
+    <insert id="insPassword">
+        INSERT INTO find_password
+        SET user_id = #{userId}
+        , tmp_password = #{tmpPassword}
+    </insert>
 
 </mapper>
