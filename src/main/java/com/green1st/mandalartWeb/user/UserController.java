@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,35 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     private final UserService userService;
     private final UserMessage userMessage;
+    private final UserSignUpReq userSignUpReq;
+
+
+    //이메일 중복체크
+    @GetMapping("email")
+    @Operation(summary = "이메일 중복체크")
+    public ResultResponse<Integer> emailChk(@ParameterObject @ModelAttribute DuplicateEmailReq p){
+        DuplicateEmailRes res = userService.emailChk(p.getUserId());
+
+        return ResultResponse.<Integer>builder()
+                .statusCode(res.getCheck() == 1 ? "200" : "400")
+                .resultMsg(res.getMessage())
+                .resultData(res.getCheck())
+                .build();
+    }
+
+    //닉네임 중복체크
+    @GetMapping("nickName")
+    @Operation(summary = "닉네임 중복체크")
+    public ResultResponse<Integer> nickNameChk(@ParameterObject @ModelAttribute DuplicateNickNameReq p) {
+        DuplicateNickNameRes res = userService.nickNameChk(p.getNickName());
+
+        return ResultResponse.<Integer>builder()
+                .statusCode(res.getCheck() == 1 ? "200" : "400")
+                .resultMsg(res.getMessage())
+                .resultData(res.getCheck())
+                .build();
+    }
+
 
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
@@ -80,5 +110,6 @@ public class UserController {
                 .resultMsg(res.getMessage())
                 .build();
     }
+
 
 }
