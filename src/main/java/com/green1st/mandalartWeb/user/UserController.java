@@ -4,6 +4,7 @@ import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -52,7 +53,7 @@ public class UserController {
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
     public ResultResponse<Integer> signUpUser(@RequestPart(required = false) MultipartFile pic
-                                              , @RequestParam UserSignUpReq p){
+                                              , @RequestPart UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
         return ResultResponse.<Integer>builder()
