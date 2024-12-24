@@ -12,6 +12,8 @@ import java.util.Date;
 public class MandalartPostDto {
     @Schema(title = "mandalart_id")
     private long mandalartId;
+    @Schema(name = "parent_id" , description = "부모 id")
+    private long parentId;
     @Schema(name = "nick_name" , description = "사용자 닉네임")
     private String nickName;
     @Schema(description = "실천 목표")
