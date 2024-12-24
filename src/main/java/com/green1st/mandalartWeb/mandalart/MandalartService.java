@@ -1,6 +1,7 @@
 package com.green1st.mandalartWeb.mandalart;
 
 import com.green1st.mandalartWeb.mandalart.model.*;
+import com.green1st.mandalartWeb.mandalart.util.CalculateColorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,12 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.green1st.mandalartWeb.mandalart.util.CalculateColorCode.calculateColorCode;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MandalartService {
     private final MandalartMapper mapper;
-    private final CalculateColorCode calculateColorCode;
 
     public List<MandalartGetRes> getMandalart (MandalartGetReq p , List<MandalartGetDto> list){
         // 프로젝트 id 체크 -> 만다라트 id 부여 -> 하위 테이블 데이터 전부 출력
@@ -23,7 +25,8 @@ public class MandalartService {
         }
         // p 데이터 조회 체크
         List<MandalartGetRes> res = mapper.getMandalart(p);
-        if (list == null){
+        if (list == null || res == null || res.isEmpty()) {
+            log.info("조회된 데이터가 없거나 list가 null입니다.");
             return res;
         }
 
@@ -37,7 +40,7 @@ public class MandalartService {
         for (MandalartGetRes item : res) {
             List<MandalartGetDto> dtoList = item.getMandalartIdGetList();
             if (dtoList == null || dtoList.isEmpty()) {
-                item.setColorCodes(colorCodes.getDefaultColor()); // 데이터가 없으면 기본 색상
+                item.setColor(colorCodes.getDefaultColor().get(0));// 데이터가 없으면 기본 색상
                 continue;
             }
             // 완료 항목 카운트
@@ -45,6 +48,9 @@ public class MandalartService {
             for (MandalartGetDto dto : dtoList) {
                 if (dto.getCompletedFg() == 1) {
                     completedCount++;
+                } else if (dto.getCompletedFg() != 0) {
+                    // completedFg 0 or 1 check
+                    log.warn("예상치 못한 completedFg 값: {}", dto.getCompletedFg());
                 }
             }
 
@@ -52,10 +58,9 @@ public class MandalartService {
             double completionRate = (double) completedCount / dtoList.size();
 
             // 색상 계산
-            String color = CalculateColorCode.calculateColorCode(item.getDepth(), completionRate, colorCodes);
+            String color = calculateColorCode(item.getDepth(), completionRate, colorCodes);
             item.setColor(color);
         }
-
         return res;
     }
 
@@ -74,18 +79,6 @@ public class MandalartService {
         result.add(res);
 
         return result;
-    }
-    private String calculateColorCode(MandalartGetRes item, ColorCodes colorCodes) {
-        int completedCount = item.getCompletedCount();
-        // completedCount에 따라 색상을 결정 (예시: 0 ~ 8까지의 단계)
-//        if (item.getDepth() == 0) {
-            // depth 0인 경우: colorCodes.titleColor 사용
-            return getColorForLevel(completedCount, colorCodes.getTitleColor());
-//        } else if (item.getDepth() == 1) {
-            // depth 1인 경우: colorCodes.subTitleColor 사용
-//            return getColorForLevel(completedCount, colorCodes.getSubTitleColor());
-//        }
-//        return colorCodes.getDefaultColor();  // 기본 색상
     }
     private String getColorForLevel(int completedCount, List<String> colorRange) {
         // completedCount에 따라 색상 결정 (0~8)
