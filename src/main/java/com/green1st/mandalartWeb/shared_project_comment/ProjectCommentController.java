@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -31,26 +29,13 @@ public class ProjectCommentController {
 
     @GetMapping
     @Operation(summary = "프로젝트 댓글 리스트")
-    public ResultResponse<Integer> getProjectCommentList(@ParameterObject @ModelAttribute ProjectCommentGetReq p) {
+    public ResultResponse<ProjectCommentGetRes> getProjectCommentList(@ParameterObject @ModelAttribute ProjectCommentGetReq p) {
         ProjectCommentGetRes res = service.getProjectCommentList(p);
 
-        if (res == null || res.getContentList() == null || res.getContentList().isEmpty()) {
-            return ResultResponse.<Integer>builder()
-                    .statusCode("400")
-                    .resultMsg("공유 프로젝트 댓글 조회 실패")
-                    .resultData(0)
-                    .build();
-        }
-
-        return ResultResponse.<Integer>builder()
-                .statusCode("200")
-                .resultMsg("프로젝트 댓글 조회 완료")
-                .resultData(1)
+        return ResultResponse.<ProjectCommentGetRes>builder()
+                .resultMsg(String.format("%d rows", res.getContentList().size()))
+                .resultData(res)
                 .build();
-//        return ResultResponse.<ProjectCommentGetRes>builder()
-//                .resultMsg(String.format("%d rows", res.getContentList().size()))
-//                .resultData(res)
-//                .build();
     }
 
     @PatchMapping
