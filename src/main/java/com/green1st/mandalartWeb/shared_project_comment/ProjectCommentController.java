@@ -52,6 +52,7 @@ public class ProjectCommentController {
     }
 
     @DeleteMapping
+    @Operation(summary = "프로젝트 댓글 삭제")
     public ResultResponse<Integer> deleteProjectComment(@ParameterObject @ModelAttribute ProjectCommentDelReq p) {
         int res = service.deleteProjectComment(p);
         return ResultResponse.<Integer>builder()
