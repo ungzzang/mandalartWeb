@@ -31,21 +31,21 @@ public class ProjectCommentController {
 
     @GetMapping
     @Operation(summary = "프로젝트 댓글 리스트")
-    public ResultResponse<ProjectCommentGetRes> getProjectCommentList(@ParameterObject @ModelAttribute ProjectCommentGetReq p) {
+    public ResultResponse<Integer> getProjectCommentList(@ParameterObject @ModelAttribute ProjectCommentGetReq p) {
         ProjectCommentGetRes res = service.getProjectCommentList(p);
 
         if (res == null || res.getContentList() == null || res.getContentList().isEmpty()) {
-            return ResultResponse.<ProjectCommentGetRes>builder()
+            return ResultResponse.<Integer>builder()
                     .statusCode("400")
                     .resultMsg("공유 프로젝트 댓글 조회 실패")
-                    .resultData(new ProjectCommentGetRes())
+                    .resultData(0)
                     .build();
         }
 
-        return ResultResponse.<ProjectCommentGetRes>builder()
+        return ResultResponse.<Integer>builder()
                 .statusCode("200")
                 .resultMsg("프로젝트 댓글 조회 완료")
-                .resultData(res)
+                .resultData(1)
                 .build();
 //        return ResultResponse.<ProjectCommentGetRes>builder()
 //                .resultMsg(String.format("%d rows", res.getContentList().size()))
