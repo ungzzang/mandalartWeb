@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.stereotype.Component;
 
+@Component
 @Getter
 @Setter
 @ToString
@@ -14,7 +16,7 @@ public class UserSignUpReq {
     private String userId;
     @Schema(title = "유저비밀번호", example = "PassWord", requiredMode = Schema.RequiredMode.REQUIRED)
     private String upw;
-    @Schema(title = "유저닉네임", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(title = "유저닉네임", example = "hide on bush", requiredMode = Schema.RequiredMode.REQUIRED)
     private String nickName;
     @Schema(title = "프로필사진")
     private String pic;
