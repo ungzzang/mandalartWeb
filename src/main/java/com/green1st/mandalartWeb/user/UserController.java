@@ -52,7 +52,7 @@ public class UserController {
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
     public ResultResponse<Integer> signUpUser(@RequestPart(required = false) MultipartFile pic
-                                              , @RequestParam UserSignUpReq p){
+                                              , @RequestPart UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
         return ResultResponse.<Integer>builder()
