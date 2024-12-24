@@ -1,7 +1,7 @@
 package com.green1st.mandalartWeb.project;
 
-import com.green1st.mandalartWeb.project.model.MandalartInsDto;
-import com.green1st.mandalartWeb.project.model.ProjectPostReq;
+import com.green1st.mandalartWeb.project.model.*;
+import com.green1st.mandalartWeb.shared_project.model.ProjectSelDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -9,5 +9,7 @@ import java.util.List;
 @Mapper
 public interface ProjectMapper {
     int insProject(ProjectPostReq p);
-    int insMandalart(List<MandalartInsDto> p);
+    int insMandalart(MandalartInsDto p);
+    List<ProjectGetRes> selProjectList(ProjectGetReq p);
+    ProjectResultDto selProjectByUserIdAndProjectId(ProjectSelDto p);
 }
