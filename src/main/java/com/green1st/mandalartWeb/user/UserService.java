@@ -119,7 +119,7 @@ public class UserService {
         return userMapper.selUserInfo(p);
     }
 
-    //회원정보수정 전 이메일, 비밀번호 체크
+   /* //회원정보수정 전 이메일, 비밀번호 체크
     public DuplicateEmailRes checkPassword(String userId){
         DuplicateEmailRes res = userMapper.checkEmailPw(userId);
 
@@ -133,7 +133,21 @@ public class UserService {
             res.setMessage("이메일 혹은 비밀번호가 다릅니다.");
             return res;
         }
+    }*/
+
+
+    // 비밀번호 맞는지 체크
+    public UserUpdateRes checkPassword(UserUpdateReq p) {
+        UserUpdateRes res = userMapper.selUser2(p.getUserId());
+        if(res == null){
+            res = new UserUpdateRes();
+            res.setMessage("비밀번호가 맞지않음");
+            return res;
+        }
+        res.setMessage("비밀번호 확인");
+        return res;
     }
+
 
     //회원정보수정
     public int patchUser(UserUpdateReq p){
@@ -144,8 +158,9 @@ public class UserService {
             return 0;
         }
 
+
         //*여기한번 검토*
-        if(!BCrypt.checkpw(p.getUpw(), checkPassword(p.getUserId()).getEncUpw())){
+        if(!BCrypt.checkpw(p.getUpw(), checkPassword(p).getUpw())){
             userMessage.setMessage("비밀번호가 일치하지않습니다.");
             return 0;
         }

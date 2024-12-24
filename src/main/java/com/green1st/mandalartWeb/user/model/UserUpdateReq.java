@@ -25,4 +25,5 @@ public class UserUpdateReq {
 
     @JsonIgnore
     private String picName;
+
 }
