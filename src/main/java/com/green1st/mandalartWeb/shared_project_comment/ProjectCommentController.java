@@ -20,7 +20,7 @@ public class ProjectCommentController {
     public ResultResponse<Long> postProjectComment(@RequestBody ProjectCommentPostReq p) {
         long commentId = service.postProjectComment(p);
         return ResultResponse.<Long>builder()
-                .resultMsg("댓글 등록 완료")
+                .resultMsg("공유 프로젝트 댓글 추가 완료")
                 .resultData(commentId)
                 .build();
     }
@@ -46,7 +46,7 @@ public class ProjectCommentController {
                     .build();
         }
         return ResultResponse.<Integer>builder()
-                .resultMsg("댓글 수정 완료")
+                .resultMsg("공유 프로젝트 댓글 수정 완료")
                 .resultData(updatedRows)
                 .build();
     }
@@ -56,7 +56,7 @@ public class ProjectCommentController {
     public ResultResponse<Integer> deleteProjectComment(@ParameterObject @ModelAttribute ProjectCommentDelReq p) {
         int res = service.deleteProjectComment(p);
         return ResultResponse.<Integer>builder()
-                .resultMsg("댓글 삭제가 완료되었습니다.")
+                .resultMsg("공유 프로젝트 댓글 삭제 완료")
                 .resultData(res)
                 .build();
     }
