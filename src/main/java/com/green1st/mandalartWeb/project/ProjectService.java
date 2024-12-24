@@ -1,10 +1,9 @@
 package com.green1st.mandalartWeb.project;
 
 import com.green1st.mandalartWeb.common.model.ResultResponse;
-import com.green1st.mandalartWeb.project.model.MandalartInsDto;
-import com.green1st.mandalartWeb.project.model.ProjectPostReq;
-import com.green1st.mandalartWeb.project.model.ProjectPostRes;
+import com.green1st.mandalartWeb.project.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
@@ -27,46 +27,43 @@ public class ProjectService {
             // 만다라트 생성(9 x 9 = 81 개)
             long projectId = p.getProjectId();
 
-            List<MandalartInsDto> mandalarts = new ArrayList<>(81);
-
             MandalartInsDto firstMandalart = new MandalartInsDto();
 
             firstMandalart.setProjectId(projectId);
+            firstMandalart.setParentId(null);
             firstMandalart.setDepth(0);
             firstMandalart.setOrderId(0);
 
-            mandalarts.add(firstMandalart);
+            result = projectMapper.insMandalart(firstMandalart);
 
+            if(result != 0) {
+                List<Long> parentIds = new ArrayList<>(8);
 
-            for(int i = 0; i < 8; i++) {
-                MandalartInsDto mandalart = new MandalartInsDto();
-                mandalart.setProjectId(projectId);
-                mandalart.setDepth(1);
-                mandalart.setOrderId(i);
+                for (int i = 0; i < 8; i++) {
+                    MandalartInsDto secondMandalart = new MandalartInsDto();
+                    secondMandalart.setProjectId(projectId);
+                    secondMandalart.setParentId(firstMandalart.getMandalartId());
+                    secondMandalart.setDepth(1);
+                    secondMandalart.setOrderId(i);
 
-                mandalarts.add(mandalart);
-            }
+                    result = projectMapper.insMandalart(secondMandalart);
 
-            // depth == 2인 객체만 필터링
-            List<MandalartInsDto> depth2Objects = mandalarts.stream()
-                    .filter(obj -> obj.getDepth() == 1)
-                    .collect(Collectors.toList());
-
-            /*for(MandalartInsDto item : depth2Objects) {
-                for(int i = 0; i < 8; i++) {
-
-                    item.setProjectId(projectId);
-                    item.set
-                    item.setDepth(2);
-                    item.setOrderId(i);
-
-                    mandalarts.add(mandalart);
+                    parentIds.add(secondMandalart.getMandalartId());
                 }
-            }*/
 
+                for (long item : parentIds) {
+                    for (int i = 0; i < 8; i++) {
+                        MandalartInsDto lastMandalart = new MandalartInsDto();
+                        lastMandalart.setProjectId(projectId);
+                        lastMandalart.setParentId(item);
+                        lastMandalart.setDepth(2);
+                        lastMandalart.setOrderId(i);
 
+                        result = projectMapper.insMandalart(lastMandalart);
 
-            result = projectMapper.insMandalart(mandalarts);
+                    }
+                }
+            }
 
             if(result > 0) {
                 ProjectPostRes projectPostRes = new ProjectPostRes();
@@ -86,4 +83,16 @@ public class ProjectService {
                 .resultMsg("프로젝트 생성실패")
                 .build();
     }
+
+    public ResultResponse<?> getProject(ProjectGetReq p) {
+        log.info("asdsadadasd {}", p);
+        List<ProjectGetRes> projectList = projectMapper.selProjectList(p);
+
+        return ResultResponse.<List<ProjectGetRes>>builder()
+                .statusCode("200")
+                .resultData(projectList)
+                .resultMsg("프로젝트 조회 완료")
+                .build();
+    }
+
 }
