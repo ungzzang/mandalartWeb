@@ -18,14 +18,17 @@ public class ProjectCommentDto {
     private String content;
     @Schema(title = "닉네임")
     private String nickName;
+    @Schema(title = "프로필 사진")
+    private String pic;
     @JsonIgnore
     private long projectId;
 
-    public ProjectCommentDto(long commentId, String userId, String content, String nickName, long projectId) {
+    public ProjectCommentDto(long commentId, String userId, String content, String nickName, String pic, long projectId) {
         this.commentId = commentId;
         this.userId = userId;
         this.content = content;
         this.nickName = nickName;
+        this.pic = pic;
         this.projectId = projectId;
     }
 }
