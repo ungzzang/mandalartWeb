@@ -22,6 +22,8 @@ public class MandalartGetDto {
     private int depth;
     @Schema(name = "order_id" , description = "각 단계별0~7칸 선택 칸")
     private int orderId;
+    @Schema(name = "parent_id" , description = "부모 id")
+    private long parentId;
     @Schema(description = "실천 목표")
     private String title;
     @Schema(description = "세부 내용")

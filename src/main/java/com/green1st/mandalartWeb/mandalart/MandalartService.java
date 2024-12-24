@@ -14,45 +14,49 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MandalartService {
     private final MandalartMapper mapper;
+    private final CalculateColorCode calculateColorCode;
 
     public List<MandalartGetRes> getMandalart (MandalartGetReq p , List<MandalartGetDto> list){
         // 프로젝트 id 체크 -> 만다라트 id 부여 -> 하위 테이블 데이터 전부 출력
         if (p.getProjectId() == 0){
             return null;
         }
-        if (list == null){
-            return mapper.getMandalart(p);
-        }
+        // p 데이터 조회 체크
         List<MandalartGetRes> res = mapper.getMandalart(p);
+        if (list == null){
+            return res;
+        }
 
         // depth = 0 일 경우 depth0 의 order_id 카운트 - colorCodes 클래스의 titleColor
         // depth = 1 일 경우 depth1의 order_id 카운트(레벨2) - colorCodes 클래스의 subTitleColor
         // depth(레벨) - order_id(하위 목표) 의 completedFg 계산해서 colorCodes 클래스 호출해서 색상 입력
+
+        // colorcodes 클래스 객체 생성
         ColorCodes colorCodes = new ColorCodes();
 
-        for (MandalartGetRes item : res){
+        for (MandalartGetRes item : res) {
+            List<MandalartGetDto> dtoList = item.getMandalartIdGetList();
+            if (dtoList == null || dtoList.isEmpty()) {
+                item.setColorCodes(colorCodes.getDefaultColor()); // 데이터가 없으면 기본 색상
+                continue;
+            }
+            // 완료 항목 카운트
             int completedCount = 0;
-            for (MandalartGetDto dto : item.getMandalartIdGetList()){
-                if (dto.getCompletedFg()==1){
+            for (MandalartGetDto dto : dtoList) {
+                if (dto.getCompletedFg() == 1) {
                     completedCount++;
                 }
             }
-            item.setCompletedCount(completedCount);
-            String colorCode = calculateColorCode(item, colorCodes);
-//            item.setColorCodes(colorCode);
+
+            // 완료율 계산
+            double completionRate = (double) completedCount / dtoList.size();
+
+            // 색상 계산
+            String color = CalculateColorCode.calculateColorCode(item.getDepth(), completionRate, colorCodes);
+            item.setColor(color);
         }
 
-        MandalartGetRes getRes = new MandalartGetRes();
-        getRes.setProjectId(p.getProjectId());
-        getRes.setMandalartIdGetList(list);
-
-        List<MandalartGetRes> resList = new ArrayList<>();
-        resList.add(getRes);
-
-        // completed_fg 완료 처리 했는거 카운트 체크
-
-
-        return null;
+        return res;
     }
 
     @Transactional
