@@ -22,6 +22,7 @@ public interface UserMapper {
     int delProject(UserDeleteReq p);
     int delUser(UserDeleteReq p);
 
-
+// 임시 비밀번호 발급
+    String checkPasswordId(String userId);
     int insPassword(TempPasswordDto tempPassword);
 }
