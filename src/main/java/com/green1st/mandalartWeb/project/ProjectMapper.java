@@ -12,4 +12,7 @@ public interface ProjectMapper {
     int insMandalart(MandalartInsDto p);
     List<ProjectGetRes> selProjectList(ProjectGetReq p);
     ProjectResultDto selProjectByUserIdAndProjectId(ProjectSelDto p);
+    int updProject(ProjectPatchReq p);
+    int delProject(ProjectDelReq p);
+    int delMandalart(long ProjectId);
 }
