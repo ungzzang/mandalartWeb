@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("mand")
 @Tag(name = "만다라트", description = "만다라트")
+@RestControllerAdvice
 public class MandalartController {
     private final MandalartService service;
 
@@ -45,21 +46,35 @@ public class MandalartController {
                 .resultMsg("만다라트 조회완료")
                 .resultData(res)
                 .build();
+    }
+    @PatchMapping("/update")
+    public ResultResponse<List<MandalartPostRes>> updateMandalart(@RequestBody MandalartPostReq request) {
+        List<MandalartPostRes> updMand = service.patchMandalart(request);
+
+        return ResultResponse.<List<MandalartPostRes>>builder()
+                .statusCode("200")
+                .resultMsg("만다라트 업데이트 완료")
+                .resultData(updMand)
+                .build();
+    }
 
 
-//    @PostMapping
-//    @Operation(summary = "만다르트 업데이트")
-//    public ResultResponse<List<MandalartPostRes>> patchMand (@ParameterObject @ModelAttribute MandalartPostReq p){
-//        List<MandalartPostRes> res = service.patchMand(p);
-//
-//        return ResultResponse.<List<MandalartPostRes>>builder()
-//                .resultMsg("업데이트 완료")
-//                .resultData(res)
-//                .build();
-//    }
+    // 예외 핸들러 추가 @RestControllerAdvice
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResultResponse<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResultResponse.<String>builder()
+                .statusCode("400")
+                .resultMsg(ex.getMessage())
+                .build();
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResultResponse<String> handleRuntimeException(RuntimeException ex) {
+        return ResultResponse.<String>builder()
+                .statusCode("500")
+                .resultMsg(ex.getMessage())
+                .build();
     }
 }
-
 
 
 
