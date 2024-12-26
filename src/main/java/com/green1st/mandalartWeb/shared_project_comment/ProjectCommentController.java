@@ -46,7 +46,8 @@ public class ProjectCommentController {
         int updatedRows = service.updateProjectComment(p);
         if (updatedRows == 0) {
             return ResultResponse.<Integer>builder()
-                    .resultMsg("댓글을 찾을 수 없습니다.")
+                    .statusCode("400")
+                    .resultMsg("공유 프로젝트 댓글 수정 실패")
                     .resultData(0)
                     .build();
         }
@@ -67,7 +68,5 @@ public class ProjectCommentController {
                 .resultData(1)
                 .build();
     }
-
-
 }
 
