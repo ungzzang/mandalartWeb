@@ -13,6 +13,7 @@
     <select id="getSharedProjectComment">
         SELECT A.comment_id AS commentId
         , A.content
+        , A.created_at AS createdAt
         , B.user_id AS userId
         , IFNULL(B.nick_name, B.user_id) AS nickName
         , B.pic
