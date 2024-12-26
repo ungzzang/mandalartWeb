@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TempPasswordDto {
-    @Schema(title = "유저이메일")
+    @Schema(description = "유저이메일", example = "test@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
     @JsonIgnore
     private String tmpPassword;
