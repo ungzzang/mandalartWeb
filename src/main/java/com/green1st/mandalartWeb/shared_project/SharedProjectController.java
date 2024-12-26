@@ -3,6 +3,7 @@ package com.green1st.mandalartWeb.shared_project;
 import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.project.model.ProjectGetReq;
 import com.green1st.mandalartWeb.project.model.ProjectPostReq;
+import com.green1st.mandalartWeb.shared_project.model.SharedProjectGetReq;
 import com.green1st.mandalartWeb.shared_project.model.SharedProjectPostReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,13 +20,13 @@ public class SharedProjectController {
 
     @PostMapping
     @Operation(summary = "공유 프로젝트 등록", description = "공유 프로젝트를 등록하는 API")
-    public ResultResponse<?> postProject(@ParameterObject @ModelAttribute SharedProjectPostReq p) {
+    public ResultResponse<?> postProject(@RequestBody SharedProjectPostReq p) {
         return sharedProjectService.postSharedProject(p);
     }
-    /*
+
     @GetMapping
     @Operation(summary = "공유 프로젝트 조회", description = "공유 프로젝트를 조회하는 API")
-    public ResultResponse<?> getProject(@ParameterObject @ModelAttribute ProjectGetReq p) {
-        return sharedProjectService.getProject(p);
-    }*/
+    public ResultResponse<?> getProject(@ParameterObject @ModelAttribute SharedProjectGetReq p) {
+        return sharedProjectService.getSaherdProject(p);
+    }
 }

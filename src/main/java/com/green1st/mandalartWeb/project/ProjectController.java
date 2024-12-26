@@ -22,7 +22,7 @@ public class ProjectController {
 
     @PostMapping
     @Operation(summary = "프로젝트 등록", description = "프로젝트를 등록하는 API")
-    public ResultResponse<?> postProject(@ParameterObject @ModelAttribute ProjectPostReq p) {
+    public ResultResponse<?> postProject(@RequestBody ProjectPostReq p) {
         return projectService.postProject(p);
     }
 
