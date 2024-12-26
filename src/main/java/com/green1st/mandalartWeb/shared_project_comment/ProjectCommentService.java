@@ -19,10 +19,7 @@ public class ProjectCommentService {
 
     public ProjectCommentGetRes getProjectCommentList(ProjectCommentGetReq p) {
         ProjectCommentGetRes res = new ProjectCommentGetRes();
-        if (p.getProjectId() <= 0) {
-            res.setContentList(new ArrayList<>());
-            return res;
-        }
+
         List<ProjectCommentDto> contentList = mapper.getSharedProjectComment(p);
         res.setContentList(contentList);
         return res;

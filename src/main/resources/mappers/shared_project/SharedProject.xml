@@ -57,4 +57,16 @@
         </choose>
         LIMIT #{startIdx}, #{size}
     </select>
+
+    <update id="updSharedProject">
+        UPDATE shared_project
+        SET title = #{title}
+        , content = #{content}
+        WHERE project_id = #{projectId}
+    </update>
+
+    <delete id="delSharedProject">
+        DELETE FROM shared_project
+        WHERE project_id = #{projectId}
+    </delete>
 </mapper>
