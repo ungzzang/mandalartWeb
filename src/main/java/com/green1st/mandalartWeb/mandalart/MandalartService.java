@@ -47,7 +47,7 @@ public class MandalartService {
         return res;
     }
 
-    @Transactional
+//    @Transactional
 //    public List<MandalartPostRes> patchMand (MandalartPostReq p){
 //        // 부모의 시작일 , 종료일 < 현재 만다라트의 시작일 종료일 값 비교 우선
 //        // p.시작일 > c.시작일 / p.종료일 > c.종료일 / p.종료일 > c.시작일
@@ -67,27 +67,27 @@ public class MandalartService {
 //    }
 
 
-    private String getColorForLevel(int completedCount, List<String> colorRange) {
-        // completedCount에 따라 색상 결정 (0~8)
-        if (completedCount == 0) {
-            return colorRange.get(0);  // 가장 어두운 색상
-        } else if (completedCount == 1) {
-            return colorRange.get(1);
-        } else if (completedCount == 2) {
-            return colorRange.get(2);
-        } else if (completedCount == 3) {
-            return colorRange.get(3);
-        } else if (completedCount == 4) {
-            return colorRange.get(4);
-        } else if (completedCount == 5) {
-            return colorRange.get(5);
-        } else if (completedCount == 6) {
-            return colorRange.get(6);
-        } else if (completedCount == 7) {
-            return colorRange.get(7);
-        } else {
-            return colorRange.get(8);  // 가장 연한 색상
-        }
-    }
+//    private String getColorForLevel(int completedCount, List<String> colorRange) {
+//        // completedCount에 따라 색상 결정 (0~8)
+//        if (completedCount == 0) {
+//            return colorRange.get(0);  // 가장 어두운 색상
+//        } else if (completedCount == 1) {
+//            return colorRange.get(1);
+//        } else if (completedCount == 2) {
+//            return colorRange.get(2);
+//        } else if (completedCount == 3) {
+//            return colorRange.get(3);
+//        } else if (completedCount == 4) {
+//            return colorRange.get(4);
+//        } else if (completedCount == 5) {
+//            return colorRange.get(5);
+//        } else if (completedCount == 6) {
+//            return colorRange.get(6);
+//        } else if (completedCount == 7) {
+//            return colorRange.get(7);
+//        } else {
+//            return colorRange.get(8);  // 가장 연한 색상
+//        }
+//    }
 
 }
