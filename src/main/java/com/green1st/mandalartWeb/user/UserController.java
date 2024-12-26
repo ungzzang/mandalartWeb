@@ -113,4 +113,25 @@ public class UserController {
     }
 
 
+    // 임시 비밀번호 발급
+    @PostMapping("password")
+    @Operation(summary = "임시 비밀번호 전송")
+    public ResultResponse<Integer> findPassword(@RequestBody TempPasswordDto req) {
+        try {
+            int result = userService.tempPassword(req);
+            return ResultResponse.<Integer>builder()
+                    .statusCode("200")
+                    .resultMsg("임시비밀번호변경완료")
+                    .resultData(result)
+                    .build();
+        } catch (IllegalArgumentException e) {
+            // 이메일이 잘못되었거나 아이디가 없는 경우
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("아이디가 존재하지 않습니다.")
+                    .resultData(0)
+                    .build();
+        }
+    }
+
 }

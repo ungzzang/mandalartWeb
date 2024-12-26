@@ -246,5 +246,46 @@ public class UserService {
     }
     //데이터 내 정보로 할때 객체 선언하면 새로운거라서 다시 수정필요.
 
+
     // -------------------------------------------------------
+    // 임시 비밀번호 발급
+    public int tempPassword(TempPasswordDto tempPasswordDto) {
+        String userId = userMapper.checkPasswordId(tempPasswordDto.getUserId());
+        if (userId == null || userId.isEmpty() ||
+                !userId.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            throw new IllegalArgumentException("유효하지 않은 이메일 주소: " + userId);
+        }
+        char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+        StringBuilder tmpPasswordBuilder = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int idx = (int) (charSet.length * Math.random());
+            tmpPasswordBuilder.append(charSet[idx]);
+        }
+        tempPasswordDto.setTmpPassword(tmpPasswordBuilder.toString());
+
+        int result = userMapper.insPassword(tempPasswordDto);
+
+        if(result == 1) {
+            MimeMessage message = javaMailSender.createMimeMessage();
+
+            try {
+                message.setFrom(FROM_ADDRESS);
+                message.setRecipients(MimeMessage.RecipientType.TO, userId);
+                message.setSubject("임시 비밀번호 안내입니다.");
+                String body = "";
+                body += "<h3>" + "안녕하세요." + "</h3>";
+                body += "<h3>" + "요청하신 임시 비밀번호가 생성되었습니다." + "</h3>";
+                body += "<h3>" + "아래의 임시 비밀번호로 로그인하세요." + "</h3>";
+                body += "<h1>" + tempPasswordDto.getTmpPassword() + "</h1>";
+                body += "<h3>" + "감사합니다." + "</h3>";
+                message.setText(body,"UTF-8", "html");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            javaMailSender.send(message);
+        }
+        return result;
+    }
 }
