@@ -80,6 +80,8 @@ public class MandalartService {
             return new ArrayList<>();
         }
 
+
+
         MandalartPostRes res = new MandalartPostRes();
         res.setProjectId(p.getProjectId());
         res.setMandalartIdPostList(list);
