@@ -4,30 +4,67 @@
 <mapper namespace="com.green1st.mandalartWeb.mandalart.MandalartMapper">
     <select id="getMandalart">
         SELECT mandalart_id AS mandalartId
-        , project_id AS projectId
+        , parent_id AS parentId
         , title
         , contents
         , completed_fg AS completedFg
         , depth
-        , order_id AS orderId
         , start_date AS startDate
         , finish_date AS finishDate
-        , parent_id AS parentId
+        , order_id AS orderId
         FROM mandalart
         WHERE project_id = #{projectId}
         ORDER BY depth , order_id
     </select>
-    <update id="patchMand">
+    <update id="patchMandWithValidation">
         UPDATE mandalart
-        SET title = #{title}
-        , contents = #{contents}
-        , depth = #{depth}
-        , order_id = #{orderId}
-        , completed_fg = #{completedFg}
-        , start_date = #{startDate}
-        , finish_date = #{finishDate}
-        , parent_id
+        SET title = #{title},
+        contents = #{contents},
+        depth = #{depth},
+        order_id = #{orderId},
+        completed_fg = #{completedFg},
+        start_date = #{startDate},
+        finish_date = #{finishDate},
+        parent_id = #{parentId}
         WHERE project_id = #{projectId}
         AND mandalart_id = #{mandalartId}
+        AND (#{startDate} IS NULL OR #{finishDate} IS NULL OR EXISTS (
+        SELECT 1
+        FROM mandalart parent
+        WHERE parent.mandalart_id = #{parentId}
+        AND parent.start_date <![CDATA[ < ]]> #{startDate}
+        AND parent.finish_date <![CDATA[ > ]]> #{finishDate}
+        ));
     </update>
+
+    <!--
+    2개로 나눠서 사용 이러면 유지 관리가 편해짐
+    <update id="patchMand">
+    UPDATE mandalart
+    SET title = #{title},
+        contents = #{contents},
+        depth = #{depth},
+        order_id = #{orderId},
+        completed_fg = #{completedFg},
+        start_date = #{startDate},
+        finish_date = #{finishDate},
+        parent_id = #{parentId}
+    WHERE project_id = #{projectId}
+      AND mandalart_id = #{mandalartId};
+</update>
+
+<update id="updateChildDatesWithValidation">
+    UPDATE mandalart
+    SET start_date = #{newStartDate},
+        finish_date = #{newFinishDate}
+    WHERE mandalart_id = #{childId}
+      AND EXISTS (
+          SELECT 1
+          FROM mandalart parent
+          WHERE parent.mandalart_id = #{parentId}
+            AND parent.start_date <= #{newStartDate}
+            AND parent.finish_date >= #{newFinishDate}
+      );
+</update>
+    -->
 </mapper>

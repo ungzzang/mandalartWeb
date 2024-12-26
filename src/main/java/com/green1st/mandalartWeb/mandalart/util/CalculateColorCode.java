@@ -8,7 +8,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class CalculateColorCode {
-    public static String calculateColorCode(int depth, double completionRate, ColorCodes colorCodes) {
+    public static String calculateColorCode(int depth, double completionRate, ColorCodes colorCodes){
         List<String> colorRange;
 
         if (depth == 0) {
