@@ -4,15 +4,14 @@
 <mapper namespace="com.green1st.mandalartWeb.mandalart.MandalartMapper">
     <select id="getMandalart">
         SELECT mandalart_id AS mandalartId
-        , project_id AS projectId
+        , parent_id AS parentId
         , title
         , contents
         , completed_fg AS completedFg
-        , parent_id AS parentId
         , depth
-        , order_id AS orderId
         , start_date AS startDate
         , finish_date AS finishDate
+        , order_id AS orderId
         FROM mandalart
         WHERE project_id = #{projectId}
         ORDER BY depth , order_id

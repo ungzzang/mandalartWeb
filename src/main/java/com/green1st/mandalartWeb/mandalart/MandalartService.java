@@ -18,33 +18,86 @@ import java.util.List;
 public class MandalartService {
     private final MandalartMapper mapper;
     private final CalculateColorCode calculateColorCode;
-    private final HandlerMapping resourceHandlerMapping;
 
     public List<MandalartGetRes> getMandalart(MandalartGetReq p) {
         if (p.getProjectId() <= 0) {
             throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
         }
-        List<MandalartGetRes> res;
-        try {
-            res = mapper.getMandalart(p);
-        } catch (Exception e) {
-            log.error("만다라트 데이터 조회 중 예외 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("만다라트 데이터 조회 실패", e);
+//        List<MandalartGetRes> res;
+//        try {
+//            res = mapper.getMandalart(p);
+//        } catch (Exception e) {
+//            log.error("만다라트 데이터 조회 중 예외 발생: {}", e.getMessage(), e);
+//            throw new RuntimeException("만다라트 데이터 조회 실패", e);
+//        }
+//        if (res == null || res.isEmpty()) {
+//            log.info("만다라트 데이터가 없습니다. 프로젝트 ID: {}", p.getProjectId());
+//            return Collections.emptyList();
+//        }
+//        for (MandalartGetRes item : res) {
+//            // 완료율 계산
+//            int completedCount = 0;
+//            int totalCount = 0;
+//
+//            // 자식 항목이 존재하지 않는 경우를 확인
+//            if (item.getChildren() != null) {
+//                for (int i = 0; i < item.getChildren().size(); i++) {
+//                    if (item.getChildren().get(i).getCompletedFg() == 1) {
+//                        completedCount++;
+//                    }
+//                    totalCount++;
+//                }
+//            }
+//            double completionRate = totalCount == 0 ? 0 : (double) completedCount / totalCount;
+//
+//            // 색상 설정
+//            ColorCodes colorCodes = new ColorCodes();
+//            String color = calculateColorCode.calculateColorCode(item.getDepth(), completionRate, colorCodes);
+//            item.setColor(color);
+        //}
+
+        List<MandalartGetRes> resList = mapper.getMandalart(p);
+
+        ColorCodes colorCodes = new ColorCodes();
+
+        for(MandalartGetRes item : resList) {
+            int index = getCompleted(item, resList);
+            switch (item.getDepth()) {
+                case 0:
+                    if(index > 0) {
+                        item.setBgColor(colorCodes.getTitleColor().get(index - 1));
+                    }
+                    break;
+                case 1:
+                    if(index > 0) {
+                        item.setBgColor(colorCodes.getSubTitleColor().get(index - 1));
+                    }
+                    break;
+                case 2:
+                    if(item.getCompletedFg() == 1) {
+                        item.setBgColor(colorCodes.getDefaultColor().get(0));
+                    }
+                    break;
+
+            }
         }
-        if (res == null || res.isEmpty()) {
-            log.info("만다라트 데이터가 없습니다. 프로젝트 ID: {}", p.getProjectId());
-            return Collections.emptyList();
+
+        log.info("sadsadsad: {}", resList);
+
+        return resList;
+    }
+
+    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
+        int completedCnt = 0;
+
+
+        for(MandalartGetRes item : list) {
+            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
+                completedCnt++;
+            }
         }
-        for (MandalartGetRes item : res) {
-            // 완료율 계산
-            int completedCount = (int) item.getChildren().stream().filter(child -> child.getCompletedFg() == 1).count();
-            double completionRate = item.getChildren().isEmpty() ? 0 : (double) completedCount / item.getChildren().size();
-            // 색상 설정
-            ColorCodes colorCodes = new ColorCodes();
-            String color = calculateColorCode.calculateColorCode(item.getDepth(), completionRate , colorCodes);
-            item.setColor(color);
-        }
-        return res;
+
+        return completedCnt;
     }
 
 //    @Transactional
