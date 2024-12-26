@@ -8,8 +8,9 @@ import lombok.Setter;
 @Setter
 @Schema(title = "")
 public class MandalartPostReq {
-    @Schema(title = "project_id")
+    @Schema(description = "프로젝트 id")
     private long projectId;
+
 
     public void setProjectId(long projectId) {
 
