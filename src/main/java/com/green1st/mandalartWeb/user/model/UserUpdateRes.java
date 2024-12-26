@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class UserUpdateRes {
     private String userId;
-    @JsonIgnore
+    private int result;
     private String upw;
     private String message;
 }

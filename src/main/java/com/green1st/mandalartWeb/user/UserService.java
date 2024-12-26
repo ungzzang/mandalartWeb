@@ -119,68 +119,38 @@ public class UserService {
         return userMapper.selUserInfo(p);
     }
 
-   /* //회원정보수정 전 이메일, 비밀번호 체크
-    public DuplicateEmailRes checkPassword(String userId){
-        DuplicateEmailRes res = userMapper.checkEmailPw(userId);
-
-        //이거 다시 검토*************
-        if(res != null){
-            res.setCheck(0);
-            res.setMessage("이메일 비밀번호 체크완료");
-            return res;
-        }else {
-            res.setCheck(1);
-            res.setMessage("이메일 혹은 비밀번호가 다릅니다.");
-            return res;
-        }
-    }*/
-
-
-    // 비밀번호 맞는지 체크
-    public UserUpdateRes checkPassword(UserUpdateReq p) {
-        UserUpdateRes res = userMapper.selUser2(p.getUserId());
-        if(res == null){
-            res = new UserUpdateRes();
-            res.setMessage("비밀번호가 맞지않음");
-            return res;
-        }
-        res.setMessage("비밀번호 확인");
-        return res;
-    }
-
 
     //회원정보수정
-    public int patchUser(UserUpdateReq p){
+    public UserUpdateRes patchUser(UserUpdateReq p){
         // 이메일, 비밀번호 일치 여부 확인
-
-        if(emailChk(p.getUserId()).getCheck() == 0){
-            userMessage.setMessage("이메일이 일치하지않습니다.");
-            return 0;
-        }
-
-
-        //*여기한번 검토*
-        if(!BCrypt.checkpw(p.getUpw(), checkPassword(p).getUpw())){
-            userMessage.setMessage("비밀번호가 일치하지않습니다.");
-            return 0;
+        UserUpdateRes res = userMapper.checkPassWord(p.getUserId());
+        if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
+            res = new UserUpdateRes();
+            res.setMessage("이메일 혹은 비밀번호 재확인필요");
+            res.setResult(0);
+            return res;
         }
 
         // 비밀번호 바꿀시
-        if(p.getNewUpw() != null) {
-            if (p.getNewUpw() != p.getCheckUpw()) {
-                userMessage.setMessage("비밀번호를 다시 입력해주십시오.");
-                return 0;
+        if(p.getNewUpw() != null && p.getCheckUpw() != null) {
+            if(p.getNewUpw().equals(p.getCheckUpw())) {
+                String hashedPassWord = BCrypt.hashpw(p.getNewUpw(), BCrypt.gensalt());
+                p.setNewUpw(hashedPassWord);
             }
-            String hashedPassWord = BCrypt.hashpw(p.getNewUpw(), BCrypt.gensalt());
-            p.setNewUpw(hashedPassWord);
+            else {
+                res.setMessage("비밀번호를 다시 입력해주십시오.");
+                res.setResult(0);
+                return res;
+            }
         }
 
         // 닉네임 바꿀시
         if(p.getNickName() != null) { //*여기검토*
             int check = nickNameChk(p.getNickName()).getCheck();
             if(check == 0){
-                userMessage.setMessage("중복된 닉네임입니다.");
-                return 0;
+                res.setMessage("중복된 닉네임입니다.");
+                res.setResult(0);
+                return res;
             }
         }
 
@@ -211,11 +181,19 @@ public class UserService {
         // DB에 튜플을 수정(Update)
         int result = userMapper.updUser(p);
 
-        userMessage.setMessage("회원수정이 완료되었습니다.");
+        res.setMessage("회원수정이 완료되었습니다.");
+        res.setResult(result);
+        return res;
+    }
+
+    //내가 좋아요한거, 댓글삭제
+    public int deleteLikeComment(UserDeleteReq p){
+        int result = userMapper.delMyLikeAndComment(p.getUserId());
         return result;
     }
 
-    //회원삭제
+
+    //회원삭제(미완성)
     public int deleteUser(UserDeleteReq p){
         UserSignInReq req = new UserSignInReq();
         UserSignInRes res = userMapper.selUser(req);
