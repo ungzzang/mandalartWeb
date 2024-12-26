@@ -3,11 +3,12 @@ package com.green1st.mandalartWeb.shared_project_comment.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
 
 @Getter
+@Setter
 @ToString
 public class ProjectCommentDto {
     @Schema(title = "댓글 PK")
@@ -20,12 +21,4 @@ public class ProjectCommentDto {
     private String nickName;
     @JsonIgnore
     private long projectId;
-
-    public ProjectCommentDto(long commentId, String userId, String content, String nickName, long projectId) {
-        this.commentId = commentId;
-        this.userId = userId;
-        this.content = content;
-        this.nickName = nickName;
-        this.projectId = projectId;
-    }
 }
