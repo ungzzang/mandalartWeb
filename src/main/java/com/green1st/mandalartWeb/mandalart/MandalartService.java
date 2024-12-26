@@ -62,7 +62,9 @@ public class MandalartService {
             }
 
             // 완료율 계산
-            double completionRate = (double) completedCount / dtoList.size();
+            double completionRate = (dtoList != null && !dtoList.isEmpty())
+                    ? (double) completedCount / dtoList.size()
+                    : 0;
 
             // 색상 계산
             String color = calculateColorCode(item.getDepth(), completionRate, colorCodes);
@@ -77,6 +79,8 @@ public class MandalartService {
         if (list.size() == 0){
             return new ArrayList<>();
         }
+
+
 
         MandalartPostRes res = new MandalartPostRes();
         res.setProjectId(p.getProjectId());
