@@ -73,6 +73,12 @@
         WHERE user_id = #{userId}
     </update>
 
+    <select id="checkPassWord2"> <!--회원삭제를 위한 이메일, 비밀번호체크-->
+        SELECT user_id, upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
     <delete id="delMyLikeAndComment"> <!--내가 좋아요한거, 댓글단거 삭제-->
         DELETE a, b
         FROM shared_project_like a

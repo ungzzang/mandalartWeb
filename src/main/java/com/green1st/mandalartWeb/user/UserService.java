@@ -187,9 +187,18 @@ public class UserService {
     }
 
     //내가 좋아요한거, 댓글삭제
-    public int deleteLikeComment(UserDeleteReq p){
+    public UserDeleteRes deleteLikeComment(UserDeleteReq p){
+        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p.getUserId());
+        if(p.getUserId() != userDeleteRes.getUserId() || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw())){
+            userDeleteRes.setMessage("이메일 혹은 비밀번호를 확인해주세요");
+            userDeleteRes.setCheck(0);
+            return userDeleteRes;
+        }
+
         int result = userMapper.delMyLikeAndComment(p.getUserId());
-        return result;
+        userDeleteRes.setMessage("좋아요, 댓글 삭제 성공");
+        userDeleteRes.setCheck(1);
+        return userDeleteRes;
     }
 
 
