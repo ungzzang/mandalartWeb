@@ -187,9 +187,18 @@ public class UserService {
     }
 
     //내가 좋아요한거, 댓글삭제
-    public int deleteLikeComment(UserDeleteReq p){
+    public UserDeleteRes deleteLikeComment(UserDeleteReq p){
+        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p.getUserId());
+        if(p.getUserId() != userDeleteRes.getUserId() || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw())){
+            userDeleteRes.setMessage("이메일 혹은 비밀번호를 확인해주세요");
+            userDeleteRes.setCheck(0);
+            return userDeleteRes;
+        }
+
         int result = userMapper.delMyLikeAndComment(p.getUserId());
-        return result;
+        userDeleteRes.setMessage("좋아요, 댓글 삭제 성공");
+        userDeleteRes.setCheck(1);
+        return userDeleteRes;
     }
 
 
@@ -242,10 +251,15 @@ public class UserService {
             tmpPasswordBuilder.append(charSet[idx]);
         }
         tempPasswordDto.setTmpPassword(tmpPasswordBuilder.toString());
+        String tmpPasswordOriginal = tempPasswordDto.getTmpPassword();
 
-        int result = userMapper.insPassword(tempPasswordDto);
+        String hashedPassWord = BCrypt.hashpw(tempPasswordDto.getTmpPassword(), BCrypt.gensalt());
+        tempPasswordDto.setTmpPassword(hashedPassWord);
+        int result1 = userMapper.updTmpPassword(tempPasswordDto);
 
-        if(result == 1) {
+        //int result = userMapper.insPassword(tempPasswordDto);
+
+        if(result1 == 1) {
             MimeMessage message = javaMailSender.createMimeMessage();
 
             try {
@@ -256,7 +270,7 @@ public class UserService {
                 body += "<h3>" + "안녕하세요." + "</h3>";
                 body += "<h3>" + "요청하신 임시 비밀번호가 생성되었습니다." + "</h3>";
                 body += "<h3>" + "아래의 임시 비밀번호로 로그인하세요." + "</h3>";
-                body += "<h1>" + tempPasswordDto.getTmpPassword() + "</h1>";
+                body += "<h1>" + tmpPasswordOriginal + "</h1>";
                 body += "<h3>" + "감사합니다." + "</h3>";
                 message.setText(body,"UTF-8", "html");
             } catch (MessagingException e) {
@@ -264,6 +278,6 @@ public class UserService {
             }
             javaMailSender.send(message);
         }
-        return result;
+        return result1;
     }
 }

@@ -1,6 +1,10 @@
 package com.green1st.mandalartWeb.mandalart.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,15 +15,23 @@ import java.time.LocalDate;
 @Schema(title = "")
 public class MandalartPostReq {
     @Schema(description = "프로젝트 id")
+    @Positive(message = "프로젝트 ID는 양수만 가능합니다.")
     private long projectId;
-    private Long mandalartId;  // 만다라트 ID
+    @PositiveOrZero(message = "만다라트 ID는 0 이상이어야 합니다.")
+    private long mandalartId;  // 만다라트 ID
+    @NotEmpty(message = "목표를 입력해주세요")
     private String title;  // 제목
     private String contents;  // 내용
+    @NotNull(message = "깊이는 반드시 입력해야 합니다.")
+    @PositiveOrZero(message = "깊이는 0 이상이어야 합니다.")
     private Integer depth;  // 깊이
+    @NotNull(message = "순서는 반드시 입력해야 합니다.")
+    @PositiveOrZero(message = "순서는 0 이상이어야 합니다.")
     private Integer orderId;  // 순서
     private Boolean completedFg;  // 완료 여부
     private LocalDate startDate;  // 시작일
     private LocalDate finishDate;  // 종료일
+    @PositiveOrZero(message = "부모 ID는 0 이상이어야 합니다.")
     private Long parentId;  // 부모 ID
     private String colorCode;  // 색상 코드 추가
 
