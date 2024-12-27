@@ -20,7 +20,7 @@ public class ProjectCommentController {
     @PostMapping
     @Operation(summary = "프로젝트 댓글 등록")
     public ResultResponse<Long> postProjectComment(@Valid @RequestBody ProjectCommentPostReq p
-                                                    , BindingResult bindingResult) {
+            , BindingResult bindingResult) {
         if (bindingResult.hasErrors() || p.getContent().trim().length() == 0) {
             return ResultResponse.<Long>builder()
                     .statusCode("400")
@@ -51,7 +51,7 @@ public class ProjectCommentController {
         }
         return ResultResponse.<ProjectCommentGetRes>builder()
                 .statusCode("200")
-                .resultMsg("프로젝트 댓글 조회완료")
+                .resultMsg("프로젝트 댓글 조회 완료")
                 .resultData(res)
                 .build();
     }
@@ -59,7 +59,7 @@ public class ProjectCommentController {
     @PatchMapping
     @Operation(summary = "프로젝트 댓글 수정")
     public ResultResponse<Integer> updateSharedProjectComment(@Valid @RequestBody ProjectCommentPatchReq p
-                                                                , BindingResult bindingResult) {
+            , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
@@ -88,6 +88,7 @@ public class ProjectCommentController {
     @Operation(summary = "프로젝트 댓글 삭제")
     public ResultResponse<Integer> deleteProjectComment(@ParameterObject @ModelAttribute ProjectCommentDelReq p) {
         int deletedRows = service.deleteProjectComment(p);
+
         if(deletedRows == 0) {
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
@@ -103,4 +104,3 @@ public class ProjectCommentController {
                 .build();
     }
 }
-
