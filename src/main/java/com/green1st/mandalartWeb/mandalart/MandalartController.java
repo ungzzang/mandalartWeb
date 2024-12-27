@@ -64,7 +64,7 @@ public class MandalartController {
         return ResultResponse.<Integer>builder()
                 .statusCode("200")
                 .resultMsg("만다라트 수정 완료")
-                .resultData(1)
+                .resultData(updatedRows)
                 .build();
     }
 
@@ -72,18 +72,19 @@ public class MandalartController {
     @Operation(summary = "임박한 만다라트 리스트")
     public ResultResponse<?> getImminentMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetImminentReq p) {
         List<MandalartGetImminentRes> imminentResList = service.getImProject(p);
+
         if (imminentResList == null || imminentResList.isEmpty()) {
-             return ResultResponse.<Integer>builder()
-                     .statusCode("400")
-                     .resultMsg("임박한 만다라트 조회 실패")
-                     .resultData(0)
-                     .build();
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("임박한 만다라트 조회 실패")
+                    .resultData(0)
+                    .build();
         }
 
-        return ResultResponse.<Integer>builder()
+        return ResultResponse.<List<MandalartGetImminentRes>>builder()
                 .statusCode("200")
                 .resultMsg("임박한 만다라트 조회 완료")
-                .resultData(1)
+                .resultData(imminentResList)
                 .build();
     }
 }
