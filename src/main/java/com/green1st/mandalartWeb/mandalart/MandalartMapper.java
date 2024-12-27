@@ -9,6 +9,6 @@ import java.util.List;
 @Mapper
 public interface MandalartMapper {
     List<MandalartGetRes> getMandalart (MandalartGetReq p);
-    List<MandalartPostRes> patchMandalart (MandalartPostReq p);
-    void updateMandalart(MandalartPostReq p);  // DB 업데이트
+    int patchMandalart (MandalartPostReq p);
+
 }

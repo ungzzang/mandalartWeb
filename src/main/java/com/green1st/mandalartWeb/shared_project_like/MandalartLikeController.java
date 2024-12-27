@@ -4,6 +4,7 @@ import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.shared_project_like.model.ProjectLikeDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -19,7 +20,7 @@ public class MandalartLikeController {
 
     @PostMapping("/like")
     @Operation(summary = "프로젝트 좋아요 등록")
-    public ResultResponse<Integer> sharedProjectLike(@RequestBody ProjectLikeDto dto) {
+    public ResultResponse<Integer> sharedProjectLike(@Valid @RequestBody ProjectLikeDto dto) {
         log.info("MandalartLikeController > sharedProjectLike > dto: {}", dto);
         try {
             int result = mandalartLikeService.insMandalratLike(dto);
@@ -40,7 +41,7 @@ public class MandalartLikeController {
 
     @DeleteMapping("/like")
     @Operation(summary = "프로젝트 좋아요 취소")
-    public ResultResponse<Integer> sharedProjectLikeDelete(@RequestBody ProjectLikeDto dto) {
+    public ResultResponse<Integer> sharedProjectLikeDelete(@Valid @RequestBody ProjectLikeDto dto) {
         log.info("MandalartLikeController > sharedProjectLikeDelete > dto: {}", dto);
         try {
             int result = mandalartLikeService.delMandalratLike(dto);

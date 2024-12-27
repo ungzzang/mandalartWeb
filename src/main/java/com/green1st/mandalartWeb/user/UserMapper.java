@@ -26,10 +26,17 @@ public interface UserMapper {
     int delProject(UserDeleteReq p);
     int delUser(UserDeleteReq p);
 
+    //삭제를 위한 비밀번호 selet
+    UserDeleteRes checkPassWord2(String userId);
+
     //내가 좋아요 한거, 댓글단거 삭제
     int delMyLikeAndComment(String userId);
 
+
+
 // 임시 비밀번호 발급
     String checkPasswordId(String userId);
-    int insPassword(TempPasswordDto tempPassword);
+
+    int updTmpPassword(TempPasswordDto tempPasswordDto);
+
 }
