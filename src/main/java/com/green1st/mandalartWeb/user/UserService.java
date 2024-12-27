@@ -251,10 +251,15 @@ public class UserService {
             tmpPasswordBuilder.append(charSet[idx]);
         }
         tempPasswordDto.setTmpPassword(tmpPasswordBuilder.toString());
+        String tmpPasswordOriginal = tempPasswordDto.getTmpPassword();
 
-        int result = userMapper.insPassword(tempPasswordDto);
+        String hashedPassWord = BCrypt.hashpw(tempPasswordDto.getTmpPassword(), BCrypt.gensalt());
+        tempPasswordDto.setTmpPassword(hashedPassWord);
+        int result1 = userMapper.updTmpPassword(tempPasswordDto);
 
-        if(result == 1) {
+        //int result = userMapper.insPassword(tempPasswordDto);
+
+        if(result1 == 1) {
             MimeMessage message = javaMailSender.createMimeMessage();
 
             try {
@@ -265,7 +270,7 @@ public class UserService {
                 body += "<h3>" + "안녕하세요." + "</h3>";
                 body += "<h3>" + "요청하신 임시 비밀번호가 생성되었습니다." + "</h3>";
                 body += "<h3>" + "아래의 임시 비밀번호로 로그인하세요." + "</h3>";
-                body += "<h1>" + tempPasswordDto.getTmpPassword() + "</h1>";
+                body += "<h1>" + tmpPasswordOriginal + "</h1>";
                 body += "<h3>" + "감사합니다." + "</h3>";
                 message.setText(body,"UTF-8", "html");
             } catch (MessagingException e) {
@@ -273,6 +278,6 @@ public class UserService {
             }
             javaMailSender.send(message);
         }
-        return result;
+        return result1;
     }
 }

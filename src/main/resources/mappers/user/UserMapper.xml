@@ -5,6 +5,7 @@
 
 <mapper namespace="com.green1st.mandalartWeb.user.UserMapper">
 
+<!--이메일, 닉네임, 비밀번호 뽑아오기(중복체크)-->
     <select id="checkEmailPw">
         SELECT user_id as userId, upw
         FROM user
@@ -24,8 +25,8 @@
     </select>
 
 
-
-    <insert id="insUser"> <!--회원가입-->
+<!--회원가입-->
+    <insert id="insUser">
         INSERT INTO user
         SET user_id = #{userId}
         , upw = #{upw}
@@ -34,7 +35,8 @@
     </insert>
 
 
-    <select id="selUser"> <!--로그인-->
+<!--로그인-->
+    <select id="selUser">
         SELECT user_id as userId
         , nick_name as nickName
         , upw
@@ -50,14 +52,16 @@
     </select>
 
 
-    <select id="selUserInfo"> <!--유저정보 조회-->
+<!--유저정보 조회-->
+    <select id="selUserInfo">
         SELECT user_id as userId, nick_name as nickName, pic
         FROM user
         WHERE user_id = #{userId}
     </select>
 
 
-    <update id="updUser"> <!--유저정보 수정-->
+<!--유저정보 수정-->
+    <update id="updUser">
         UPDATE user
         <set>
             <if test=" newUpw != null and newUpw != '' and checkUpw != null and checkUpw != '' " >
@@ -73,13 +77,17 @@
         WHERE user_id = #{userId}
     </update>
 
-    <select id="checkPassWord2"> <!--회원삭제를 위한 이메일, 비밀번호체크-->
+
+<!--회원삭제를 위한 이메일, 비밀번호체크-->
+    <select id="checkPassWord2">
         SELECT user_id, upw
         FROM user
         WHERE user_id = #{userId}
     </select>
 
-    <delete id="delMyLikeAndComment"> <!--내가 좋아요한거, 댓글단거 삭제-->
+
+<!--내가 좋아요한거, 댓글단거 삭제-->
+    <delete id="delMyLikeAndComment">
         DELETE a, b
         FROM shared_project_like a
         JOIN shared_project_comment b
@@ -87,8 +95,8 @@
         WHERE a.user_id = #{userId}
     </delete>
 
-
-    <delete id="delProjectLikeAndProjectComment"> <!--내 프로젝트의 좋아요, 댓글 삭제-->
+<!--내 프로젝트의 좋아요, 댓글 삭제-->
+    <delete id="delProjectLikeAndProjectComment">
         DELETE B, C
         FROM shared_project A
         LEFT JOIN shared_project_like B
@@ -129,10 +137,11 @@
         WHERE user_id = #{userId}
     </select>
 
-    <insert id="insPassword">
-        INSERT INTO find_password
-        SET user_id = #{userId}
-        , tmp_password = #{tmpPassword}
-    </insert>
+<!--임시 비밀번호로 수정-->
+    <update id="updTmpPassword">
+        UPDATE user
+        SET upw = #{tmpPassword}
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>

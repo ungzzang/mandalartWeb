@@ -36,5 +36,7 @@ public interface UserMapper {
 
 // 임시 비밀번호 발급
     String checkPasswordId(String userId);
-    int insPassword(TempPasswordDto tempPassword);
+
+    int updTmpPassword(TempPasswordDto tempPasswordDto);
+
 }
