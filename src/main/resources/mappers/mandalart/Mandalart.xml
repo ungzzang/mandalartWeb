@@ -30,15 +30,16 @@
         <set>
             <if test="title != null">title = #{title},</if>
             <if test="contents != null">contents = #{contents},</if>
-            <if test="depth != null">depth = #{depth},</if>
-            <if test="orderId != null">order_id = #{orderId},</if>
+<!--            <if test="depth != null">depth = #{depth},</if>-->
+<!--            <if test="orderId != null">order_id = #{orderId},</if>-->
             <if test="completedFg != null">completed_fg = #{completedFg},</if>
             <if test="startDate != null">start_date = #{startDate},</if>
             <if test="finishDate != null">finish_date = #{finishDate},</if>
             <if test="parentId != null">parent_id = #{parentId},</if>
         </set>
-        WHERE project_id = #{projectId}
-        AND mandalart_id = #{mandalartId}
+        WHERE
+<!--        project_id = #{projectId} AND -->
+        mandalart_id = #{mandalartId}
         <if test="parentId != null">
             AND (
             #{startDate} IS NULL
