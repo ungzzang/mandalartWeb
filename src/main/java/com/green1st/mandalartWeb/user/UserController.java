@@ -127,7 +127,7 @@ public class UserController {
     // 임시 비밀번호 발급
     @PostMapping("password")
     @Operation(summary = "임시 비밀번호 전송")
-    public ResultResponse<Integer> findPassword(@RequestBody TempPasswordDto req) {
+    public ResultResponse<Integer> findPassword(@Valid @RequestBody TempPasswordDto req) {
         try {
             int result = userService.tempPassword(req);
             return ResultResponse.<Integer>builder()
