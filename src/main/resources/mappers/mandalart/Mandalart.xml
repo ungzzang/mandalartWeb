@@ -14,29 +14,65 @@
         , order_id AS orderId
         FROM mandalart
         WHERE project_id = #{projectId}
-        ORDER BY depth , order_id
+        ORDER BY depth , parent_id
     </select>
-    <update id="patchMandWithValidation">
+<!--    <update id="patchMandalart">-->
+<!--        UPDATE mandalart-->
+<!--        SET-->
+<!--        title = #{title},-->
+<!--        contents = #{contents},-->
+<!--        depth = #{depth},-->
+<!--        order_id = #{orderId},-->
+<!--        completed_fg = #{completedFg},-->
+<!--        start_date = #{startDate},-->
+<!--        finish_date = #{finishDate},-->
+<!--        parent_id = #{parentId}-->
+<!--        WHERE-->
+<!--        project_id = #{projectId}-->
+<!--        AND mandalart_id = #{mandalartId}-->
+<!--        AND (-->
+<!--        #{startDate} IS NULL-->
+<!--        OR #{finishDate} IS NULL-->
+<!--        OR EXISTS (-->
+<!--        SELECT 1-->
+<!--        FROM mandalart parent-->
+<!--        WHERE parent.mandalart_id = #{parentId}-->
+<!--        AND parent.start_date <![CDATA[ <= ]]> #{startDate}-->
+<!--        AND parent.finish_date <![CDATA[ >= ]]> #{finishDate}-->
+<!--        AND parent.finish_date <![CDATA[ <> ]]> #{startDate}-->
+<!--        )-->
+<!--        );-->
+<!--    </update>-->
+    <update id="patchMandalart">
         UPDATE mandalart
-        SET title = #{title},
-        contents = #{contents},
-        depth = #{depth},
-        order_id = #{orderId},
-        completed_fg = #{completedFg},
-        start_date = #{startDate},
-        finish_date = #{finishDate},
-        parent_id = #{parentId}
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="contents != null">contents = #{contents},</if>
+            <if test="depth != null">depth = #{depth},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="completedFg != null">completed_fg = #{completedFg},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="finishDate != null">finish_date = #{finishDate},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="bgColor != null">bgColor = #{bgColor},</if>
+        </set>
         WHERE project_id = #{projectId}
         AND mandalart_id = #{mandalartId}
-        AND (#{startDate} IS NULL OR #{finishDate} IS NULL OR EXISTS (
-        SELECT 1
-        FROM mandalart parent
-        WHERE parent.mandalart_id = #{parentId}
-        AND parent.start_date <![CDATA[ < ]]> #{startDate}
-        AND parent.finish_date <![CDATA[ > ]]> #{finishDate}
-        ));
+        <if test="parentId != null">
+            AND (
+            #{startDate} IS NULL
+            OR #{finishDate} IS NULL
+            OR EXISTS (
+            SELECT 1
+            FROM mandalart parent
+            WHERE parent.mandalart_id = #{parentId}
+            AND (#{startDate} IS NULL OR parent.start_date <![CDATA[ <= ]]> #{startDate})
+            AND (#{finishDate} IS NULL OR parent.finish_date <![CDATA[ >= ]]> #{finishDate})
+            AND (#{startDate} IS NULL OR parent.finish_date <![CDATA[ <> ]]> #{startDate})
+            )
+            )
+        </if>
     </update>
-
     <!--
     2개로 나눠서 사용 이러면 유지 관리가 편해짐
     <update id="patchMand">
@@ -67,4 +103,17 @@
       );
 </update>
     -->
+<!--    <update id="updateMandalart" parameterType="MandalartPostReq">-->
+<!--        UPDATE mandalart-->
+<!--        SET-->
+<!--        title = #{title},-->
+<!--        contents = #{contents},-->
+<!--        depth = #{depth},-->
+<!--        order_id = #{orderId},-->
+<!--        completed_fg = #{completedFg},-->
+<!--        start_date = #{startDate},-->
+<!--        finish_date = #{finishDate},-->
+<!--        parent_id = #{parentId}-->
+<!--        WHERE mandalart_id = #{mandalartId};-->
+<!--    </update>-->
 </mapper>
