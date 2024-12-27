@@ -53,11 +53,17 @@
 
     <update id="updProject">
         UPDATE project
-        SET title = #{title}
-        , content = #{content}
-        <if test="pic != null">
-            , pic = #{pic}
-        </if>
+        <set>
+            <if test="title != null">
+                title = #{title}
+            </if>
+            <if test="content != null">
+                content = #{content}
+            </if>
+            <if test="pic != null">
+                 pic = #{pic}
+            </if>
+        </set>
         WHERE user_id = #{userId}
         AND project_id = #{projectId}
     </update>
