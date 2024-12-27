@@ -21,15 +21,7 @@ public class ProjectCommentController {
     @Operation(summary = "프로젝트 댓글 등록")
     public ResultResponse<Long> postProjectComment(@Valid @RequestBody ProjectCommentPostReq p
                                                     , BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResultResponse.<Long>builder()
-                    .statusCode("400")
-                    .resultMsg("공유 프로젝트 댓글 추가 실패")
-                    .resultData(0L)
-                    .build();
-        }
-
-        if (p.getContent().trim().length() == 0) {
+        if (bindingResult.hasErrors() || p.getContent().trim().length() == 0) {
             return ResultResponse.<Long>builder()
                     .statusCode("400")
                     .resultMsg("공유 프로젝트 댓글 추가 실패")
@@ -47,9 +39,16 @@ public class ProjectCommentController {
 
     @GetMapping
     @Operation(summary = "프로젝트 댓글 리스트")
-    public ResultResponse<ProjectCommentGetRes> getProjectCommentList(@ParameterObject @ModelAttribute ProjectCommentGetReq p) {
+    public ResultResponse<?> getProjectCommentList(@ParameterObject @ModelAttribute ProjectCommentGetReq p) {
         ProjectCommentGetRes res = service.getProjectCommentList(p);
 
+        if(res == null || res.getContentList().isEmpty()) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("공유 프로젝트 댓글 조회 실패")
+                    .resultData(0)
+                    .build();
+        }
         return ResultResponse.<ProjectCommentGetRes>builder()
                 .statusCode("200")
                 .resultMsg("프로젝트 댓글 조회완료")
@@ -61,7 +60,6 @@ public class ProjectCommentController {
     @Operation(summary = "프로젝트 댓글 수정")
     public ResultResponse<Integer> updateSharedProjectComment(@Valid @RequestBody ProjectCommentPatchReq p
                                                                 , BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
@@ -78,6 +76,7 @@ public class ProjectCommentController {
                     .resultData(0)
                     .build();
         }
+
         return ResultResponse.<Integer>builder()
                 .statusCode("200")
                 .resultMsg("공유 프로젝트 댓글 수정 완료")
@@ -88,7 +87,15 @@ public class ProjectCommentController {
     @DeleteMapping
     @Operation(summary = "프로젝트 댓글 삭제")
     public ResultResponse<Integer> deleteProjectComment(@ParameterObject @ModelAttribute ProjectCommentDelReq p) {
-        service.deleteProjectComment(p);
+        int deletedRows = service.deleteProjectComment(p);
+        if(deletedRows == 0) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("공유 프로젝트 댓글 삭제 실패")
+                    .resultData(0)
+                    .build();
+        }
+
         return ResultResponse.<Integer>builder()
                 .statusCode("200")
                 .resultMsg("공유 프로젝트 댓글 삭제 완료")

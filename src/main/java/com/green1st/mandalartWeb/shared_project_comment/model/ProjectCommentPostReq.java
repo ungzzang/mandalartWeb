@@ -18,7 +18,7 @@ public class ProjectCommentPostReq {
     @Schema(title = "프로젝트 PK", example = "1"
             , requiredMode = Schema.RequiredMode.REQUIRED)
     private long projectId;
-    @Schema(title = "로그인한 유저 PK", example = "2"
+    @Schema(title = "유저아이디", example = "2"
             , requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
     @Schema(title = "댓글 내용", example = "댓글입니다."
