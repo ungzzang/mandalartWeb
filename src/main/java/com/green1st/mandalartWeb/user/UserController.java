@@ -26,7 +26,7 @@ public class UserController {
     //이메일 중복체크
     @GetMapping("email")
     @Operation(summary = "이메일 중복체크")
-    public ResultResponse<Integer> emailChk(@ParameterObject @ModelAttribute DuplicateEmailReq p){
+    public ResultResponse<Integer> emailChk(@ParameterObject @ModelAttribute @Valid DuplicateEmailReq p){
         DuplicateEmailRes res = userService.emailChk(p.getUserId());
 
         return ResultResponse.<Integer>builder()
@@ -39,7 +39,7 @@ public class UserController {
     //닉네임 중복체크
     @GetMapping("nickName")
     @Operation(summary = "닉네임 중복체크")
-    public ResultResponse<Integer> nickNameChk(@ParameterObject @ModelAttribute DuplicateNickNameReq p) {
+    public ResultResponse<Integer> nickNameChk(@ParameterObject @ModelAttribute @Valid DuplicateNickNameReq p) {
         DuplicateNickNameRes res = userService.nickNameChk(p.getNickName());
 
         return ResultResponse.<Integer>builder()
@@ -53,7 +53,7 @@ public class UserController {
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
     public ResultResponse<Integer> signUpUser(@RequestPart(required = false) MultipartFile pic
-                                              , @RequestPart UserSignUpReq p){
+                                              , @RequestPart @Valid UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
         return ResultResponse.<Integer>builder()
@@ -65,7 +65,7 @@ public class UserController {
 
     @PostMapping("signIn")
     @Operation(summary = "로그인")
-    public ResultResponse<UserSignInRes> signInUser(@RequestBody UserSignInReq p) {
+    public ResultResponse<UserSignInRes> signInUser(@RequestBody @Valid UserSignInReq p) {
 
         UserSignInRes res = userService.postSignIn(p);
 
@@ -78,7 +78,7 @@ public class UserController {
 
     @GetMapping()
     @Operation(summary = "유저정보조회")
-    public ResultResponse<UserInfoGetRes> getUserInfo(@ParameterObject @ModelAttribute UserInfoGetReq p){
+    public ResultResponse<UserInfoGetRes> getUserInfo(@ParameterObject @ModelAttribute @Valid UserInfoGetReq p){
 
         UserInfoGetRes res = userService.getUserInfo(p);
 
@@ -91,7 +91,7 @@ public class UserController {
 
     @PatchMapping
     @Operation(summary = "유저정보수정")
-    public ResultResponse<Integer> patchUser(@RequestBody UserUpdateReq p) {
+    public ResultResponse<Integer> patchUser(@RequestBody @Valid UserUpdateReq p) {
         UserUpdateRes res = userService.patchUser(p);
 
         return ResultResponse.<Integer>builder()
@@ -114,12 +114,12 @@ public class UserController {
 
     @DeleteMapping()
     @Operation(summary = "나의 좋아요 댓글 삭제")
-    public ResultResponse<Integer> deleteMyLikeComment(@ParameterObject @ModelAttribute UserDeleteReq p){
-        int result = userService.deleteLikeComment(p);
+    public ResultResponse<Integer> deleteMyLikeComment(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
+        UserDeleteRes res = userService.deleteLikeComment(p);
         return ResultResponse.<Integer>builder()
-                .statusCode(result != 0 ? "200" : "400")
-                .resultMsg("좋아요 댓글 삭제 완료")
-                .resultData(result != 0 ? 1 : 0)
+                .statusCode(res.getCheck() != 0 ? "200" : "400")
+                .resultMsg(res.getMessage())
+                .resultData(res.getCheck() != 0 ? 1 : 0)
                 .build();
     }
 
