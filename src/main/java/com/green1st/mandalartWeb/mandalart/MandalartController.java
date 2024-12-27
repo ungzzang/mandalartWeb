@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +22,20 @@ import java.util.List;
 public class MandalartController {
     private final MandalartService service;
 
+
+
     @GetMapping
     @Operation(summary = "만다르트 조회", description = "프로젝트 id는 만다르트가 현재 속해있는 프로젝트")
-    public ResultResponse<List<MandalartGetRes>> getMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetReq p) {
+    public ResultResponse<?> getMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetReq p) {
         List<MandalartGetRes> res = service.getMandalart(p);
+
+        if (res == null || res.isEmpty()) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("만다라트 조회 실패")
+                    .resultData(0)
+                    .build();
+        }
 
         return ResultResponse.<List<MandalartGetRes>>builder()
                 .statusCode("200")
@@ -33,7 +44,7 @@ public class MandalartController {
                 .build();
     }
     @PatchMapping("/update")
-    @Operation(summary = "만다르트 업데이트")
+
     public ResultResponse<Integer> updateMandalart(@Valid @RequestBody MandalartPostReq p) {
         int upd = service.patchMandalart(p);
 
