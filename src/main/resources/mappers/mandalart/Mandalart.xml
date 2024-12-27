@@ -16,34 +16,34 @@
         WHERE project_id = #{projectId}
         ORDER BY depth , parent_id
     </select>
+<!--    <update id="patchMandalart">-->
+<!--        UPDATE mandalart-->
+<!--        SET-->
+<!--        title = #{title},-->
+<!--        contents = #{contents},-->
+<!--        depth = #{depth},-->
+<!--        order_id = #{orderId},-->
+<!--        completed_fg = #{completedFg},-->
+<!--        start_date = #{startDate},-->
+<!--        finish_date = #{finishDate},-->
+<!--        parent_id = #{parentId}-->
+<!--        WHERE-->
+<!--        project_id = #{projectId}-->
+<!--        AND mandalart_id = #{mandalartId}-->
+<!--        AND (-->
+<!--        #{startDate} IS NULL-->
+<!--        OR #{finishDate} IS NULL-->
+<!--        OR EXISTS (-->
+<!--        SELECT 1-->
+<!--        FROM mandalart parent-->
+<!--        WHERE parent.mandalart_id = #{parentId}-->
+<!--        AND parent.start_date <![CDATA[ <= ]]> #{startDate}-->
+<!--        AND parent.finish_date <![CDATA[ >= ]]> #{finishDate}-->
+<!--        AND parent.finish_date <![CDATA[ <> ]]> #{startDate}-->
+<!--        )-->
+<!--        );-->
+<!--    </update>-->
     <update id="patchMandalart">
-        UPDATE mandalart
-        SET
-        title = #{title},
-        contents = #{contents},
-        depth = #{depth},
-        order_id = #{orderId},
-        completed_fg = #{completedFg},
-        start_date = #{startDate},
-        finish_date = #{finishDate},
-        parent_id = #{parentId}
-        WHERE
-        project_id = #{projectId}
-        AND mandalart_id = #{mandalartId}
-        AND (
-        #{startDate} IS NULL
-        OR #{finishDate} IS NULL
-        OR EXISTS (
-        SELECT 1
-        FROM mandalart parent
-        WHERE parent.mandalart_id = #{parentId}
-        AND parent.start_date <![CDATA[ <= ]]> #{startDate}
-        AND parent.finish_date <![CDATA[ >= ]]> #{finishDate}
-        AND parent.finish_date <![CDATA[ <> ]]> #{startDate}
-        )
-        );
-    </update>
-    <update id="patchMandalart2">
         UPDATE mandalart
         <set>
             <if test="title != null">title = #{title},</if>
@@ -54,6 +54,7 @@
             <if test="startDate != null">start_date = #{startDate},</if>
             <if test="finishDate != null">finish_date = #{finishDate},</if>
             <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="bgColor != null">bgColor = #{bgColor},</if>
         </set>
         WHERE project_id = #{projectId}
         AND mandalart_id = #{mandalartId}
@@ -102,18 +103,17 @@
       );
 </update>
     -->
-    <update id="updateMandalart" parameterType="MandalartPostReq">
-        UPDATE mandalart
-        SET
-        title = #{title},
-        contents = #{contents},
-        depth = #{depth},
-        order_id = #{orderId},
-        completed_fg = #{completedFg},
-        start_date = #{startDate},
-        finish_date = #{finishDate},
-        parent_id = #{parentId},
-        bg_color = #{bgColor}
-        WHERE mandalart_id = #{mandalartId};
-    </update>
+<!--    <update id="updateMandalart" parameterType="MandalartPostReq">-->
+<!--        UPDATE mandalart-->
+<!--        SET-->
+<!--        title = #{title},-->
+<!--        contents = #{contents},-->
+<!--        depth = #{depth},-->
+<!--        order_id = #{orderId},-->
+<!--        completed_fg = #{completedFg},-->
+<!--        start_date = #{startDate},-->
+<!--        finish_date = #{finishDate},-->
+<!--        parent_id = #{parentId}-->
+<!--        WHERE mandalart_id = #{mandalartId};-->
+<!--    </update>-->
 </mapper>

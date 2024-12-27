@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -13,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MandalartService {
     private final MandalartMapper mapper;
-    private final ColorCodes colorCodes;
     // 완료 했다가 다시 취소하면 색상이 변경되도록 설정
     public List<MandalartGetRes> getMandalart(MandalartGetReq p) {
         if (p.getProjectId() <= 0) {
@@ -61,18 +59,6 @@ public class MandalartService {
 
         return completedCnt;
     }
-//    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
-//        int completedCnt = 0;
-//        for(MandalartGetRes item : list) {
-//            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
-//                completedCnt++;
-//            }
-//        }
-//        return completedCnt;
-//    }
-
-    // 자식의 완료 completed_fg 체크하고 bgcolor 들어가도록 설정 쿼리문으로 작성
-    // 레벨 0 , 1 을 완료할려면 하위 만다라트가 전부 완료 되어야 완료 버튼이 눌리도록 설정
 
     public List<MandalartPostRes> patchMandalart(MandalartPostReq p) {
         // 유효성 검사
@@ -112,21 +98,20 @@ public class MandalartService {
             mandalart.setParentId(p.getParentId());
             mandalart.setBgColor(colorCode);  // colorCode는 이전에 설명한 대로 색상 설정 로직 적용
 
-            // DB 업데이트 쿼리 호출 (여기서 한 번에 처리)
-            MandalartPostReq updateReq = new MandalartPostReq();
-            // mandalart에서 필요한 값을 updateReq에 세팅
-            updateReq.setTitle(mandalart.getTitle());
-            updateReq.setContents(mandalart.getContents());
-            updateReq.setDepth(mandalart.getDepth());
-            updateReq.setOrderId(mandalart.getOrderId());
-            updateReq.setCompletedFg(mandalart.getCompletedFg() == 1);
-            updateReq.setStartDate(mandalart.getStartDate());
-            updateReq.setFinishDate(mandalart.getFinishDate());
-            updateReq.setParentId(mandalart.getParentId());
-            updateReq.setColorCode(mandalart.getBgColor());
-
-            // 실제 DB 업데이트 쿼리 호출
-            mapper.updateMandalart(updateReq);
+//            // DB 업데이트 쿼리 호출 (여기서 한 번에 처리)
+//            MandalartPostReq updateReq = new MandalartPostReq();
+//            // mandalart에서 필요한 값을 updateReq에 세팅
+//            updateReq.setTitle(mandalart.getTitle());
+//            updateReq.setContents(mandalart.getContents());
+//            updateReq.setDepth(mandalart.getDepth());
+//            updateReq.setOrderId(mandalart.getOrderId());
+//            updateReq.setCompletedFg(mandalart.getCompletedFg() == 1);
+//            updateReq.setStartDate(mandalart.getStartDate());
+//            updateReq.setFinishDate(mandalart.getFinishDate());
+//            updateReq.setParentId(mandalart.getParentId());
+//
+//            // 실제 DB 업데이트 쿼리 호출
+//            mapper.updateMandalart(updateReq);
         }
 
         return postRes;
