@@ -33,6 +33,7 @@ public class MandalartController {
                 .build();
     }
     @PatchMapping("/update")
+    @Operation(summary = "만다르트 업데이트")
     public ResultResponse<Integer> updateMandalart(@Valid @RequestBody MandalartPostReq p) {
         int upd = service.patchMandalart(p);
 
