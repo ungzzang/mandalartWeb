@@ -26,7 +26,7 @@ public class UserSignUpReq {
     private String upw;
 
     @NotEmpty(message = "닉네임을 입력해주세요.")
-    @Pattern(regexp = "^[a-zA-Z0-9_]{3,20}$", message = "닉네임은 3자 이상, 20자 이하의 알파벳, 숫자, 밑줄(_)만 가능합니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9가-힣_]{3,10}$", message = "닉네임은 3자 이상, 10자 이하의 한글, 알파벳, 숫자, 밑줄(_)만 가능합니다.")
     @Schema(title = "유저닉네임", example = "hide on bush", requiredMode = Schema.RequiredMode.REQUIRED)
     private String nickName;
 
