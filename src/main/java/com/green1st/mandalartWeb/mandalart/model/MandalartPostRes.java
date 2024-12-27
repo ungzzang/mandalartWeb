@@ -34,14 +34,10 @@ public class MandalartPostRes {
 
     public MandalartPostRes(MandalartPostReq request) {
         this.mandalartId = request.getMandalartId();
-        this.parentId = request.getParentId();
         this.title = request.getTitle();
         this.contents = request.getContents();
         this.startDate = request.getStartDate();
         this.finishDate = request.getFinishDate();
         this.completedFg = request.getCompletedFg() != null ? (request.getCompletedFg() ? 1 : 0) : 0;
-        this.depth = request.getDepth();
-        this.orderId = request.getOrderId();
-        this.bgColor = request.getColorCode() != null ? request.getColorCode() : "#FFFFFF";  // 기본 흰색 설정
     }
 }

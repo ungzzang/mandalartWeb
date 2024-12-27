@@ -4,9 +4,7 @@ import com.green1st.mandalartWeb.mandalart.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.HandlerMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -14,13 +12,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MandalartService {
     private final MandalartMapper mapper;
-    private final HandlerMapping resourceHandlerMapping;
 
     // 완료 했다가 다시 취소하면 색상이 변경되도록 설정
     public List<MandalartGetRes> getMandalart(MandalartGetReq p) {
-        if (p.getProjectId() <= 0) {
-            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
-        }
+//        if (p.getProjectId() <= 0) {
+//            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
+//        }
+        // @Valid , @Positive 로 음수는 안 들어올꺼임 그래서 제외
         List<MandalartGetRes> resList = mapper.getMandalart(p);
 
         ColorCodes colorCodes = new ColorCodes();
@@ -43,33 +41,19 @@ public class MandalartService {
                         item.setBgColor(colorCodes.getDefaultColor().get(0));
                     }
                     break;
-
             }
         }
-
-        log.info("sadsadsad: {}", resList);
-
         return resList;
     }
-    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
-        int completedCnt = 0;
+    List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p){
+//        if (p.getUserId() <= 0) {
+//            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
+//        }
+        List<MandalartGetImminentRes> imminentResList = mapper.getImProject(p);
 
-
-        for(MandalartGetRes item : list) {
-            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
-                completedCnt++;
-            }
-        }
-
-        return completedCnt;
+        return imminentResList;
     }
-
     public int patchMandalart(MandalartPostReq p) {
-        // 유효성 검사
-        if (p.getProjectId() <= 0) {
-            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
-        }
-
         if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
         }
@@ -81,9 +65,13 @@ public class MandalartService {
         return updatedRows;
     }
 
-    List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p){
-        List<MandalartGetImminentRes> imminentResList = mapper.getImProject(p);
-
-        return null;
+    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
+        int completedCnt = 0;
+        for(MandalartGetRes item : list) {
+            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
+                completedCnt++;
+            }
+        }
+        return completedCnt;
     }
 }
