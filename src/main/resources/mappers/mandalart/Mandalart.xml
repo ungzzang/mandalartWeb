@@ -54,7 +54,6 @@
             <if test="startDate != null">start_date = #{startDate},</if>
             <if test="finishDate != null">finish_date = #{finishDate},</if>
             <if test="parentId != null">parent_id = #{parentId},</if>
-            <if test="bgColor != null">bgColor = #{bgColor},</if>
         </set>
         WHERE project_id = #{projectId}
         AND mandalart_id = #{mandalartId}
