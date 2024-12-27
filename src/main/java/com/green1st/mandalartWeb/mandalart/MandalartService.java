@@ -20,55 +20,46 @@ public class MandalartService {
             throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
         }
         List<MandalartGetRes> resList = mapper.getMandalart(p);
-//        ColorCodes colorCodes = new ColorCodes();
 
-        // 완료 상태 및 색상 갱신
-        for (MandalartGetRes item : resList) {
-            if (item.getDepth() == 2) {
-                // 최하위 레벨 항목 색상 설정
-                if (item.getCompletedFg() == 1) {
-                    item.setBgColor(colorCodes.getDefaultColor().get(0)); // 완료된 항목에 기본 색상 적용
-                } else {
-                    item.setBgColor(null); // 미완료 상태에서는 색상 초기화
-                }
-            } else {
-                // 부모 항목의 상태를 자식 항목에 따라 갱신
-                boolean allCompleted = areAllChildrenCompleted(item, resList);
-                item.setCompletedFg(allCompleted ? 1 : 0); // 자식 완료 상태에 따라 부모 완료 상태 설정
+        ColorCodes colorCodes = new ColorCodes();
 
-                // 자식 항목 완료 상태에 맞는 색상 갱신
-                int completedCount = countCompletedChildren(item, resList);
-                if (item.getDepth() == 1 && completedCount > 0) {
-                    item.setBgColor(colorCodes.getSubTitleColor().get(Math.min(completedCount - 1, colorCodes.getSubTitleColor().size() - 1)));
-                } else if (item.getDepth() == 0 && completedCount > 0) {
-                    item.setBgColor(colorCodes.getTitleColor().get(Math.min(completedCount - 1, colorCodes.getTitleColor().size() - 1)));
-                } else {
-                    item.setBgColor(null); // 미완료 상태에서는 색상 초기화
-                }
+        for(MandalartGetRes item : resList) {
+            int index = getCompleted(item, resList);
+            switch (item.getDepth()) {
+                case 0:
+                    if(index > 0) {
+                        item.setBgColor(colorCodes.getTitleColor().get(index - 1));
+                    }
+                    break;
+                case 1:
+                    if(index > 0) {
+                        item.setBgColor(colorCodes.getSubTitleColor().get(index - 1));
+                    }
+                    break;
+                case 2:
+                    if(item.getCompletedFg() == 1) {
+                        item.setBgColor(colorCodes.getDefaultColor().get(0));
+                    }
+                    break;
+
             }
         }
 
-        log.info("갱신된 만다라트 상태: {}", resList);
+        log.info("sadsadsad: {}", resList);
+
         return resList;
     }
-    // 부모 항목의 자식들이 모두 완료되었는지 확인
-    private boolean areAllChildrenCompleted(MandalartGetRes parent, List<MandalartGetRes> allItems) {
-        for (MandalartGetRes item : allItems) {
-            if (item.getParentId() == parent.getMandalartId() && item.getCompletedFg() == 0) {
-                return false; // 자식 중 하나라도 미완료라면 false 반환
+    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
+        int completedCnt = 0;
+
+
+        for(MandalartGetRes item : list) {
+            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
+                completedCnt++;
             }
         }
-        return true; // 모든 자식이 완료되었으면 true 반환
-    }
-    // 부모 항목의 완료된 자식 수를 셈
-    private int countCompletedChildren(MandalartGetRes parent, List<MandalartGetRes> allItems) {
-        int completedCount = 0;
-        for (MandalartGetRes item : allItems) {
-            if (item.getParentId() == parent.getMandalartId() && item.getCompletedFg() == 1) {
-                completedCount++;
-            }
-        }
-        return completedCount;
+
+        return completedCnt;
     }
 //    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
 //        int completedCnt = 0;
