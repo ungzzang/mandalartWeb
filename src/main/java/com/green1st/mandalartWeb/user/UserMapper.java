@@ -39,4 +39,6 @@ public interface UserMapper {
 
     int updTmpPassword(TempPasswordDto tempPasswordDto);
 
+    int insPassword(TempPasswordDto tempPasswordDto);
+
 }
