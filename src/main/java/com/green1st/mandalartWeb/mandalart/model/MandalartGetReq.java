@@ -10,19 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @Slf4j
 public class MandalartGetReq {
-    @Schema(name = "project_id")
+    @Schema(description = "프로젝트 id")
     private long projectId;
 
     public void setProjectId(long projectId) {
 
         this.projectId = projectId;
     }
-    /*
-req p
-res q
-
-q.getuserid == p.getuserid
-
-     */
-
 }

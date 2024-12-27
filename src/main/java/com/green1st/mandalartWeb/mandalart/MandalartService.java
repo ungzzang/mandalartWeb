@@ -1,117 +1,134 @@
 package com.green1st.mandalartWeb.mandalart;
 
 import com.green1st.mandalartWeb.mandalart.model.*;
-import com.green1st.mandalartWeb.mandalart.util.CalculateColorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import static com.green1st.mandalartWeb.mandalart.util.CalculateColorCode.calculateColorCode;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MandalartService {
     private final MandalartMapper mapper;
-
-    public List<MandalartGetRes> getMandalart (MandalartGetReq p , List<MandalartGetDto> list){
-        // 프로젝트 id 체크 -> 만다라트 id 부여 -> 하위 테이블 데이터 전부 출력
-        if (p.getProjectId() <= 0){
+    private final ColorCodes colorCodes;
+    // 완료 했다가 다시 취소하면 색상이 변경되도록 설정
+    public List<MandalartGetRes> getMandalart(MandalartGetReq p) {
+        if (p.getProjectId() <= 0) {
             throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
         }
-        // p 데이터 조회 체크
-        List<MandalartGetRes> res;
-        try {
-            res = mapper.getMandalart(p);
-        } catch (Exception e) {
-            log.error("만다라트 데이터 조회 중 예외 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("만다라트 데이터 조회 실패", e);
-        }
+        List<MandalartGetRes> resList = mapper.getMandalart(p);
 
-        if (res == null || res.isEmpty()) {
-            log.info("만다라트 데이터가 없습니다. 프로젝트 ID: {}", p.getProjectId());
-            return Collections.emptyList();
-        }
-
-        // depth = 0 일 경우 depth0 의 order_id 카운트 - colorCodes 클래스의 titleColor
-        // depth = 1 일 경우 depth1의 order_id 카운트(레벨2) - colorCodes 클래스의 subTitleColor
-        // depth(레벨) - order_id(하위 목표) 의 completedFg 계산해서 colorCodes 클래스 호출해서 색상 입력
-
-        // colorcodes 클래스 객체 생성
         ColorCodes colorCodes = new ColorCodes();
 
-        for (MandalartGetRes item : res) {
-            List<MandalartGetDto> dtoList = item.getMandalartIdGetList();
-
-            // 완료 항목 카운트
-            int completedCount = 0;
-            if (dtoList != null && !dtoList.isEmpty()) {
-                for (MandalartGetDto dto : dtoList) {
-                    if (dto.getCompletedFg() == 1) {
-                        completedCount++;
-                    } else if (dto.getCompletedFg() != 0) {
-                        // completedFg 0 or 1 check
-                        log.warn("예상치 못한 completedFg 값: {}", dto.getCompletedFg());
+        for(MandalartGetRes item : resList) {
+            int index = getCompleted(item, resList);
+            switch (item.getDepth()) {
+                case 0:
+                    if(index > 0) {
+                        item.setBgColor(colorCodes.getTitleColor().get(index - 1));
                     }
-                }
+                    break;
+                case 1:
+                    if(index > 0) {
+                        item.setBgColor(colorCodes.getSubTitleColor().get(index - 1));
+                    }
+                    break;
+                case 2:
+                    if(item.getCompletedFg() == 1) {
+                        item.setBgColor(colorCodes.getDefaultColor().get(0));
+                    }
+                    break;
+
             }
-
-            // 완료율 계산
-            double completionRate = (dtoList != null && !dtoList.isEmpty())
-                    ? (double) completedCount / dtoList.size()
-                    : 0;
-
-            // 색상 계산
-            String color = calculateColorCode(item.getDepth(), completionRate, colorCodes);
-            item.setColor(color);
-        }
-        return res;
-    }
-
-    @Transactional
-    public List<MandalartPostRes> patchMand (MandalartPostReq p){
-        List<MandalartPostDto>  list = mapper.patchMand(p);
-        if (list.size() == 0){
-            return new ArrayList<>();
         }
 
+        log.info("sadsadsad: {}", resList);
 
-
-        MandalartPostRes res = new MandalartPostRes();
-        res.setProjectId(p.getProjectId());
-        res.setMandalartIdPostList(list);
-
-        List<MandalartPostRes> result = new ArrayList<>();
-        result.add(res);
-
-        return result;
+        return resList;
     }
-    private String getColorForLevel(int completedCount, List<String> colorRange) {
-        // completedCount에 따라 색상 결정 (0~8)
-        if (completedCount == 0) {
-            return colorRange.get(0);  // 가장 어두운 색상
-        } else if (completedCount == 1) {
-            return colorRange.get(1);
-        } else if (completedCount == 2) {
-            return colorRange.get(2);
-        } else if (completedCount == 3) {
-            return colorRange.get(3);
-        } else if (completedCount == 4) {
-            return colorRange.get(4);
-        } else if (completedCount == 5) {
-            return colorRange.get(5);
-        } else if (completedCount == 6) {
-            return colorRange.get(6);
-        } else if (completedCount == 7) {
-            return colorRange.get(7);
-        } else {
-            return colorRange.get(8);  // 가장 연한 색상
+    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
+        int completedCnt = 0;
+
+
+        for(MandalartGetRes item : list) {
+            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
+                completedCnt++;
+            }
         }
-    }
 
+        return completedCnt;
+    }
+//    public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {
+//        int completedCnt = 0;
+//        for(MandalartGetRes item : list) {
+//            if(res.getMandalartId() == item.getParentId() && item.getCompletedFg() == 1) {
+//                completedCnt++;
+//            }
+//        }
+//        return completedCnt;
+//    }
+
+    // 자식의 완료 completed_fg 체크하고 bgcolor 들어가도록 설정 쿼리문으로 작성
+    // 레벨 0 , 1 을 완료할려면 하위 만다라트가 전부 완료 되어야 완료 버튼이 눌리도록 설정
+
+    public List<MandalartPostRes> patchMandalart(MandalartPostReq p) {
+        // 유효성 검사
+        if (p.getProjectId() <= 0) {
+            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
+        }
+        if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
+            throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
+        }
+
+        // 색상 코드 처리 (기본 색상으로 설정된 경우 색상 코드 지정)
+        ColorCodes colorCodes = new ColorCodes();
+        String colorCode = p.getColorCode();
+
+        // 색상 코드가 비어있을 경우, 기본 색상으로 설정
+        if (colorCode == null || colorCode.isEmpty()) {
+            colorCode = colorCodes.getDefaultColor().get(0);  // 기본 색상 사용
+        }
+
+        // DB에서 해당 프로젝트에 속하는 만다라트 정보 조회
+        List<MandalartPostRes> postRes = mapper.patchMandalart(p);
+
+        if (postRes.isEmpty()) {
+            throw new RuntimeException("해당 프로젝트에 속하는 만다라트 정보가 없습니다.");
+        }
+
+        // 업데이트할 정보 처리
+        for (MandalartPostRes mandalart : postRes) {
+            // 요청받은 값으로 업데이트
+            mandalart.setTitle(p.getTitle());
+            mandalart.setContents(p.getContents());
+            mandalart.setDepth(p.getDepth());
+            mandalart.setOrderId(p.getOrderId());
+            mandalart.setCompletedFg(p.getCompletedFg() ? 1 : 0);
+            mandalart.setStartDate(p.getStartDate());
+            mandalart.setFinishDate(p.getFinishDate());
+            mandalart.setParentId(p.getParentId());
+            mandalart.setBgColor(colorCode);  // colorCode는 이전에 설명한 대로 색상 설정 로직 적용
+
+            // DB 업데이트 쿼리 호출 (여기서 한 번에 처리)
+            MandalartPostReq updateReq = new MandalartPostReq();
+            // mandalart에서 필요한 값을 updateReq에 세팅
+            updateReq.setTitle(mandalart.getTitle());
+            updateReq.setContents(mandalart.getContents());
+            updateReq.setDepth(mandalart.getDepth());
+            updateReq.setOrderId(mandalart.getOrderId());
+            updateReq.setCompletedFg(mandalart.getCompletedFg() == 1);
+            updateReq.setStartDate(mandalart.getStartDate());
+            updateReq.setFinishDate(mandalart.getFinishDate());
+            updateReq.setParentId(mandalart.getParentId());
+            updateReq.setColorCode(mandalart.getBgColor());
+
+            // 실제 DB 업데이트 쿼리 호출
+            mapper.updateMandalart(updateReq);
+        }
+
+        return postRes;
+    }
 }
