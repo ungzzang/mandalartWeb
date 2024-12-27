@@ -4,6 +4,7 @@ import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.project.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ProjectController {
 
     @GetMapping
     @Operation(summary = "프로젝트 조회", description = "프로젝트를 조회하는 API")
-    public ResultResponse<?> getProject(@ParameterObject @ModelAttribute ProjectGetReq p) {
+    public ResultResponse<?> getProject(@ParameterObject @Valid @ModelAttribute ProjectGetReq p) {
         return projectService.getProject(p);
     }
 

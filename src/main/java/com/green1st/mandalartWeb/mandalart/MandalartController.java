@@ -20,21 +20,6 @@ import java.util.List;
 public class MandalartController {
     private final MandalartService service;
 
-    /*
-    만다라트 조회 -> 프로젝트id "?" , mandalart : [
-    {
-    만다라트 id : ?
-    , title : 만다라트 명칭
-    , contents : 만다라트 내용
-    , completed_fd : 완료 여부 0 or 1
-    , depth : 단계(레벨) 0,1,2
-    , order_id : 순서 0~7칸
-    , start_date : 계획 시작일
-    , finish_date : 계획 종료일
-    }
-    ]
-    만다라트 마다 출력
-     */
     @GetMapping
     @Operation(summary = "만다르트 조회", description = "프로젝트 id는 만다르트가 현재 속해있는 프로젝트")
     public ResultResponse<List<MandalartGetRes>> getMandalart(@ParameterObject @ModelAttribute MandalartGetReq p) {
@@ -45,27 +30,15 @@ public class MandalartController {
                 .resultMsg("만다라트 조회완료")
                 .resultData(res)
                 .build();
+    }
+    @PatchMapping("/update")
+    public ResultResponse<List<MandalartPostRes>> updateMandalart(@RequestBody MandalartPostReq request) {
+        List<MandalartPostRes> updMand = service.patchMandalart(request);
 
-
-//    @PostMapping
-//    @Operation(summary = "만다르트 업데이트")
-//    public ResultResponse<List<MandalartPostRes>> patchMand (@ParameterObject @ModelAttribute MandalartPostReq p){
-//        List<MandalartPostRes> res = service.patchMand(p);
-//
-//        return ResultResponse.<List<MandalartPostRes>>builder()
-//                .resultMsg("업데이트 완료")
-//                .resultData(res)
-//                .build();
-//    }
+        return ResultResponse.<List<MandalartPostRes>>builder()
+                .statusCode("200")
+                .resultMsg("만다라트 업데이트 완료")
+                .resultData(updMand)
+                .build();
     }
 }
-
-
-
-
-
-
-
-
-
-
