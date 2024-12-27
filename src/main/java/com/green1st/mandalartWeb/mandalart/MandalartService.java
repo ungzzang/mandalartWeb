@@ -80,4 +80,10 @@ public class MandalartService {
         // 업데이트된 튜플 수 반환
         return updatedRows;
     }
+
+    List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p){
+        List<MandalartGetImminentRes> imminentResList = mapper.getImProject(p);
+
+        return null;
+    }
 }
