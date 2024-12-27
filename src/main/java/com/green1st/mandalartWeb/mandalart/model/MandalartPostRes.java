@@ -15,8 +15,6 @@ public class MandalartPostRes {
     private long mandalartId;
     @Schema(description = "부모 id")
     private long parentId;
-    @Schema(description = "사용자 닉네임")
-    private String nickName;
     @Schema(description = "실천 목표")
     private String title;
     @Schema(description = "계획 목표")
@@ -31,6 +29,20 @@ public class MandalartPostRes {
     private int depth;
     @Schema(description = "각 단계별 0~7칸 , 선택 칸 -> 데이터 입력 ")
     private int orderId;
-    @Schema(description = "완료 갯수 카운트")
-    private int completedCount;
+    @Schema(description = "색상 코드")
+    private String bgColor;
+
+
+    public MandalartPostRes(MandalartPostReq request) {
+        this.mandalartId = request.getMandalartId();
+        this.parentId = request.getParentId();
+        this.title = request.getTitle();
+        this.contents = request.getContents();
+        this.startDate = request.getStartDate();
+        this.finishDate = request.getFinishDate();
+        this.completedFg = request.getCompletedFg() != null ? (request.getCompletedFg() ? 1 : 0) : 0;
+        this.depth = request.getDepth();
+        this.orderId = request.getOrderId();
+        this.bgColor = request.getColorCode() != null ? request.getColorCode() : "#FFFFFF";  // 기본 흰색 설정
+    }
 }

@@ -4,18 +4,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Schema(title = "")
 public class MandalartPostReq {
     @Schema(description = "프로젝트 id")
     private long projectId;
+    private Long mandalartId;  // 만다라트 ID
+    private String title;  // 제목
+    private String contents;  // 내용
+    private Integer depth;  // 깊이
+    private Integer orderId;  // 순서
+    private Boolean completedFg;  // 완료 여부
+    private LocalDate startDate;  // 시작일
+    private LocalDate finishDate;  // 종료일
+    private Long parentId;  // 부모 ID
+    private String colorCode;  // 색상 코드 추가
 
 
-    public void setProjectId(long projectId) {
-
-        this.projectId = projectId;
-    }
 /*
     ex) lv2의 7번 칸 - lv2 7칸 - lv 8칸
     -> depth , order_id 로 따로 작성 xxx
