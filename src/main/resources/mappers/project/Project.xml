@@ -50,4 +50,32 @@
         WHERE user_id = #{userId}
         AND project_id = #{projectId}
     </select>
+
+    <update id="updProject">
+        UPDATE project
+        <set>
+            <if test="title != null">
+                title = #{title}
+            </if>
+            <if test="content != null">
+                content = #{content}
+            </if>
+            <if test="pic != null">
+                 pic = #{pic}
+            </if>
+        </set>
+        WHERE user_id = #{userId}
+        AND project_id = #{projectId}
+    </update>
+
+    <delete id="delProject">
+        DELETE FROM project
+        WHERE project_id = #{projectId}
+            AND user_id = #{userId}
+    </delete>
+
+    <delete id="delMandalart">
+        DELETE FROM mandalart
+        WHERE project_id = #{projectId}
+    </delete>
 </mapper>

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -19,6 +21,8 @@ public class ProjectCommentDto {
     private String content;
     @Schema(title = "닉네임")
     private String nickName;
+    @Schema(title = "댓글 작성일시", description = "댓글이 작성된 날짜와 시간")
+    private LocalDateTime createdAt;
     @JsonIgnore
     private long projectId;
 }

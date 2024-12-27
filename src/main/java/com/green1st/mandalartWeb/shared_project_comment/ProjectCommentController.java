@@ -20,10 +20,11 @@ public class ProjectCommentController {
     @PostMapping
     @Operation(summary = "프로젝트 댓글 등록")
     public ResultResponse<Long> postProjectComment(@RequestBody ProjectCommentPostReq p) {
-        long commentId = service.postProjectComment(p);
+        service.postProjectComment(p);
         return ResultResponse.<Long>builder()
+                .statusCode("200")
                 .resultMsg("공유 프로젝트 댓글 추가 완료")
-                .resultData(commentId)
+                .resultData(1L)
                 .build();
     }
 
@@ -33,7 +34,8 @@ public class ProjectCommentController {
         ProjectCommentGetRes res = service.getProjectCommentList(p);
 
         return ResultResponse.<ProjectCommentGetRes>builder()
-                .resultMsg(String.format("%d rows", res.getContentList().size()))
+                .statusCode("200")
+                .resultMsg("프로젝트 댓글 조회완료")
                 .resultData(res)
                 .build();
     }
@@ -49,6 +51,7 @@ public class ProjectCommentController {
                     .build();
         }
         return ResultResponse.<Integer>builder()
+                .statusCode("200")
                 .resultMsg("공유 프로젝트 댓글 수정 완료")
                 .resultData(1)
                 .build();
@@ -59,6 +62,7 @@ public class ProjectCommentController {
     public ResultResponse<Integer> deleteProjectComment(@ParameterObject @ModelAttribute ProjectCommentDelReq p) {
         int res = service.deleteProjectComment(p);
         return ResultResponse.<Integer>builder()
+                .statusCode("200")
                 .resultMsg("공유 프로젝트 댓글 삭제 완료")
                 .resultData(1)
                 .build();

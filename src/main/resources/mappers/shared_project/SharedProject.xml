@@ -57,4 +57,22 @@
         </choose>
         LIMIT #{startIdx}, #{size}
     </select>
+
+    <update id="updSharedProject">
+        UPDATE shared_project
+        <set>
+            <if test="title != null">
+                title = #{title}
+            </if>
+            <if test="content != null">
+                content = #{content}
+            </if>
+        </set>
+        WHERE project_id = #{projectId}
+    </update>
+
+    <delete id="delSharedProject">
+        DELETE FROM shared_project
+        WHERE project_id = #{projectId}
+    </delete>
 </mapper>
