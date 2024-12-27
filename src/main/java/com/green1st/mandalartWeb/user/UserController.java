@@ -92,16 +92,16 @@ public class UserController {
     @PatchMapping
     @Operation(summary = "유저정보수정")
     public ResultResponse<Integer> patchUser(@RequestBody UserUpdateReq p) {
-        int result = userService.patchUser(p);
+        UserUpdateRes res = userService.patchUser(p);
 
         return ResultResponse.<Integer>builder()
-                .statusCode(result == 1 ? "200" : "400")
-                .resultMsg(userMessage.getMessage())
-                .resultData(result)
+                .statusCode(res.getResult() == 1 ? "200" : "400")
+                .resultMsg(res.getMessage())
+                .resultData(res.getResult())
                 .build();
     }
 
-    @DeleteMapping
+    /*@DeleteMapping
     @Operation(summary = "회원탈퇴")
     public ResultResponse<Integer> deleteUser(@ParameterObject @ModelAttribute UserDeleteReq p) {
         int result = userService.deleteUser(p);
@@ -109,6 +109,17 @@ public class UserController {
         return ResultResponse.<Integer>builder()
                 .statusCode(result == 1 ? "200" : "400")
                 .resultMsg(res.getMessage())
+                .build();
+    }*/
+
+    @DeleteMapping()
+    @Operation(summary = "나의 좋아요 댓글 삭제")
+    public ResultResponse<Integer> deleteMyLikeComment(@ParameterObject @ModelAttribute UserDeleteReq p){
+        int result = userService.deleteLikeComment(p);
+        return ResultResponse.<Integer>builder()
+                .statusCode(result != 0 ? "200" : "400")
+                .resultMsg("좋아요 댓글 삭제 완료")
+                .resultData(result != 0 ? 1 : 0)
                 .build();
     }
 

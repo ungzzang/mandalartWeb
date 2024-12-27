@@ -25,7 +25,7 @@
 
 
 
-    <insert id="insUser">
+    <insert id="insUser"> <!--회원가입-->
         INSERT INTO user
         SET user_id = #{userId}
         , upw = #{upw}
@@ -34,7 +34,7 @@
     </insert>
 
 
-    <select id="selUser">
+    <select id="selUser"> <!--로그인-->
         SELECT user_id as userId
         , nick_name as nickName
         , upw
@@ -50,17 +50,17 @@
     </select>
 
 
-    <select id="selUserInfo">
+    <select id="selUserInfo"> <!--유저정보 조회-->
         SELECT user_id as userId, nick_name as nickName, pic
         FROM user
         WHERE user_id = #{userId}
     </select>
 
 
-    <update id="updUser">
+    <update id="updUser"> <!--유저정보 수정-->
         UPDATE user
         <set>
-            <if test=" newUpw != null and newUpw != '' ">
+            <if test=" newUpw != null and newUpw != '' and checkUpw != null and checkUpw != '' " >
                 upw = #{newUpw}
             </if>
             <if test=" nickName != null and nickName != '' ">
@@ -73,8 +73,16 @@
         WHERE user_id = #{userId}
     </update>
 
+    <delete id="delMyLikeAndComment"> <!--내가 좋아요한거, 댓글단거 삭제-->
+        DELETE a, b
+        FROM shared_project_like a
+        JOIN shared_project_comment b
+        ON a.user_id = b.user_id
+        WHERE a.user_id = #{userId}
+    </delete>
 
-    <delete id="delProjectLikeAndProjectComment">
+
+    <delete id="delProjectLikeAndProjectComment"> <!--내 프로젝트의 좋아요, 댓글 삭제-->
         DELETE B, C
         FROM shared_project A
         LEFT JOIN shared_project_like B
@@ -100,10 +108,12 @@
         AND user_id
     </delete>
 
-    <delete id="delUser">
+
+    <delete id="delUser"> <!--회원탈퇴-->
         DELETE FROM user
         WHERE user_id = #{userId}
     </delete>
+
 
 
 <!-- 임시 비밀번호 발급-->
