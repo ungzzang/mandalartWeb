@@ -16,6 +16,14 @@
         WHERE project_id = #{projectId}
         ORDER BY depth , parent_id
     </select>
+    <select id="imminentMandalart">
+        SELECT COUNT(mandalart_id) AS cnt, A.project_id , A.title
+        FROM mandalart A LEFT JOIN project B
+        ON A.project_id = B.project_id
+        WHERE B.user_id = #{userId}
+        AND DATEDIFF(finish_date , CURDATE()) <![CDATA[ <= ]]> 7
+        GROUP BY A.project_id;
+    </select>
 <!--    <update id="patchMandalart">-->
 <!--        UPDATE mandalart-->
 <!--        SET-->
@@ -102,17 +110,4 @@
       );
 </update>
     -->
-<!--    <update id="updateMandalart" parameterType="MandalartPostReq">-->
-<!--        UPDATE mandalart-->
-<!--        SET-->
-<!--        title = #{title},-->
-<!--        contents = #{contents},-->
-<!--        depth = #{depth},-->
-<!--        order_id = #{orderId},-->
-<!--        completed_fg = #{completedFg},-->
-<!--        start_date = #{startDate},-->
-<!--        finish_date = #{finishDate},-->
-<!--        parent_id = #{parentId}-->
-<!--        WHERE mandalart_id = #{mandalartId};-->
-<!--    </update>-->
 </mapper>
