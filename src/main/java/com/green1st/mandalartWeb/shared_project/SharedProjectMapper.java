@@ -1,5 +1,6 @@
 package com.green1st.mandalartWeb.shared_project;
 
+import com.green1st.mandalartWeb.mandalart.model.MandalartSharedGetReq;
 import com.green1st.mandalartWeb.shared_project.model.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,5 @@ public interface SharedProjectMapper {
     int updSharedProject(SharedProjectPatchReq p);
     int delSharedProject(SharedProjectDelReq p);
     int insCopySharedProject(SharedProjectCopyReq p);
-    SharedProjectDetailDto selSharedProjectDetail(long project_id);
+    SharedProjectDetailDto selSharedProjectDetail(MandalartSharedGetReq p);
 }
