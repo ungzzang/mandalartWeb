@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -187,6 +188,8 @@ public class UserController {
                     .resultMsg("아이디가 존재하지 않습니다.")
                     .resultData(0)
                     .build();
+        } catch (DuplicateKeyException e) {
+            throw new IllegalStateException("이미 임시 비밀번호가 발급되었습니다.", e);
         }
     }
 

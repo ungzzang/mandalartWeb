@@ -60,4 +60,8 @@ public interface UserMapper {
 
     int insPassword(TempPasswordDto tempPasswordDto);
 
+    int updTmpPwFg(TempPasswordDto tempPasswordDto);
+
+    int selTmpPwFg(String userId);
+
 }
