@@ -122,7 +122,7 @@ public class MandalartService {
 
     List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p){
         List<MandalartGetImminentRes> imminentResList = mapper.getImProject(p);
-        imminentResList
+
         return imminentResList;
     }
 
