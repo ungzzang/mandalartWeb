@@ -1,6 +1,5 @@
 package com.green1st.mandalartWeb.mandalart;
 
-
 import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.mandalart.model.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,12 +17,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("mand")
-@Tag(name = "만다라트", description = "만다라트")
+@Tag(name = "만다라트", description = "만다라트 관리")
 public class MandalartController {
     private final MandalartService service;
 
     @GetMapping
-    @Operation(summary = "만다르트 조회", description = "프로젝트 id는 만다르트가 현재 속해있는 프로젝트")
+    @Operation(summary = "만다라트 조회", description = "프로젝트 id는 만다라트가 현재 속해있는 프로젝트")
     public ResultResponse<?> getMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetReq p) {
         List<MandalartGetRes> res = service.getMandalart(p);
 
@@ -39,26 +38,6 @@ public class MandalartController {
                 .statusCode("200")
                 .resultMsg("만다라트 조회 완료")
                 .resultData(res)
-                .build();
-    }
-
-    @GetMapping("/imminent")
-    @Operation(summary = "임박한 만다라트 리스트")
-    public ResultResponse<?> getImminentMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetImminentReq p) {
-        List<MandalartGetImminentRes> imminentResList = service.getImProject(p);
-
-        if (imminentResList == null || imminentResList.isEmpty()) {
-            return ResultResponse.<Integer>builder()
-                    .statusCode("400")
-                    .resultMsg("임박한 만다라트 조회 실패")
-                    .resultData(0)
-                    .build();
-        }
-
-        return ResultResponse.<List<MandalartGetImminentRes>>builder()
-                .statusCode("200")
-                .resultMsg("임박한 만다라트 조회 완료")
-                .resultData(imminentResList)
                 .build();
     }
 
@@ -86,6 +65,26 @@ public class MandalartController {
                 .statusCode("200")
                 .resultMsg("만다라트 수정 완료")
                 .resultData(updatedRows)
+                .build();
+    }
+
+    @GetMapping("/imminent")
+    @Operation(summary = "임박한 만다라트 리스트")
+    public ResultResponse<?> getImminentMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetImminentReq p) {
+        List<MandalartGetImminentRes> imminentResList = service.getImProject(p);
+
+        if (imminentResList == null || imminentResList.isEmpty()) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("임박한 만다라트 조회 실패")
+                    .resultData(0)
+                    .build();
+        }
+
+        return ResultResponse.<List<MandalartGetImminentRes>>builder()
+                .statusCode("200")
+                .resultMsg("임박한 만다라트 조회 완료")
+                .resultData(imminentResList)
                 .build();
     }
 }

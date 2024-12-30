@@ -12,4 +12,6 @@ public interface SharedProjectMapper {
     List<SharedProjectGetRes> selSharedProjectList(SharedProjectGetReq p);
     int updSharedProject(SharedProjectPatchReq p);
     int delSharedProject(SharedProjectDelReq p);
+    int insCopySharedProject(SharedProjectCopyReq p);
+    selSharedProjectDetail(long project_id);
 }

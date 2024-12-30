@@ -35,6 +35,38 @@
     </insert>
 
 
+<!--이메일 인증확인용-->
+    <insert id="insAuth">
+        INSERT INTO email_verification
+        SET user_id = #{email}
+        , token = #{authKey}
+        , expired_date = #{expiryTime}
+    </insert>
+
+    <select id="selAuth" >
+        SELECT user_id, token as authKey, expired_date as expiryTime
+        FROM email_verification
+        WHERE user_id = #{email}
+    </select>
+
+    <delete id="delAuth">
+        DELETE FROM email_verification
+        WHERE user_id = #{email}
+    </delete>
+
+    <select id="checkCode">
+        SELECT COUNT(user_id)
+        FROM email_verification
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="delUserFirst">
+        DELETE FROM user
+        WHERE user_id = #{email}
+    </delete>
+
+
+
 <!--로그인-->
     <select id="selUser">
         SELECT user_id as userId
@@ -136,6 +168,12 @@
         FROM user
         WHERE user_id = #{userId}
     </select>
+
+    <insert id="insPassword">
+        INSERT INTO find_password
+           SET user_id = #{userId}
+             , tmp_password = #{tmpPassword}
+    </insert>
 
 <!--임시 비밀번호로 수정-->
     <update id="updTmpPassword">

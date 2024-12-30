@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -95,13 +96,57 @@ public class UserService {
         }catch (IOException e){
             e.printStackTrace();
         }
-        userMessage.setMessage("회원가입이 완료되었습니다.");
+        userMessage.setMessage("이메일 인증 링크를 전송했습니다.");
         return result;
 
     }
 
+    //데이터베이스내 인증코드 저장
+    public void insAuthKey(AuthKeyDto p) {
+
+        userMapper.insAuth(p);
+    }
+
+    // 인증 코드 검증
+    public int selAuth(AuthKeyDto p) {
+        // DB에서 인증 코드 조회
+        EmailVerification record = userMapper.selAuth(p);
+
+        if (record == null) {
+            return 2;  // 해당 이메일로 저장된 인증 코드가 없으면 유효하지 않음
+        }
+
+        // 인증 코드가 일치하고, 만료 시간이 지나지 않았는지 확인
+        LocalDateTime now = LocalDateTime.now();
+        if (record.getAuthKey().equals(p.getAuthKey()) && record.getExpiryTime().isAfter(now)) {
+            return 1;  // 인증 코드와 만료 시간 모두 유효
+        }
+
+        return 0;  // 인증 코드가 일치하지 않거나 만료된 경우
+    }
+
+    // 인증 코드 삭제
+    public void delAuthKey(AuthKeyDto p) {
+        userMapper.delAuth(p);
+    }
+
+    // 인증 오류시 먼저 저장된 유저정보 삭제
+    public void delUserFirst(AuthKeyDto p) {
+        userMapper.delUserFirst(p);
+    }
+
+
     //로그인
     public UserSignInRes postSignIn(UserSignInReq p){
+        int emailVerification = userMapper.checkCode(p.getUserId());
+
+        if(emailVerification == 1){
+            UserSignInRes res = new UserSignInRes();
+            res.setMessage("이메일인증을 해주세요.");
+            return res;
+        }
+
+
         UserSignInRes res = userMapper.selUser(p);
         log.info("조회된 회원정보: {}", res);
         if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
@@ -238,26 +283,22 @@ public class UserService {
     // 임시 비밀번호 발급
     public int tempPassword(TempPasswordDto tempPasswordDto) {
         String userId = userMapper.checkPasswordId(tempPasswordDto.getUserId());
-        if (userId == null || userId.isEmpty() ||
-                !userId.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-            throw new IllegalArgumentException("유효하지 않은 이메일 주소: " + userId);
-        }
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ',', '<', '.', '>', '/', '?'};
 
         StringBuilder tmpPasswordBuilder = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             int idx = (int) (charSet.length * Math.random());
             tmpPasswordBuilder.append(charSet[idx]);
         }
         tempPasswordDto.setTmpPassword(tmpPasswordBuilder.toString());
         String tmpPasswordOriginal = tempPasswordDto.getTmpPassword();
+        int result = userMapper.insPassword(tempPasswordDto);
 
         String hashedPassWord = BCrypt.hashpw(tempPasswordDto.getTmpPassword(), BCrypt.gensalt());
         tempPasswordDto.setTmpPassword(hashedPassWord);
         int result1 = userMapper.updTmpPassword(tempPasswordDto);
 
-        //int result = userMapper.insPassword(tempPasswordDto);
 
         if(result1 == 1) {
             MimeMessage message = javaMailSender.createMimeMessage();
