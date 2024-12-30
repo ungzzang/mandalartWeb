@@ -19,4 +19,5 @@ public interface ProjectMapper {
     int delMandalart(long ProjectId);
     List<MandalartCopyDto> selMandalartByProjectId(long projectId);
     int insCopyMandalart(MandalartCopyDto p);
+    ProjectDetailDto selProjectDetail(long ProjectId);
 }

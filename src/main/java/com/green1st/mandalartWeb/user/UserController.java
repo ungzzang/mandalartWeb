@@ -8,9 +8,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -21,6 +24,8 @@ public class UserController {
     private final UserService userService;
     private final UserMessage userMessage;
     private final UserSignUpReq userSignUpReq;
+    @Autowired
+    private MailSendService mss;
 
 
     //이메일 중복체크
@@ -56,12 +61,52 @@ public class UserController {
                                               , @RequestPart @Valid UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
+        //임의의 authKey 생성 & 이메일 발송
+        String authKey = mss.sendAuthMail(p.getUserId());
+        AuthKeyDto authKeyDto = new AuthKeyDto();
+        authKeyDto.setEmail(p.getUserId());
+        authKeyDto.setAuthKey(authKey);
+        //long expiryTime = System.currentTimeMillis() + 10 * 60 * 1000;  // 현재 시간 + 5분 (밀리초 단위)
+        LocalDateTime expireTimes = LocalDateTime.now().plusMinutes(10);
+        authKeyDto.setExpiryTime(expireTimes);
+
+        //DB에 authKey insert
+        userService.insAuthKey(authKeyDto);
+
+
         return ResultResponse.<Integer>builder()
                 .statusCode(result == 1 ? "200" : "400")
                 .resultMsg(userMessage.getMessage())
                 .resultData(result)
                 .build();
     }
+
+    @GetMapping("auth_num")
+    @Operation(summary = "이메일 검증")
+    public String authNumChk(@ParameterObject @ModelAttribute AuthKeyDto authKeyDto) {
+        int isCodeValid = userService.selAuth(authKeyDto);
+
+        if(isCodeValid ==2) {
+            userService.delAuthKey(authKeyDto);
+            userService.delUserFirst(authKeyDto);
+            return "코드가 유효하지않습니다. 다시 요청해주세요.";
+        } else if (isCodeValid == 0) {
+            userService.delAuthKey(authKeyDto); //만료되면 자동으로 삭제처리
+            userService.delUserFirst(authKeyDto); //이메일 다시 요청을 위해 기존 유저정보 삭제
+            return "이메일 인증 코드가 만료되었습니다. 다시 요청해주세요.";
+        }
+
+        // 인증코드 삭제
+        userService.delAuthKey(authKeyDto);
+
+        // 인증 코드가 유효하다면 회원가입 처리 로직 실행
+        String msg = "회원가입이 완료되었습니다.";
+
+        return "redirect:http://localhost:9090/login?msg=" + msg;
+    }
+
+
+
 
     @PostMapping("signIn")
     @Operation(summary = "로그인")

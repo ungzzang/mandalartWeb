@@ -18,7 +18,7 @@ public class UserDeleteReq {
     private String userId;
 
     @NotEmpty
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*()-_=+\\\\\\\\|\\\\[{\\\\]};:'\\\",<.>/?]).{8,}$"
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*()-_=+\\\\\\\\|\\\\[{\\\\]};:'\\\",<.>/?]).{8,20}$"
             , message = "비밀번호는 특수문자와 숫자를 포함한 8자 이상이어야 합니다.")
     @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
     private String upw;

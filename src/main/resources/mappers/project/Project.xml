@@ -48,6 +48,17 @@
         LIMIT #{startIdx}, #{size}
     </select>
 
+    <select id="selProjectDetail">
+        SELECT A.title,  B.nick_name AS nickName, A.content, A.created_at AS createdAt, (
+        SELECT COUNT(project_id)
+        FROM shared_project
+        WHERE project_id = A.project_id
+        )  AS sharedFg
+        FROM project A INNER JOIN user B
+        ON A.user_id = B.user_id
+        WHERE project_id = #{projectId}
+    </select>
+
     <select id="selProjectByUserIdAndProjectId">
         SELECT project_id AS projectId, title, pic, created_at AS createDate
         FROM project A

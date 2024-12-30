@@ -58,6 +58,28 @@
         LIMIT #{startIdx}, #{size}
     </select>
 
+    <select id="selSharedProjectDetail">
+        SELECT A.title,  C.nick_name AS nickName, A.content, A.created_at AS createdAt
+        , (
+            SELECT COUNT(project_id)
+            FROM shared_project_like
+            WHERE project_id = A.project_id
+            <choose>
+                <when test = "userId != null">
+                    AND user_id = #{userId}
+                </when>
+                <otherwise>
+                    AND 1 = 2
+                </otherwise>
+            </choose>
+        )  AS likeFg
+        FROM shared_project A INNER JOIN project B
+        ON A.project_id = B.project_id
+        INNER JOIN user C
+        ON B.user_id = C.user_id
+        WHERE project_id = #{projectId}
+    </select>
+
     <update id="updSharedProject">
         UPDATE shared_project
         <set>
