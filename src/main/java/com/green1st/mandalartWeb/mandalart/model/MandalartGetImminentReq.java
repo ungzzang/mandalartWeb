@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MandalartGetImminentReq {
-    @Schema(description = "프로젝트 id")
+    @Schema(description = "유저 id")
     @NotNull(message = "user_id 입력해주세요.")
     private String userId;
 
