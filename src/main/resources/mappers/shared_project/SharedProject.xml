@@ -77,7 +77,7 @@
         ON A.project_id = B.project_id
         INNER JOIN user C
         ON B.user_id = C.user_id
-        WHERE project_id = #{projectId}
+        WHERE A.project_id = #{projectId}
     </select>
 
     <update id="updSharedProject">
