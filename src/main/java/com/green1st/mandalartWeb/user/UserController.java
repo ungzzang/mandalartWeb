@@ -171,7 +171,7 @@ public class UserController {
 
     @DeleteMapping
     @Operation(summary = "회원탈퇴")
-    public ResultResponse<Integer> deleteUser(UserDeleteReq p){
+    public ResultResponse<Integer> deleteUser(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
         UserDeleteRes res = userService.deleteLikeComment(p);
         if(res.getCheck() == 0){
             return ResultResponse.<Integer>builder()
