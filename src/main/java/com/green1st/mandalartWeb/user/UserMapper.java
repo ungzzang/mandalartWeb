@@ -9,8 +9,27 @@ public interface UserMapper {
     DuplicateEmailRes checkEmailPw(String userId);
     DuplicateNickNameRes checkNickName(String nickName);
     UserUpdateRes checkPassWord(String userId);
+
     //회원가입
     int insUser(UserSignUpReq p);
+
+    //이메일 코드 저장용 insert
+    int insAuth(AuthKeyDto p);
+
+    //이메일 코드 검증용 select
+    EmailVerification selAuth(AuthKeyDto p);
+
+    //이메일 코드 제거용 delete
+    int delAuth(AuthKeyDto p);
+
+    //코드 오류시 유저정보 삭제
+    int delUserFirst(AuthKeyDto p);
+
+    //로그인 전 인증했는지 체크
+    int checkCode(String userId);
+
+
+
     //로그인
     UserSignInRes selUser(UserSignInReq p);
     //정보조회
