@@ -15,10 +15,9 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MailSendService {
-
-    private final JavaMailSenderImpl mailSender;
+    @Autowired
+    private JavaMailSenderImpl mailSender;
 
     private static final long EXPIRATION_TIME = 10 * 60 * 1000; // 10분 (밀리초 단위)
     LocalDateTime expireTimes = LocalDateTime.now().plusMinutes(10);
