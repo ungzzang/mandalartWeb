@@ -65,7 +65,7 @@
                 title = #{title}
             </if>
             <if test="content != null">
-                content = #{content}
+                , content = #{content}
             </if>
         </set>
         WHERE project_id = #{projectId}
@@ -75,4 +75,12 @@
         DELETE FROM shared_project
         WHERE project_id = #{projectId}
     </delete>
+
+    <insert id="insCopySharedProject" useGeneratedKeys="true" keyProperty="projectId">
+        INSERT INTO project
+        (title, content, user_id)
+        SELECT title, content, #{userId}
+        FROM shared_project
+        WHERE project_id = #{copyProjectId}
+    </insert>
 </mapper>

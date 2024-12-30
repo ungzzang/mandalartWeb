@@ -8,9 +8,6 @@
         SET user_id = #{userId}
         , title = #{title}
         , content = #{content}
-        <if test="pic != null">
-            , pic = #{pic}
-        </if>
     </insert>
 
     <insert id="insMandalart" useGeneratedKeys="true" keyProperty="mandalartId">
@@ -18,6 +15,13 @@
         (project_id, parent_id, title, depth, order_id)
         VALUES
         (#{projectId},#{parentId}, '', #{depth}, #{orderId})
+    </insert>
+
+    <insert id="insCopyMandalart" useGeneratedKeys="true" keyProperty="mandalartId">
+        INSERT INTO mandalart
+        (project_id, parent_id, title, contents, depth, order_id)
+        VALUES
+        (#{projectId}, #{parentId}, #{title}, #{contents}, #{depth}, #{orderId})
     </insert>
 
     <select id="selProjectList">
@@ -58,10 +62,10 @@
                 title = #{title}
             </if>
             <if test="content != null">
-                content = #{content}
+                , content = #{content}
             </if>
             <if test="pic != null">
-                 pic = #{pic}
+                 , pic = #{pic}
             </if>
         </set>
         WHERE user_id = #{userId}
@@ -78,4 +82,13 @@
         DELETE FROM mandalart
         WHERE project_id = #{projectId}
     </delete>
+
+    <select id="selMandalartByProjectId">
+        SELECT mandalart_id AS mandalartId, project_id AS projectId, parent_id AS parentId
+        , title, contents, completed_fg AS completeFg, depth, start_date AS startDate
+        , finish_date AS finishDate, order_id AS orderId
+        FROM mandalart
+        WHERE project_id = #{projectId}
+        ORDER BY mandalart_id ASC
+    </select>
 </mapper>
