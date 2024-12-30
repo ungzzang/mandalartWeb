@@ -121,11 +121,8 @@ public class MandalartService {
     }
 
     List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p){
-//        if (p.getUserId() <= 0) {
-//            throw new IllegalArgumentException("유효하지 않은 프로젝트 ID입니다.");
-//        }
         List<MandalartGetImminentRes> imminentResList = mapper.getImProject(p);
-
+        imminentResList
         return imminentResList;
     }
 
