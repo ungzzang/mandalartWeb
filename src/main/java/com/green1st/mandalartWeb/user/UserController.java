@@ -90,9 +90,7 @@ public class UserController {
             userService.delAuthKey(authKeyDto);
             userService.delUserFirst(authKeyDto);
             return "코드가 유효하지않습니다. 다시 요청해주세요.";
-        }
-
-        if (isCodeValid == 0) {
+        } else if (isCodeValid == 0) {
             userService.delAuthKey(authKeyDto); //만료되면 자동으로 삭제처리
             userService.delUserFirst(authKeyDto); //이메일 다시 요청을 위해 기존 유저정보 삭제
             return "이메일 인증 코드가 만료되었습니다. 다시 요청해주세요.";
@@ -102,7 +100,9 @@ public class UserController {
         userService.delAuthKey(authKeyDto);
 
         // 인증 코드가 유효하다면 회원가입 처리 로직 실행
-        return "회원가입이 완료되었습니다.";
+        String msg = "회원가입이 완료되었습니다.";
+
+        return "redirect:http://localhost:9090/login?msg=" + msg;
     }
 
 
