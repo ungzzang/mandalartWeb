@@ -12,8 +12,10 @@ import java.time.LocalDate;
 @Schema(title = "")
 public class MandalartPostReq {
     //    private long projectId;
+    @NotNull
     @PositiveOrZero(message = "만다라트 ID는 0 이상이어야 합니다.")
     private long mandalartId;  // 만다라트 ID
+    @NotNull
     @NotEmpty(message = "목표를 입력해주세요")
     private String title;  // 제목
     private String contents;  // 내용
