@@ -24,9 +24,9 @@ public class MandalartController {
     @GetMapping
     @Operation(summary = "만다라트 조회", description = "프로젝트 id는 만다라트가 현재 속해있는 프로젝트")
     public ResultResponse<?> getMandalart(@Valid @ParameterObject @ModelAttribute MandalartGetReq p) {
-        List<MandalartGetRes> res = service.getMandalart(p);
+        MandalartGetResVer2 res = service.getMandalart(p);
 
-        if (res == null || res.isEmpty()) {
+        if (res == null) {
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
                     .resultMsg("만다라트 조회 실패")
@@ -34,7 +34,27 @@ public class MandalartController {
                     .build();
         }
 
-        return ResultResponse.<List<MandalartGetRes>>builder()
+        return ResultResponse.<MandalartGetResVer2>builder()
+                .statusCode("200")
+                .resultMsg("만다라트 조회 완료")
+                .resultData(res)
+                .build();
+    }
+
+    @GetMapping("/shared")
+    @Operation(summary = "공유 만다라트 조회", description = "프로젝트 id는 만다라트가 현재 속해있는 프로젝트")
+    public ResultResponse<?> getSharedMandalart(@Valid @ParameterObject @ModelAttribute MandalartSharedGetReq p) {
+        MandalartSharedGetResVer2 res = service.getSharedMandalart(p);
+
+        if (res == null) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("만다라트 조회 실패")
+                    .resultData(0)
+                    .build();
+        }
+
+        return ResultResponse.<MandalartSharedGetResVer2>builder()
                 .statusCode("200")
                 .resultMsg("만다라트 조회 완료")
                 .resultData(res)

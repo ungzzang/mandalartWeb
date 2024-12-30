@@ -33,6 +33,7 @@ public class MandalartGetRes {
     private LocalDate finishDate;
     @Schema(description = "순서 (0~7)")
     private int orderId;
+    private double completedPer;
 //    @Schema(description = "유저 닉네임")
 //    private String nickName;
 //    @Schema(description = "프로젝트 생성일")
