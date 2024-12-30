@@ -257,7 +257,7 @@ public class UserService {
         tempPasswordDto.setTmpPassword(hashedPassWord);
         int result1 = userMapper.updTmpPassword(tempPasswordDto);
 
-        //int result = userMapper.insPassword(tempPasswordDto);
+        int result = userMapper.insPassword(tempPasswordDto);
 
         if(result1 == 1) {
             MimeMessage message = javaMailSender.createMimeMessage();
