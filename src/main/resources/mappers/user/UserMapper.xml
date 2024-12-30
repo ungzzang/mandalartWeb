@@ -137,6 +137,12 @@
         WHERE user_id = #{userId}
     </select>
 
+    <insert id="insPassword">
+        INSERT INTO find_password
+           SET user_id = #{userId}
+             , tmp_password = #{tmpPassword}
+    </insert>
+
 <!--임시 비밀번호로 수정-->
     <update id="updTmpPassword">
         UPDATE user
