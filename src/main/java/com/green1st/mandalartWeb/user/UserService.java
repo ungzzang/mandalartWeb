@@ -238,26 +238,22 @@ public class UserService {
     // 임시 비밀번호 발급
     public int tempPassword(TempPasswordDto tempPasswordDto) {
         String userId = userMapper.checkPasswordId(tempPasswordDto.getUserId());
-        if (userId == null || userId.isEmpty() ||
-                !userId.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-            throw new IllegalArgumentException("유효하지 않은 이메일 주소: " + userId);
-        }
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ',', '<', '.', '>', '/', '?'};
 
         StringBuilder tmpPasswordBuilder = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             int idx = (int) (charSet.length * Math.random());
             tmpPasswordBuilder.append(charSet[idx]);
         }
         tempPasswordDto.setTmpPassword(tmpPasswordBuilder.toString());
         String tmpPasswordOriginal = tempPasswordDto.getTmpPassword();
+        int result = userMapper.insPassword(tempPasswordDto);
 
         String hashedPassWord = BCrypt.hashpw(tempPasswordDto.getTmpPassword(), BCrypt.gensalt());
         tempPasswordDto.setTmpPassword(hashedPassWord);
         int result1 = userMapper.updTmpPassword(tempPasswordDto);
 
-        int result = userMapper.insPassword(tempPasswordDto);
 
         if(result1 == 1) {
             MimeMessage message = javaMailSender.createMimeMessage();
