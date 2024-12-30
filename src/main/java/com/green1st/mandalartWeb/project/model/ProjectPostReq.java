@@ -18,7 +18,7 @@ public class ProjectPostReq {
     private Long projectId;
     @NotNull
     @Length(min = 10, max = 100)
-    @Schema(description = "로그인한 사용자 아이디", example = "test@gamil.com", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "로그인한 사용자 아이디", example = "test@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
     @NotNull
     @Length(max = 50)
