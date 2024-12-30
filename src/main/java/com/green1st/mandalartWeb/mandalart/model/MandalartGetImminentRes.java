@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class MandalartGetImminentRes {
     private long projectId;
+    private int cnt;
     private String title;
     private long mandalartId;
     private LocalDateTime startDate;
