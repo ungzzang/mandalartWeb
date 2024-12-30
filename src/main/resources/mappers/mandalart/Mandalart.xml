@@ -19,7 +19,10 @@
     </select>
 
     <select id="getImProject">
-        SELECT COUNT(mandalart_id) AS cnt, A.project_id , A.title
+        SELECT COUNT(mandalart_id) AS cnt
+        , A.project_id , B.title
+        , A.start_date AS startDate
+        , A.finish_date AS finishDate
         FROM mandalart A
         JOIN project B
         ON A.project_id = B.project_id
