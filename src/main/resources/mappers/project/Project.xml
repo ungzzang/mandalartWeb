@@ -41,7 +41,7 @@
                 AND content LIKE '%${searchText}%'
             </when>
             <when test="searchFilter == 3 and searchText != null">
-                AND title LIKE '%${searchText}%' OR content LIKE '%${searchText}%'
+                AND (title LIKE '%${searchText}%' OR content LIKE '%${searchText}%')
             </when>
         </choose>
         ORDER BY created_at DESC
