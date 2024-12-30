@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 public class MandalartGetImminentReq {
     @Schema(description = "프로젝트 id")
-    @Positive(message = "user_id 는 양수만 가능합니다.")
     @NotEmpty(message = "user_id 입력해주세요.")
     private String userId;
 

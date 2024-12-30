@@ -10,5 +10,6 @@ import java.util.List;
 public interface MandalartMapper {
     List<MandalartGetRes> getMandalart (MandalartGetReq p);
     int patchMandalart (MandalartPostReq p);
+    List<GraphRes> graphMandalart (GraphReq p);
     List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p);
 }
