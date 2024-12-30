@@ -110,6 +110,10 @@
     </update>
 
 
+
+
+
+
 <!--회원삭제를 위한 이메일, 비밀번호체크-->
     <select id="checkPassWord2">
         SELECT user_id, upw
@@ -118,7 +122,7 @@
     </select>
 
 
-<!--내가 좋아요한거, 댓글단거 삭제-->
+<!--유저 삭제를 위한 내가 좋아요한거, 댓글단거 삭제-->
     <delete id="delMyLikeAndComment">
         DELETE a, b
         FROM shared_project_like a
@@ -127,6 +131,35 @@
         WHERE a.user_id = #{userId}
     </delete>
 
+<!--유저 삭제를 위한 공유 프로젝트 좋아요, 댓글 삭제-->
+    <delete id="delSharedProjectLikeAndComment">
+        DELETE B, C
+        FROM shared_project A
+        LEFT JOIN shared_project_like B
+        ON A.project_id = B.project_id
+        LEFT JOIN shared_project_comment C
+        ON A.project_id = C.project_id
+        WHERE A.project_id = #{projectId}
+    </delete>
+
+<!--유저 삭제를 위한 공유 프로젝트 삭제-->
+    <delete id="delSharedProject">
+        DELETE FROM shared_project
+        WHERE project_id = #{projectId};
+    </delete>
+
+<!--회원탈퇴-->
+    <delete id="delUser">
+        DELETE FROM user
+        WHERE user_id = #{userId}
+    </delete>
+
+
+
+
+
+
+<!--이 밑은 지금 수정중입니다. 건들지마시오  비상 비상!@!@!@!@!@@!@-->
 <!--내 프로젝트의 좋아요, 댓글 삭제-->
     <delete id="delProjectLikeAndProjectComment">
         DELETE B, C
@@ -138,7 +171,7 @@
         WHERE A.project_id = #{projectId}
     </delete>
 
-    <delete id="delSharedProject">
+    <delete id="delSharedProject1">
         DELETE FROM shared_project A
         WHERE project_id = #{projectId}
     </delete>
@@ -154,11 +187,17 @@
         AND user_id
     </delete>
 
+<!--이 위로 건들지 마시오 수정중 비상!!!!!!!!! 초~~비상-->
 
-    <delete id="delUser"> <!--회원탈퇴-->
-        DELETE FROM user
-        WHERE user_id = #{userId}
-    </delete>
+
+
+
+
+
+
+
+
+
 
 
 

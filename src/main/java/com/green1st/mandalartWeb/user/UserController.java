@@ -158,7 +158,7 @@ public class UserController {
                 .build();
     }*/
 
-    @DeleteMapping()
+    @DeleteMapping("testsssss")
     @Operation(summary = "나의 좋아요 댓글 삭제")
     public ResultResponse<Integer> deleteMyLikeComment(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
         UserDeleteRes res = userService.deleteLikeComment(p);
@@ -167,6 +167,29 @@ public class UserController {
                 .resultMsg(res.getMessage())
                 .resultData(res.getCheck() != 0 ? 1 : 0)
                 .build();
+    }
+
+    @DeleteMapping
+    @Operation(summary = "회원탈퇴")
+    public ResultResponse<Integer> deleteUser(UserDeleteReq p){
+        UserDeleteRes res = userService.deleteLikeComment(p);
+        if(res.getCheck() == 0){
+            return ResultResponse.<Integer>builder()
+                    .statusCode(res.getCheck() != 0 ? "200" : "400")
+                    .resultMsg(res.getMessage())
+                    .resultData(res.getCheck() != 0 ? 1 : 0)
+                    .build();
+        }
+        userService.delSharedProjectLikeAndComment(p);
+        userService.delSharedProject(p);
+        int result = userService.delUser(p);
+
+        return ResultResponse.<Integer>builder()
+                .statusCode(result==1 ? "200" : "400")
+                .resultMsg("회원탈퇴 완료")
+                .resultData(result ==1 ? 1 : 0)
+                .build();
+
     }
 
 

@@ -1,7 +1,9 @@
 package com.green1st.mandalartWeb.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +14,8 @@ import java.beans.ConstructorProperties;
 @Setter
 @Schema(title = "유저 삭제")
 public class UserDeleteReq {
-    @NotEmpty
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,10}$", message = "유효하지 않은 형식의 이메일입니다.")
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}$", message = "유효하지 않은 형식의 이메일입니다.")
     @Schema(description = "유저 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
 
@@ -23,7 +25,24 @@ public class UserDeleteReq {
     @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
     private String upw;
 
-    /*@Schema(description = "프로젝트 pk", requiredMode = Schema.RequiredMode.REQUIRED)
+
+
+    @Schema(description = "삭제할 댓글 PK")
+    private long commentId;
+
+
+    @Schema(description = "공유할 프로젝트 아이디(등록된 프로젝트여야함)", example = "1")
+    private long projectId;
+
+    public UserDeleteReq(String userId, String upw, long commentId, long projectId) {
+        this.userId = userId;
+        this.upw = upw;
+        this.commentId = commentId;
+        this.projectId = projectId;
+    }
+
+
+/*@Schema(description = "프로젝트 pk", requiredMode = Schema.RequiredMode.REQUIRED)
     private long projectId;*/
 
     /*@ConstructorProperties("project_id")

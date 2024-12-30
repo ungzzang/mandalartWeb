@@ -1,11 +1,14 @@
 package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.common.MyFileUtils;
+import com.green1st.mandalartWeb.user.delete.model.ProjectCommentAndLikeDeleteReq;
+import com.green1st.mandalartWeb.user.delete.model.ProjectDeleteReq;
 import com.green1st.mandalartWeb.user.model.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -233,19 +236,32 @@ public class UserService {
 
     //내가 좋아요한거, 댓글삭제
     public UserDeleteRes deleteLikeComment(UserDeleteReq p){
-        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p.getUserId());
+        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
         if(p.getUserId() != userDeleteRes.getUserId() || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw())){
             userDeleteRes.setMessage("이메일 혹은 비밀번호를 확인해주세요");
             userDeleteRes.setCheck(0);
             return userDeleteRes;
         }
 
-        int result = userMapper.delMyLikeAndComment(p.getUserId());
+        int result = userMapper.delMyLikeAndComment(p);
         userDeleteRes.setMessage("좋아요, 댓글 삭제 성공");
         userDeleteRes.setCheck(1);
         return userDeleteRes;
     }
 
+    //공유 프로젝트 좋아요, 댓글 삭제
+    public void delSharedProjectLikeAndComment(UserDeleteReq p){
+        userMapper.delSharedProjectLikeAndComment(p);
+    }
+    //공유 프로젝트 삭제
+    public void delSharedProject(UserDeleteReq p){
+        userMapper.delSharedProject(p);
+    }
+    //유저 삭제
+    public int delUser(UserDeleteReq p){
+        int result = userMapper.delUser(p);
+        return result;
+    }
 
     //회원삭제(미완성)
     public int deleteUser(UserDeleteReq p){
