@@ -27,6 +27,7 @@ public class UserUpdateReq {
     private String newUpw;
     @Schema(title = "비밀번호확인")
     private String checkUpw;
+
     @Schema(title = "바꿀닉네임")
     private String nickName;
     @Schema(title = "프로필등록")
