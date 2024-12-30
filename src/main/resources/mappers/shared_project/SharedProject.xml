@@ -35,7 +35,7 @@
                 AND A.content LIKE '%${searchText}%'
             </when>
             <when test="searchFilter == 3 and searchText != null">
-                AND A.title LIKE '%${searchText}%' AND A.content LIKE '%${searchText}%'
+                AND A.title LIKE '%${searchText}%' OR A.content LIKE '%${searchText}%'
             </when>
             <when test="searchFilter == 4 and searchText != null">
                 AND C.nick_name LIKE '%${searchText}%'
