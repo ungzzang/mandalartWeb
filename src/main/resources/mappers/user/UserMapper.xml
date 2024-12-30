@@ -182,4 +182,19 @@
         WHERE user_id = #{userId}
     </update>
 
+    <!-- 임시 비밀번호 발급 여부-->
+    <update id="updTmpPwFg">
+        UPDATE user A
+        LEFT JOIN find_password B
+        ON A.user_id = B.user_id
+        SET A.tmp_pw_fg = if(B.user_id IS NOT NULL, 1, 0)
+        WHERE A.user_id = #{userId}
+    </update>
+
+    <select id="selTmpPwFg">
+        SELECT tmp_pw_fg
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
 </mapper>
