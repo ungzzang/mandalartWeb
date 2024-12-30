@@ -2,6 +2,7 @@ package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.user.model.MailUtils;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -14,9 +15,10 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MailSendService {
-    @Autowired
-    private JavaMailSenderImpl mailSender;
+
+    private final JavaMailSenderImpl mailSender;
 
     private static final long EXPIRATION_TIME = 10 * 60 * 1000; // 10분 (밀리초 단위)
     LocalDateTime expireTimes = LocalDateTime.now().plusMinutes(10);
