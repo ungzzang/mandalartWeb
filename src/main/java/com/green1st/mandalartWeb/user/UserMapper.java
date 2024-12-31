@@ -28,24 +28,14 @@ public interface UserMapper {
     //로그인 전 인증했는지 체크
     int checkCode(String userId);
 
-
-
     //로그인
     UserSignInRes selUser(UserSignInReq p);
+
     //정보조회
     UserInfoGetRes selUserInfo(UserInfoGetReq p);
 
-    //정보수정(미완성)
+    //정보수정
     int updUser(UserUpdateReq p);
-    UserUpdateRes selUser2(String userId);
-
-
-// ////////
-    //전체삭제(미완성)
-    //int delProjectLikeAndProjectComment(UserDeleteReq p);
-    //int delSharedProject(UserDeleteReq p);
-    //int delMandalart(UserDeleteReq p);
-    //int delProject(UserDeleteReq p);
 
 
     //삭제를 위한 비밀번호 selet
@@ -63,7 +53,6 @@ public interface UserMapper {
     int delProject(UserDeleteReq p);
     //유저 삭제
     int delUser(UserDeleteReq p);
-
 
 
 // ////////
