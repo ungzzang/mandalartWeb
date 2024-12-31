@@ -11,7 +11,6 @@ public class MandalartGetImminentRes {
     private long projectId;
     private int cnt;
     private String title;
-    private long mandalartId;
     private LocalDateTime startDate;
     private LocalDateTime finishDate;
 }
