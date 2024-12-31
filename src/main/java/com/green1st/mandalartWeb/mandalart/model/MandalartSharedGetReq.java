@@ -18,7 +18,6 @@ public class MandalartSharedGetReq {
     @NotNull
     private long projectId;
     @Schema(description = "유저 id")
-    @Positive(message = "유저 ID는 양수만 가능합니다.")
     @NotNull
     private String userId;
 }
