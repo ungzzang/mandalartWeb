@@ -32,7 +32,7 @@ Gradle
 
 
 ## E-R 다이어그램
-![image]![image](https://github.com/user-attachments/assets/b0e7ce5b-b1ee-4d3b-8c00-0d62bad20bc6)
+![image](https://github.com/user-attachments/assets/b0e7ce5b-b1ee-4d3b-8c00-0d62bad20bc6)
 
 
 ## 프로젝트 목적
