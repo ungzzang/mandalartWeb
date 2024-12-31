@@ -1,11 +1,14 @@
 package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.common.MyFileUtils;
+import com.green1st.mandalartWeb.user.delete.model.ProjectCommentAndLikeDeleteReq;
+import com.green1st.mandalartWeb.user.delete.model.ProjectDeleteReq;
 import com.green1st.mandalartWeb.user.model.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -231,52 +234,49 @@ public class UserService {
         return res;
     }
 
-    //내가 좋아요한거, 댓글삭제
+
+    //내가 좋아요한거, 댓글 삭제
     public UserDeleteRes deleteLikeComment(UserDeleteReq p){
-        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p.getUserId());
-        if(p.getUserId() != userDeleteRes.getUserId() || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw())){
+        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
+
+        if(userDeleteRes == null || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw()) ){
             userDeleteRes.setMessage("이메일 혹은 비밀번호를 확인해주세요");
             userDeleteRes.setCheck(0);
             return userDeleteRes;
         }
 
-        int result = userMapper.delMyLikeAndComment(p.getUserId());
+        userMapper.delMyLikeAndComment(p);
         userDeleteRes.setMessage("좋아요, 댓글 삭제 성공");
         userDeleteRes.setCheck(1);
         return userDeleteRes;
     }
 
-
-    //회원삭제(미완성)
-    public int deleteUser(UserDeleteReq p){
-        UserSignInReq req = new UserSignInReq();
-        UserSignInRes res = userMapper.selUser(req);
-        UserDeleteRes userDeleteRes = new UserDeleteRes();
-        if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
-            userDeleteRes.setMessage("아이디 혹은 비밀번호를 확인해 주십시오.");
-            return 0;
-        }
-
-        //구성요소들 삭제
-        int deleteLikeComment = userMapper.delProjectLikeAndProjectComment(p);
-        log.info("deleteLikeComment: {}", deleteLikeComment);
-        int deleteSharedProject = userMapper.delSharedProject(p);
-        log.info("deleteSharedProject: {}", deleteSharedProject);
-        int deleteMandalart = userMapper.delMandalart(p);
-        log.info("deleteMandalart: {}", deleteMandalart);
-        int deleteProject = userMapper.delProject(p);
-        log.info("deleteProject: {}", deleteProject);
-        int deleteUser = userMapper.delUser(p);
-        log.info("deleteUser: {}", deleteUser);
-
-        //사진 삭제 (폴더 삭제)
-        String deletePath = String.format("%s/user/%s", myFileUtils.getUploadPath(), p.getUserId());
-        myFileUtils.deleteFolder(deletePath, true);
-
-        userDeleteRes.setMessage("회원삭제가 완료되었습니다.");
-        return 1;
+    //공유 프로젝트 좋아요, 댓글 삭제
+    public void delSharedProjectLikeAndComment(UserDeleteReq p){
+        userMapper.delSharedProjectLikeAndComment(p);
     }
-    //데이터 내 정보로 할때 객체 선언하면 새로운거라서 다시 수정필요.
+
+    //공유 프로젝트 삭제
+    public void delSharedProject(UserDeleteReq p){
+        userMapper.delSharedProject(p);
+    }
+
+    //만다라트 삭제
+    public void delMandalart(UserDeleteReq p){
+        userMapper.delMandalart(p);
+    }
+
+    //프로젝트 삭제
+    public void delProject(UserDeleteReq p){
+        userMapper.delProject(p);
+    }
+
+    //유저 삭제
+    public int delUser(UserDeleteReq p){
+        int result = userMapper.delUser(p);
+        return result;
+    }
+
 
 
     // -------------------------------------------------------
@@ -284,7 +284,8 @@ public class UserService {
     public int tempPassword(TempPasswordDto tempPasswordDto) {
         String userId = userMapper.checkPasswordId(tempPasswordDto.getUserId());
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ',', '<', '.', '>', '/', '?'};
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                '!', '@', '#', '$', '%', '^', '&', '*'};
 
         StringBuilder tmpPasswordBuilder = new StringBuilder();
         for (int i = 0; i < 8; i++) {
