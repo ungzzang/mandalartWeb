@@ -15,4 +15,11 @@
         WHERE project_id = #{projectId}
         AND user_id = #{userId}
     </delete>
+
+    <select id="selSharedProjectLike">
+        SELECT COUNT(*)
+          FROM shared_project_like
+         WHERE user_id = #{userId}
+           AND project_id = #{projectId}
+    </select>
 </mapper>

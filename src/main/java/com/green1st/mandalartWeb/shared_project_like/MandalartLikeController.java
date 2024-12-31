@@ -7,8 +7,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -51,6 +54,24 @@ public class MandalartLikeController {
         } return ResultResponse.<Integer>builder()
                 .statusCode("400")
                 .resultMsg("공유 프로젝트 좋아요 취소 실패")
+                .resultData(0)
+                .build();
+    }
+
+    @GetMapping("/checkLike")
+    @Operation(summary = "프로젝트 좋아요 조회", description = "좋아요 했을 시에 resultData: 1, 좋아요 하지 않았을 시(취소 했을 시)에 resultData: 0")
+    public ResultResponse<Integer> getMandalratLike(@Valid @ParameterObject @ModelAttribute ProjectLikeDto dto) {
+        log.info("MandalartLikeController > getMandalratLike > dto: {}", dto);
+        int result = mandalartLikeService.selMandalratLike(dto);
+        if (result == 1) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("200")
+                    .resultMsg("프로젝트 좋아요 조회 성공")
+                    .resultData(result)
+                    .build();
+        } return ResultResponse.<Integer>builder()
+                .statusCode("400")
+                .resultMsg("프로젝트 좋아요 조회 실패")
                 .resultData(0)
                 .build();
     }
