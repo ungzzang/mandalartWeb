@@ -23,7 +23,7 @@ public class UserSignUpReq {
     @NotEmpty(message = "비밀번호를 입력해주세요.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*()-_=+\\\\\\\\|\\\\[{\\\\]};:'\\\",<.>/?]).{8,20}$"
             , message = "비밀번호는 특수문자와 숫자를 포함한 8자 이상 20자 이하여야 합니다.")
-    @Schema(title = "유저비밀번호", example = "PassWord", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(title = "유저비밀번호", example = "123abc!@#", requiredMode = Schema.RequiredMode.REQUIRED)
     private String upw;
 
     @NotEmpty(message = "닉네임을 입력해주세요.")

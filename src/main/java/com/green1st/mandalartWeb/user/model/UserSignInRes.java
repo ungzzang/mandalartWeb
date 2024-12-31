@@ -5,15 +5,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Schema(title = "로그인 응답")
 public class UserSignInRes {
     private String userId;
     private String nickName;
+
+    @JsonIgnore
     private String pic;
 
-    //private String imProject;
+    private List<LoginDto> imProject;
 
     @JsonIgnore
     private String upw;
