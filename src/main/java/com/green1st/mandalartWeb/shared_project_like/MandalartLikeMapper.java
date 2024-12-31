@@ -7,4 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MandalartLikeMapper {
     int insSharedProjectLike(ProjectLikeDto p);
     int delSharedProjectLike(ProjectLikeDto p);
+    int selSharedProjectLike(ProjectLikeDto p);
 }

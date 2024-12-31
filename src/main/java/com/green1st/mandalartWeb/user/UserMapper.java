@@ -38,21 +38,35 @@ public interface UserMapper {
     //정보수정(미완성)
     int updUser(UserUpdateReq p);
     UserUpdateRes selUser2(String userId);
+
+
+// ////////
     //전체삭제(미완성)
-    int delProjectLikeAndProjectComment(UserDeleteReq p);
-    int delSharedProject(UserDeleteReq p);
-    int delMandalart(UserDeleteReq p);
-    int delProject(UserDeleteReq p);
-    int delUser(UserDeleteReq p);
+    //int delProjectLikeAndProjectComment(UserDeleteReq p);
+    //int delSharedProject(UserDeleteReq p);
+    //int delMandalart(UserDeleteReq p);
+    //int delProject(UserDeleteReq p);
+
 
     //삭제를 위한 비밀번호 selet
-    UserDeleteRes checkPassWord2(String userId);
+    UserDeleteRes checkPassWord2(UserDeleteReq p);
 
     //내가 좋아요 한거, 댓글단거 삭제
-    int delMyLikeAndComment(String userId);
+    int delMyLikeAndComment(UserDeleteReq p);
+    //공유 프로젝트 좋아요, 댓글 삭제
+    int delSharedProjectLikeAndComment(UserDeleteReq p);
+    //공유 프로젝트 삭제
+    int delSharedProject(UserDeleteReq p);
+    //만다라트 삭제
+    int delMandalart(UserDeleteReq p);
+    //프로젝트 삭제
+    int delProject(UserDeleteReq p);
+    //유저 삭제
+    int delUser(UserDeleteReq p);
 
 
 
+// ////////
 // 임시 비밀번호 발급
     String checkPasswordId(String userId);
 

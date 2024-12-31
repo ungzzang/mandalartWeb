@@ -18,4 +18,8 @@ public class MandalartLikeService {
     public int delMandalratLike(ProjectLikeDto dto) {
         return mandalartLikeMapper.delSharedProjectLike(dto);
     }
+
+    public int selMandalratLike(ProjectLikeDto dto) {
+        return mandalartLikeMapper.selSharedProjectLike(dto);
+    }
 }

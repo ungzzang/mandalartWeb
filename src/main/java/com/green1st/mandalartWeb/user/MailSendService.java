@@ -2,6 +2,7 @@ package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.user.model.MailUtils;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
