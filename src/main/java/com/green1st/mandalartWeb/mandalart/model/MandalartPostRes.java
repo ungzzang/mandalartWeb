@@ -29,5 +29,6 @@ public class MandalartPostRes {
         this.startDate = request.getStartDate();
         this.finishDate = request.getFinishDate();
         this.completedFg = request.getCompletedFg() == 0 ?  0 : 1;
+
     }
 }
