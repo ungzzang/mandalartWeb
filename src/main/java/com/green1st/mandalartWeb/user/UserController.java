@@ -187,6 +187,7 @@ public class UserController {
         userService.delSharedProject(p);
         userService.delMandalart(p);
         userService.delProject(p);
+        userService.delFindPw(p);
 
         int result = userService.delUser(p);
 

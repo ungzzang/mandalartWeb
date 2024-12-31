@@ -3,6 +3,8 @@ package com.green1st.mandalartWeb.user;
 import com.green1st.mandalartWeb.user.model.*;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     //중복체크
@@ -30,6 +32,7 @@ public interface UserMapper {
 
     //로그인
     UserSignInRes selUser(UserSignInReq p);
+    List<LoginDto> selUserList(UserSignInReq p);
 
     //정보조회
     UserInfoGetRes selUserInfo(UserInfoGetReq p);
@@ -51,6 +54,8 @@ public interface UserMapper {
     int delMandalart(UserDeleteReq p);
     //프로젝트 삭제
     int delProject(UserDeleteReq p);
+    //임시비밀번호 데이터 삭제
+    int delFindPw(UserDeleteReq p);
     //유저 삭제
     int delUser(UserDeleteReq p);
 

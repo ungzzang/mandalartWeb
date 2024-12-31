@@ -77,6 +77,19 @@
         WHERE user_id = #{userId}
     </select>
 
+
+    <select id="selUserList">
+        SELECT b.project_id as projectId, b.title
+             , c.start_date as startDate, c.finish_date as finishDate
+        FROM user a
+        LEFT JOIN project b
+          ON a.user_id = b.user_id
+        LEFT JOIN mandalart c
+          ON b.project_id = c.project_id
+        WHERE b.project_id IN  (SELECT project_id FROM project WHERE user_id = 'mandalart502@gmail.com');
+    </select>
+
+
     <select id="selUser2">
         SELECT upw
         FROM user
@@ -154,6 +167,12 @@
 <!--유저 삭제를 위한 프로젝트 삭제-->
     <delete id="delProject">
         DELETE FROM project
+        WHERE user_id = #{userId}
+    </delete>
+    
+<!--유저 삭제를 위한 임시비밀번호 테이블 삭제-->
+    <delete id="delFindPw">
+        DELETE FROM find_password
         WHERE user_id = #{userId}
     </delete>
 

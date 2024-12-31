@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -158,6 +160,9 @@ public class UserService {
             return res;
         }
 
+        List<LoginDto> loginList = userMapper.selUserList(p);
+        res.setImProject(loginList);
+
         res.setMessage("로그인성공");
         return res;
     }
@@ -270,6 +275,12 @@ public class UserService {
     public void delProject(UserDeleteReq p){
         userMapper.delProject(p);
     }
+
+    //임시비밀번호 데이터 삭제
+    public void delFindPw(UserDeleteReq p){
+        userMapper.delFindPw(p);
+    }
+
 
     //유저 삭제
     public int delUser(UserDeleteReq p){
