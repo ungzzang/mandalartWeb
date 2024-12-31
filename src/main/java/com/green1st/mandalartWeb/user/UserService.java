@@ -169,7 +169,7 @@ public class UserService {
 
 
     //회원정보수정
-    public UserUpdateRes patchUser(UserUpdateReq p){
+    public UserUpdateRes patchUser(MultipartFile pic, UserUpdateReq p){
         // 이메일, 비밀번호 일치 여부 확인
         UserUpdateRes res = userMapper.checkPassWord(p.getUserId());
         if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
@@ -203,10 +203,10 @@ public class UserService {
         }
 
         //저장할 파일명(랜덤명 파일명) 생성
-        String savedPicName = (p.getPic() != null ? myFileUtils.makeRandomFileName(p.getPic()) : null);
+        String savedPicName = (p.getPicName() != null ? myFileUtils.makeRandomFileName(p.getPicName()) : null);
         p.setPicName(savedPicName);
 
-        if(p.getPic() != null) {
+        if(p.getPicName() != null) {
             //폴더 생성
             String folderPath = String.format("user/%s", p.getUserId());
             myFileUtils.makeFolders(folderPath);
@@ -220,7 +220,7 @@ public class UserService {
             String filePath = String.format("user/%s/%s", userId, savedPicName);
 
             try {
-                myFileUtils.transferTo(p.getPic(), filePath);
+                myFileUtils.transferTo(pic, filePath);
             } catch (IOException e) {
                 e.printStackTrace();
             }

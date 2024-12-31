@@ -147,12 +147,13 @@ public class UserController {
 
                 String savedFileName = myFileUtils.makeRandomFileName(pic);
 
+                p.setPicName(savedFileName);
+
                 myFileUtils.transferTo(pic, targetDir + "/" + savedFileName);
 
-                p.setPicName(targetDir + "/" + savedFileName);
             }
 
-            UserUpdateRes res = userService.patchUser(p);
+            UserUpdateRes res = userService.patchUser(pic, p);
 
             return ResultResponse.<Integer>builder()
                     .statusCode(res.getResult() == 1 ? "200" : "400")
