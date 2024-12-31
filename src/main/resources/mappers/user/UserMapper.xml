@@ -139,13 +139,25 @@
         ON A.project_id = B.project_id
         LEFT JOIN shared_project_comment C
         ON A.project_id = C.project_id
-        WHERE A.project_id = #{projectId}
+        WHERE A.project_id IN (SELECT project_id FROM project WHERE user_id = #{userId})
     </delete>
 
 <!--유저 삭제를 위한 공유 프로젝트 삭제-->
     <delete id="delSharedProject">
         DELETE FROM shared_project
-        WHERE project_id = #{projectId};
+        WHERE project_id IN (SELECT project_id FROM project WHERE user_id = #{userId})
+    </delete>
+
+<!--유저 삭제를 위한 만다라트 삭제-->
+    <delete id="delMandalart">
+        DELETE FROM mandalart
+        WHERE project_id IN (SELECT project_id FROM project WHERE user_id = #{userId})
+    </delete>
+
+<!--유저 삭제를 위한 프로젝트 삭제-->
+    <delete id="delProject">
+        DELETE FROM project
+        WHERE user_id = #{userId}
     </delete>
 
 <!--회원탈퇴-->
@@ -161,7 +173,7 @@
 
 <!--이 밑은 지금 수정중입니다. 건들지마시오  비상 비상!@!@!@!@!@@!@-->
 <!--내 프로젝트의 좋아요, 댓글 삭제-->
-    <delete id="delProjectLikeAndProjectComment">
+    <delete id="delProjectLikeAndProjectComment1">
         DELETE B, C
         FROM shared_project A
         LEFT JOIN shared_project_like B
@@ -176,12 +188,12 @@
         WHERE project_id = #{projectId}
     </delete>
 
-    <delete id="delMandalart">
+    <delete id="delMandalart1">
         DELETE FROM mandalart A
         WHERE project_id = #{projectId}
     </delete>
 
-    <delete id="delProject">
+    <delete id="delProject1">
         DELETE FROM project A
         WHERE project_id = #{projectId}
         AND user_id

@@ -1,5 +1,6 @@
 package com.green1st.mandalartWeb.user;
 
+import com.green1st.mandalartWeb.common.MyFileUtils;
 import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -25,6 +27,8 @@ public class UserController {
     private final UserService userService;
     private final UserMessage userMessage;
     private final UserSignUpReq userSignUpReq;
+    private final MyFileUtils myFileUtils;
+
     @Autowired
     private MailSendService mss;
 
@@ -59,7 +63,7 @@ public class UserController {
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
     public ResultResponse<Integer> signUpUser(@RequestPart(required = false) MultipartFile pic
-                                              , @RequestPart @Valid UserSignUpReq p){
+            , @RequestPart @Valid UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
         //임의의 authKey 생성 & 이메일 발송
@@ -135,17 +139,40 @@ public class UserController {
                 .build();
     }
 
-    @PatchMapping
-    @Operation(summary = "유저정보수정")
-    public ResultResponse<Integer> patchUser(@RequestBody @Valid UserUpdateReq p) {
-        UserUpdateRes res = userService.patchUser(p);
+    @PatchMapping("profile")
+    @Operation(summary = "유저 정보 및 프로필 수정")
+    public ResultResponse<Integer> patchUser(@RequestPart(required = false) MultipartFile pic,
+                                             @RequestPart @Valid UserUpdateReq p) {
+        try {
+            if (pic != null && !pic.isEmpty()) {
+                String targetDir = "profile/" + p.getUserId();
+                myFileUtils.makeFolders(targetDir);
 
-        return ResultResponse.<Integer>builder()
-                .statusCode(res.getResult() == 1 ? "200" : "400")
-                .resultMsg(res.getMessage())
-                .resultData(res.getResult())
-                .build();
+                String savedFileName = myFileUtils.makeRandomFileName(pic);
+
+                myFileUtils.transferTo(pic, targetDir + "/" + savedFileName);
+
+                p.setPicName(targetDir + "/" + savedFileName);
+            }
+
+            UserUpdateRes res = userService.patchUser(p);
+
+            return ResultResponse.<Integer>builder()
+                    .statusCode(res.getResult() == 1 ? "200" : "400")
+                    .resultMsg(res.getMessage())
+                    .resultData(res.getResult())
+                    .build();
+
+        } catch (IOException e) {
+            log.error("프로필 사진 업로드 실패: {}", e.getMessage());
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("파일 업로드 중 오류 발생")
+                    .resultData(0)
+                    .build();
+        }
     }
+
 
     /*@DeleteMapping
     @Operation(summary = "회원탈퇴")
@@ -158,7 +185,7 @@ public class UserController {
                 .build();
     }*/
 
-    @DeleteMapping("testsssss")
+    @DeleteMapping()
     @Operation(summary = "나의 좋아요 댓글 삭제")
     public ResultResponse<Integer> deleteMyLikeComment(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
         UserDeleteRes res = userService.deleteLikeComment(p);
@@ -167,29 +194,6 @@ public class UserController {
                 .resultMsg(res.getMessage())
                 .resultData(res.getCheck() != 0 ? 1 : 0)
                 .build();
-    }
-
-    @DeleteMapping
-    @Operation(summary = "회원탈퇴")
-    public ResultResponse<Integer> deleteUser(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
-        UserDeleteRes res = userService.deleteLikeComment(p);
-        if(res.getCheck() == 0){
-            return ResultResponse.<Integer>builder()
-                    .statusCode(res.getCheck() != 0 ? "200" : "400")
-                    .resultMsg(res.getMessage())
-                    .resultData(res.getCheck() != 0 ? 1 : 0)
-                    .build();
-        }
-        userService.delSharedProjectLikeAndComment(p);
-        userService.delSharedProject(p);
-        int result = userService.delUser(p);
-
-        return ResultResponse.<Integer>builder()
-                .statusCode(result==1 ? "200" : "400")
-                .resultMsg("회원탈퇴 완료")
-                .resultData(result ==1 ? 1 : 0)
-                .build();
-
     }
 
 

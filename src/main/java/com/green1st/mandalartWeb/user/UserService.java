@@ -235,6 +235,23 @@ public class UserService {
     }
 
     //내가 좋아요한거, 댓글삭제
+    /*public UserDeleteRes deleteLikeComment(UserDeleteReq p){
+        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
+
+        if(userDeleteRes == null || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw()) ){
+            userDeleteRes.setMessage("이메일 혹은 비밀번호를 확인해주세요");
+            userDeleteRes.setCheck(0);
+            return userDeleteRes;
+        }
+
+        userMapper.delMyLikeAndComment(p);
+        userDeleteRes.setMessage("좋아요, 댓글 삭제 성공");
+        userDeleteRes.setCheck(1);
+        return userDeleteRes;
+    }*/
+
+
+    //내가 좋아요한거, 댓글 삭제 찐
     public UserDeleteRes deleteLikeComment(UserDeleteReq p){
         UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
 
@@ -254,17 +271,29 @@ public class UserService {
     public void delSharedProjectLikeAndComment(UserDeleteReq p){
         userMapper.delSharedProjectLikeAndComment(p);
     }
+
     //공유 프로젝트 삭제
     public void delSharedProject(UserDeleteReq p){
         userMapper.delSharedProject(p);
     }
+
+    //만다라트 삭제
+    public void delMandalart(UserDeleteReq p){
+        userMapper.delMandalart(p);
+    }
+
+    //프로젝트 삭제
+    public void delProject(UserDeleteReq p){
+        userMapper.delProject(p);
+    }
+
     //유저 삭제
     public int delUser(UserDeleteReq p){
         int result = userMapper.delUser(p);
         return result;
     }
 
-    //회원삭제(미완성)
+    /*//회원삭제(미완성)
     public int deleteUser(UserDeleteReq p){
         UserSignInReq req = new UserSignInReq();
         UserSignInRes res = userMapper.selUser(req);
@@ -292,7 +321,7 @@ public class UserService {
 
         userDeleteRes.setMessage("회원삭제가 완료되었습니다.");
         return 1;
-    }
+    }*/
     //데이터 내 정보로 할때 객체 선언하면 새로운거라서 다시 수정필요.
 
 

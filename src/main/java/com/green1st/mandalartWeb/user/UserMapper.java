@@ -42,10 +42,10 @@ public interface UserMapper {
 
 // ////////
     //전체삭제(미완성)
-    int delProjectLikeAndProjectComment(UserDeleteReq p);
+    //int delProjectLikeAndProjectComment(UserDeleteReq p);
     //int delSharedProject(UserDeleteReq p);
-    int delMandalart(UserDeleteReq p);
-    int delProject(UserDeleteReq p);
+    //int delMandalart(UserDeleteReq p);
+    //int delProject(UserDeleteReq p);
 
 
     //삭제를 위한 비밀번호 selet
@@ -57,6 +57,10 @@ public interface UserMapper {
     int delSharedProjectLikeAndComment(UserDeleteReq p);
     //공유 프로젝트 삭제
     int delSharedProject(UserDeleteReq p);
+    //만다라트 삭제
+    int delMandalart(UserDeleteReq p);
+    //프로젝트 삭제
+    int delProject(UserDeleteReq p);
     //유저 삭제
     int delUser(UserDeleteReq p);
 

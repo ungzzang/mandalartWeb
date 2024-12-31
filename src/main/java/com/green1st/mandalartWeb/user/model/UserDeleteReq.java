@@ -26,13 +26,13 @@ public class UserDeleteReq {
     private String upw;
 
 
-    @JsonIgnore
+    /*@JsonIgnore
     @Schema(description = "삭제할 댓글 PK")
     private long commentId;
 
     @JsonIgnore
     @Schema(description = "공유할 프로젝트 아이디(등록된 프로젝트여야함)", example = "1")
-    private long projectId;
+    private long projectId;*/
 
 //    public UserDeleteReq(String userId, String upw, long commentId, long projectId) {
 //        this.userId = userId;
