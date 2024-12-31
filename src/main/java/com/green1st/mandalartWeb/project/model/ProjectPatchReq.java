@@ -11,11 +11,11 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 public class ProjectPatchReq {
-    @Positive
-    @NotNull
+    @Positive(message = "프로젝트 아이디는 0이상이어야 합니다.")
+    @NotNull(message = "프로젝트 아이디는 빈값일 수 없습니다.")
     @Schema(description = "수정할 프로젝트 아이디", example = "test@gamil.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long projectId;
-    @NotNull
+    @NotNull(message = "로그인한 사용자 아이디는 빈값일 수 없습니다.")
     @Length(min = 10, max = 100)
     @Schema(description = "로그인한 사용자 아이디", example = "test@gamil.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;

@@ -8,6 +8,7 @@ import com.green1st.mandalartWeb.shared_project.model.SharedProjectDetailDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -126,6 +127,7 @@ public class MandalartService {
         return imminentResList;
     }
 
+    @Transactional
     public int patchMandalart(MandalartPostReq p) {
         if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
@@ -133,6 +135,61 @@ public class MandalartService {
 
         // DB 업데이트 실행
         int updatedRows = mapper.patchMandalart(p);
+
+        // 형재 요소가 전부 완료 되었는지 검사
+        List<MandalartGetRes> siblingList = mapper.selSiblingMandalart(p.getMandalartId());
+
+        if(siblingList.size() > 0) {
+            int completedCnt = 0;
+            long parentId = siblingList.get(0).getParentId();
+            int depth = siblingList.get(0).getDepth();
+
+            MandalartPostReq completedUpdateP = new MandalartPostReq();
+            completedUpdateP.setMandalartId(parentId);
+
+            for (MandalartGetRes item : siblingList) {
+                if (item.getCompletedFg() == 1) {
+                    completedCnt++;
+                }
+            }
+
+            if (completedCnt == 8) {
+                completedUpdateP.setCompletedFg(1);
+            } else {
+                completedUpdateP.setCompletedFg(0);
+            }
+
+            mapper.patchMandalart(completedUpdateP);
+
+            // 최하위
+            if (depth == 2) {
+                // 형재 요소가 전부 완료 되었는지 검사
+                siblingList = mapper.selSiblingMandalart(parentId);
+
+                if (siblingList.size() > 0) {
+                    completedCnt = 0;
+                    parentId = siblingList.get(0).getParentId();
+
+                    completedUpdateP = new MandalartPostReq();
+                    completedUpdateP.setMandalartId(parentId);
+
+                    for (MandalartGetRes item : siblingList) {
+                        if (item.getCompletedFg() == 1) {
+                            completedCnt++;
+                        }
+                    }
+
+                    if (completedCnt == 8) {
+                        completedUpdateP.setCompletedFg(1);
+                    } else {
+                        completedUpdateP.setCompletedFg(0);
+                    }
+
+                    mapper.patchMandalart(completedUpdateP);
+                }
+            }
+        }
+
 
         // 업데이트된 튜플 수 반환
         return updatedRows;

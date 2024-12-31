@@ -42,7 +42,7 @@
             <if test="finishDate != null">finish_date = #{finishDate},</if>
         </set>
         WHERE mandalart_id = #{mandalartId}
-        <if test="parentId != null">
+        <if test="parentId != 0">
             AND (
             #{startDate} IS NULL OR #{finishDate} IS NULL
             OR EXISTS (
@@ -56,5 +56,23 @@
             )
         </if>
     </update>
+
+   <select id="selSiblingMandalart">
+       SELECT mandalart_id AS mandalartId
+       , parent_id AS parentId
+       , title
+       , contents
+       , completed_fg AS completedFg
+       , depth
+       , start_date AS startDate
+       , finish_date AS finishDate
+       , order_id AS orderId
+       FROM mandalart
+       WHERE parent_id = (
+            SELECT parent_id
+            FROM mandalart
+            WHERE mandalart_id = #{mandalartId}
+       )
+   </select>
 
 </mapper>
