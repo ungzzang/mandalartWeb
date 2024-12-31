@@ -234,24 +234,8 @@ public class UserService {
         return res;
     }
 
-    //내가 좋아요한거, 댓글삭제
-    /*public UserDeleteRes deleteLikeComment(UserDeleteReq p){
-        UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
 
-        if(userDeleteRes == null || !BCrypt.checkpw(p.getUpw(), userDeleteRes.getUpw()) ){
-            userDeleteRes.setMessage("이메일 혹은 비밀번호를 확인해주세요");
-            userDeleteRes.setCheck(0);
-            return userDeleteRes;
-        }
-
-        userMapper.delMyLikeAndComment(p);
-        userDeleteRes.setMessage("좋아요, 댓글 삭제 성공");
-        userDeleteRes.setCheck(1);
-        return userDeleteRes;
-    }*/
-
-
-    //내가 좋아요한거, 댓글 삭제 찐
+    //내가 좋아요한거, 댓글 삭제
     public UserDeleteRes deleteLikeComment(UserDeleteReq p){
         UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
 
@@ -293,36 +277,6 @@ public class UserService {
         return result;
     }
 
-    /*//회원삭제(미완성)
-    public int deleteUser(UserDeleteReq p){
-        UserSignInReq req = new UserSignInReq();
-        UserSignInRes res = userMapper.selUser(req);
-        UserDeleteRes userDeleteRes = new UserDeleteRes();
-        if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
-            userDeleteRes.setMessage("아이디 혹은 비밀번호를 확인해 주십시오.");
-            return 0;
-        }
-
-        //구성요소들 삭제
-        int deleteLikeComment = userMapper.delProjectLikeAndProjectComment(p);
-        log.info("deleteLikeComment: {}", deleteLikeComment);
-        int deleteSharedProject = userMapper.delSharedProject(p);
-        log.info("deleteSharedProject: {}", deleteSharedProject);
-        int deleteMandalart = userMapper.delMandalart(p);
-        log.info("deleteMandalart: {}", deleteMandalart);
-        int deleteProject = userMapper.delProject(p);
-        log.info("deleteProject: {}", deleteProject);
-        int deleteUser = userMapper.delUser(p);
-        log.info("deleteUser: {}", deleteUser);
-
-        //사진 삭제 (폴더 삭제)
-        String deletePath = String.format("%s/user/%s", myFileUtils.getUploadPath(), p.getUserId());
-        myFileUtils.deleteFolder(deletePath, true);
-
-        userDeleteRes.setMessage("회원삭제가 완료되었습니다.");
-        return 1;
-    }*/
-    //데이터 내 정보로 할때 객체 선언하면 새로운거라서 다시 수정필요.
 
 
     // -------------------------------------------------------

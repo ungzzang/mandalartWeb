@@ -12,6 +12,9 @@ public class UserSignInRes {
     private String userId;
     private String nickName;
     private String pic;
+
+    //private String imProject;
+
     @JsonIgnore
     private String upw;
     @JsonIgnore

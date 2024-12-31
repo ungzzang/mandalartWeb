@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,9 +26,7 @@ import java.time.LocalDateTime;
 public class UserController {
     private final UserService userService;
     private final UserMessage userMessage;
-    private final UserSignUpReq userSignUpReq;
     private final MyFileUtils myFileUtils;
-
     @Autowired
     private MailSendService mss;
 
@@ -63,7 +61,7 @@ public class UserController {
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
     public ResultResponse<Integer> signUpUser(@RequestPart(required = false) MultipartFile pic
-            , @RequestPart @Valid UserSignUpReq p){
+                                              , @RequestPart @Valid UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
         //임의의 authKey 생성 & 이메일 발송
@@ -71,7 +69,7 @@ public class UserController {
         AuthKeyDto authKeyDto = new AuthKeyDto();
         authKeyDto.setEmail(p.getUserId());
         authKeyDto.setAuthKey(authKey);
-        //long expiryTime = System.currentTimeMillis() + 10 * 60 * 1000;  // 현재 시간 + 5분 (밀리초 단위)
+
         LocalDateTime expireTimes = LocalDateTime.now().plusMinutes(10);
         authKeyDto.setExpiryTime(expireTimes);
 
@@ -112,7 +110,6 @@ public class UserController {
 
 
 
-
     @PostMapping("signIn")
     @Operation(summary = "로그인")
     public ResultResponse<UserSignInRes> signInUser(@RequestBody @Valid UserSignInReq p) {
@@ -139,7 +136,7 @@ public class UserController {
                 .build();
     }
 
-    @PatchMapping("profile")
+    @PatchMapping
     @Operation(summary = "유저 정보 및 프로필 수정")
     public ResultResponse<Integer> patchUser(@RequestPart(required = false) MultipartFile pic,
                                              @RequestPart @Valid UserUpdateReq p) {
@@ -174,26 +171,30 @@ public class UserController {
     }
 
 
-    /*@DeleteMapping
+    @DeleteMapping
     @Operation(summary = "회원탈퇴")
-    public ResultResponse<Integer> deleteUser(@ParameterObject @ModelAttribute UserDeleteReq p) {
-        int result = userService.deleteUser(p);
-        UserDeleteRes res = new UserDeleteRes();
-        return ResultResponse.<Integer>builder()
-                .statusCode(result == 1 ? "200" : "400")
-                .resultMsg(res.getMessage())
-                .build();
-    }*/
-
-    @DeleteMapping()
-    @Operation(summary = "나의 좋아요 댓글 삭제")
-    public ResultResponse<Integer> deleteMyLikeComment(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
+    public ResultResponse<Integer> deleteUser(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
         UserDeleteRes res = userService.deleteLikeComment(p);
+        if(res.getCheck() == 0){
+            return ResultResponse.<Integer>builder()
+                    .statusCode(res.getCheck() != 0 ? "200" : "400")
+                    .resultMsg(res.getMessage())
+                    .resultData(res.getCheck() != 0 ? 1 : 0)
+                    .build();
+        }
+        userService.delSharedProjectLikeAndComment(p);
+        userService.delSharedProject(p);
+        userService.delMandalart(p);
+        userService.delProject(p);
+
+        int result = userService.delUser(p);
+
         return ResultResponse.<Integer>builder()
-                .statusCode(res.getCheck() != 0 ? "200" : "400")
-                .resultMsg(res.getMessage())
-                .resultData(res.getCheck() != 0 ? 1 : 0)
+                .statusCode(result==1 ? "200" : "400")
+                .resultMsg("회원탈퇴 완료")
+                .resultData(result ==1 ? 1 : 0)
                 .build();
+
     }
 
 
