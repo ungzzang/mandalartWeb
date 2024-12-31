@@ -22,41 +22,36 @@ public class MandalartLikeController {
     @Operation(summary = "프로젝트 좋아요 등록")
     public ResultResponse<Integer> sharedProjectLike(@Valid @RequestBody ProjectLikeDto dto) {
         log.info("MandalartLikeController > sharedProjectLike > dto: {}", dto);
-        try {
             int result = mandalartLikeService.insMandalratLike(dto);
-            return ResultResponse.<Integer>builder()
-                    .statusCode("200")
-                    .resultMsg("프로젝트 좋아요 완료")
-                    .resultData(result)
-                    .build();
-        } catch (DuplicateKeyException e) {
-            log.error("MandalartLikeController > sharedProjectLike > error", e);
+            if(result == 1) {
+                return ResultResponse.<Integer>builder()
+                        .statusCode("200")
+                        .resultMsg("프로젝트 좋아요 완료")
+                        .resultData(result)
+                        .build();
+            }
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
                     .resultMsg("공유 프로젝트 좋아요 실패")
                     .resultData(0)
                     .build();
-        }
     }
 
     @DeleteMapping("/like")
     @Operation(summary = "프로젝트 좋아요 취소")
     public ResultResponse<Integer> sharedProjectLikeDelete(@Valid @RequestBody ProjectLikeDto dto) {
         log.info("MandalartLikeController > sharedProjectLikeDelete > dto: {}", dto);
-        try {
-            int result = mandalartLikeService.delMandalratLike(dto);
+        int result = mandalartLikeService.delMandalratLike(dto);
+        if (result == 1) {
             return ResultResponse.<Integer>builder()
                     .statusCode("200")
                     .resultMsg("프로젝트 좋아요 취소 완료")
                     .resultData(result)
                     .build();
-        } catch (DuplicateKeyException e) {
-            log.error("MandalartLikeController > sharedProjectLikeDelete > error", e);
-            return ResultResponse.<Integer>builder()
-                    .statusCode("400")
-                    .resultMsg("공유 프로젝트 좋아요 취소 실패")
-                    .resultData(0)
-                    .build();
-        }
+        } return ResultResponse.<Integer>builder()
+                .statusCode("400")
+                .resultMsg("공유 프로젝트 좋아요 취소 실패")
+                .resultData(0)
+                .build();
     }
 }
