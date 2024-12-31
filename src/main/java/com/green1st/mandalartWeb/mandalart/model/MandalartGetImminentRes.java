@@ -3,6 +3,7 @@ package com.green1st.mandalartWeb.mandalart.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,6 +12,6 @@ public class MandalartGetImminentRes {
     private long projectId;
     private int cnt;
     private String title;
-    private LocalDateTime startDate;
-    private LocalDateTime finishDate;
+    private LocalDate startDate;
+    private LocalDate finishDate;
 }
