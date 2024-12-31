@@ -3,6 +3,7 @@ package com.green1st.mandalartWeb.project.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,6 +13,6 @@ public class ProjectDetailDto {
     private String nickName;
     private String title;
     private String content;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     private int sharedFg;
 }
