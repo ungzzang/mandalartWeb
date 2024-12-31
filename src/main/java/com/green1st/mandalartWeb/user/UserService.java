@@ -174,68 +174,66 @@ public class UserService {
 
 
     //회원정보수정
-    public UserUpdateRes patchUser(MultipartFile pic, UserUpdateReq p){
-        // 이메일, 비밀번호 일치 여부 확인
-        UserUpdateRes res = userMapper.checkPassWord(p.getUserId());
-        if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
-            res = new UserUpdateRes();
-            res.setMessage("이메일 혹은 비밀번호 재확인필요");
-            res.setResult(0);
-            return res;
-        }
+    public UserUpdateRes patchUser(MultipartFile pic, UserUpdateReq p) {
+        UserUpdateRes res = new UserUpdateRes();
 
-        // 비밀번호 바꿀시
-        if(p.getNewUpw() != null && p.getCheckUpw() != null) {
-            if(p.getNewUpw().equals(p.getCheckUpw())) {
-                String hashedPassWord = BCrypt.hashpw(p.getNewUpw(), BCrypt.gensalt());
-                p.setNewUpw(hashedPassWord);
-            }
-            else {
-                res.setMessage("비밀번호를 다시 입력해주십시오.");
+        try {
+            // 이메일, 비밀번호 일치 여부 확인
+            UserUpdateRes passwordCheckRes = userMapper.checkPassWord(p.getUserId());
+            if (passwordCheckRes == null || !BCrypt.checkpw(p.getUpw(), passwordCheckRes.getUpw())) {
+                res.setMessage("이메일 혹은 비밀번호 재확인필요");
                 res.setResult(0);
                 return res;
             }
-        }
 
-        // 닉네임 바꿀시
-        if(p.getNickName() != null) { //*여기검토*
-            int check = nickNameChk(p.getNickName()).getCheck();
-            if(check == 0){
-                res.setMessage("중복된 닉네임입니다.");
-                res.setResult(0);
-                return res;
+            // 비밀번호 변경 처리
+            if (p.getNewUpw() != null && p.getCheckUpw() != null) {
+                if (p.getNewUpw().equals(p.getCheckUpw())) {
+                    String hashedPassWord = BCrypt.hashpw(p.getNewUpw(), BCrypt.gensalt());
+                    p.setNewUpw(hashedPassWord);
+                } else {
+                    res.setMessage("비밀번호를 다시 입력해주십시오.");
+                    res.setResult(0);
+                    return res;
+                }
             }
-        }
 
-        //저장할 파일명(랜덤명 파일명) 생성
-        String savedPicName = (p.getPicName() != null ? myFileUtils.makeRandomFileName(p.getPicName()) : null);
-        p.setPicName(savedPicName);
+            // 닉네임 중복 체크
+            if (p.getNickName() != null) {
+                int check = nickNameChk(p.getNickName()).getCheck();
+                if (check == 0) {
+                    res.setMessage("중복된 닉네임입니다.");
+                    res.setResult(0);
+                    return res;
+                }
+            }
 
-        if(p.getPicName() != null) {
-            //폴더 생성
-            String folderPath = String.format("user/%s", p.getUserId());
-            myFileUtils.makeFolders(folderPath);
+            // 프로필 사진 처리
+            if (pic != null && !pic.isEmpty()) {
+                String targetDir = "user/" + p.getUserId();
+                myFileUtils.makeFolders(targetDir);
 
-            //기존 파일 삭제
-            String deletePath = String.format("%s/user/%s", myFileUtils.getUploadPath(), p.getUserId());
-            myFileUtils.deleteFolder(deletePath, false);
+                String savedFileName = myFileUtils.makeRandomFileName(pic);
+                p.setPicName(savedFileName);
 
-            //원하는 위치에 저장할 파일명으로 파일을 이동(transferTo)
-            String userId = p.getUserId();
-            String filePath = String.format("user/%s/%s", userId, savedPicName);
+                // 기존 파일 삭제
+                String deletePath = String.format("%s/user/%s", myFileUtils.getUploadPath(), p.getUserId());
+                myFileUtils.deleteFolder(deletePath, false);
 
-            try {
+                // 파일 이동
+                String filePath = String.format("%s/%s", targetDir, savedFileName);
                 myFileUtils.transferTo(pic, filePath);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+
+            // DB에 튜플을 수정(Update)
+            int result = userMapper.updUser(p);
+            res.setMessage("회원수정이 완료되었습니다.");
+            res.setResult(result);
+        } catch (IOException e) {
+            res.setMessage("파일 업로드 중 오류 발생");
+            res.setResult(0);
         }
 
-        // DB에 튜플을 수정(Update)
-        int result = userMapper.updUser(p);
-
-        res.setMessage("회원수정이 완료되었습니다.");
-        res.setResult(result);
         return res;
     }
 
@@ -280,7 +278,6 @@ public class UserService {
     public void delFindPw(UserDeleteReq p){
         userMapper.delFindPw(p);
     }
-
 
     //유저 삭제
     public int delUser(UserDeleteReq p){
