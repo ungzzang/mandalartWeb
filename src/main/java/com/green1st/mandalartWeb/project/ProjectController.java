@@ -21,7 +21,7 @@ public class ProjectController {
 
     @PostMapping
     @Operation(summary = "프로젝트 등록", description = "프로젝트를 등록하는 API")
-    public ResultResponse<?> postProject(@RequestBody ProjectPostReq p) {
+    public ResultResponse<?> postProject(@RequestBody @Valid ProjectPostReq p) {
         return projectService.postProject(p);
     }
 
@@ -33,13 +33,13 @@ public class ProjectController {
 
     @PatchMapping
     @Operation(summary = "프로젝트 수정", description = "프로젝트를 수정하는 API")
-    public ResultResponse<?> postProject(@RequestPart MultipartFile pic, @RequestPart ProjectPatchReq p) {
+    public ResultResponse<?> postProject(@RequestPart MultipartFile pic, @RequestPart @Valid ProjectPatchReq p) {
         return projectService.patchProject(pic, p);
     }
 
     @DeleteMapping
     @Operation(summary = "프로젝트 삭제", description = "프로젝트를 삭제하는 API")
-    public ResultResponse<?> postProject(@ParameterObject @ModelAttribute ProjectDelReq p) {
+    public ResultResponse<?> postProject(@ParameterObject @ModelAttribute @Valid ProjectDelReq p) {
         return projectService.delProject(p);
     }
 }

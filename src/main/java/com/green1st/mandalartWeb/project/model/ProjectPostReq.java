@@ -15,6 +15,7 @@ public class ProjectPostReq {
     @NotNull
     @Positive
     @Schema(description = "프로젝트 PK", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonIgnore
     private Long projectId;
     @NotNull
     @Length(min = 10, max = 100)
