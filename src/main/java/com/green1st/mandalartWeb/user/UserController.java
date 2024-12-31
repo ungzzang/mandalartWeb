@@ -61,7 +61,7 @@ public class UserController {
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
     public ResultResponse<Integer> signUpUser(@RequestPart(required = false) MultipartFile pic
-                                              , @RequestPart @Valid UserSignUpReq p){
+            , @RequestPart @Valid UserSignUpReq p){
         int result = userService.postSignUp(pic, p);
 
         //임의의 authKey 생성 & 이메일 발송
@@ -140,35 +140,14 @@ public class UserController {
     @Operation(summary = "유저 정보 및 프로필 수정")
     public ResultResponse<Integer> patchUser(@RequestPart(required = false) MultipartFile pic,
                                              @RequestPart @Valid UserUpdateReq p) {
-        try {
-            if (pic != null && !pic.isEmpty()) {
-                String targetDir = "profile/" + p.getUserId();
-                myFileUtils.makeFolders(targetDir);
 
-                String savedFileName = myFileUtils.makeRandomFileName(pic);
+        UserUpdateRes res = userService.patchUser(pic, p);
 
-                p.setPicName(savedFileName);
-
-                myFileUtils.transferTo(pic, targetDir + "/" + savedFileName);
-
-            }
-
-            UserUpdateRes res = userService.patchUser(pic, p);
-
-            return ResultResponse.<Integer>builder()
-                    .statusCode(res.getResult() == 1 ? "200" : "400")
-                    .resultMsg(res.getMessage())
-                    .resultData(res.getResult())
-                    .build();
-
-        } catch (IOException e) {
-            log.error("프로필 사진 업로드 실패: {}", e.getMessage());
-            return ResultResponse.<Integer>builder()
-                    .statusCode("400")
-                    .resultMsg("파일 업로드 중 오류 발생")
-                    .resultData(0)
-                    .build();
-        }
+        return ResultResponse.<Integer>builder()
+                .statusCode(res.getResult() == 1 ? "200" : "400")
+                .resultMsg(res.getMessage())
+                .resultData(res.getResult())
+                .build();
     }
 
 
