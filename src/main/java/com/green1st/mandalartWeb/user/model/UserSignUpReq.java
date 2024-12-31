@@ -19,6 +19,7 @@ public class UserSignUpReq {
     @Schema(title = "유저이메일", example = "test@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
 
+
     @NotEmpty(message = "비밀번호를 입력해주세요.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*()-_=+\\\\\\\\|\\\\[{\\\\]};:'\\\",<.>/?]).{8,20}$"
             , message = "비밀번호는 특수문자와 숫자를 포함한 8자 이상 20자 이하여야 합니다.")
