@@ -16,13 +16,13 @@ import java.beans.ConstructorProperties;
 public class UserDeleteReq {
 
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}$", message = "유효하지 않은 형식의 이메일입니다.")
-    @Schema(description = "유저 이메일", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "유저 이메일", example = "test@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userId;
 
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[!@#$%^&*()-_=+\\\\\\\\|\\\\[{\\\\]};:'\\\",<.>/?]).{8,20}$"
             , message = "비밀번호는 특수문자와 숫자를 포함한 8자 이상이어야 합니다.")
-    @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "비밀번호", example = "123abc!@#", requiredMode = Schema.RequiredMode.REQUIRED)
     private String upw;
 
 
