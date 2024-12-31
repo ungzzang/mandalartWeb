@@ -15,7 +15,6 @@ public class SharedProjectPostReq {
     @NotNull
     @Positive
     @Schema(description = "공유할 프로젝트 아이디(등록된 프로젝트여야함)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    @JsonIgnore
     private Long projectId;
     @Length(max = 50)
     @Schema(description = "공유 프로젝트 제목", example = "공유 프로젝트 제목 입니다.", requiredMode = Schema.RequiredMode.REQUIRED)
