@@ -32,6 +32,20 @@
         GROUP BY A.project_id;
     </select>
 
+    <select id="selMandalartByMandalartId">
+        SELECT mandalart_id AS mandalartId
+        , a.parent_id AS parentId
+        , a.title
+        , a.contents
+        , a.completed_fg AS completedFg
+        , a.depth
+        , a.start_date AS startDate
+        , a.finish_date AS finishDate
+        , a.order_id AS orderId
+        FROM mandalart a
+        WHERE a.mandalart_id = #{mandalartId}
+    </select>
+
     <update id="patchMandalart">
         UPDATE mandalart
         SET

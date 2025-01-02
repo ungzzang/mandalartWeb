@@ -131,8 +131,20 @@ public class MandalartService {
 
     @Transactional
     public int patchMandalart(MandalartPostReq p) {
+        MandalartGetRes parentMand = mapper.selMandalartByMandalartId(p.getParentId());
+
         if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
+        }
+
+        if(parentMand != null) {
+            if(parentMand.getFinishDate().equals(p.getStartDate()) || parentMand.getStartDate().isBefore(p.getStartDate()) || parentMand.getFinishDate().isAfter(p.getFinishDate())) {
+                throw new IllegalArgumentException("상위 목표의 기간을 벗어 납니다.");
+            }
+
+            if(parentMand.getTitle().equals("") || parentMand.getTitle() == null) {
+                throw new IllegalArgumentException("상위 목표를 생성해 주세요.");
+            }
         }
 
 
@@ -146,12 +158,6 @@ public class MandalartService {
             int completedCnt = 0;
             long parentId = siblingList.get(0).getParentId();
             int depth = siblingList.get(0).getDepth();
-
-            if (parentId > 0){
-                if (p.getTitle().equals("")){
-                    throw new NullPointerException();
-                }
-            }
 
             MandalartPostReq completedUpdateP = new MandalartPostReq();
             completedUpdateP.setMandalartId(parentId);
