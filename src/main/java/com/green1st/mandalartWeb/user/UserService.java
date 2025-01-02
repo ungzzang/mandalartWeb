@@ -193,7 +193,7 @@ public class UserService {
             }
 
             // 닉네임 중복 체크
-            if (p.getNickName() != null) {
+            if (p.getNickName() != null && p.getNickName() != "") {
                 int check = nickNameChk(p.getNickName()).getCheck();
                 if (check == 0) {
                     res.setMessage("중복된 닉네임입니다.");
