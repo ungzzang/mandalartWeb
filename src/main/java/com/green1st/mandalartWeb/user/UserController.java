@@ -30,8 +30,6 @@ public class UserController {
     @Autowired
     private MailSendService mss;
 
-
-    //이메일 중복체크
     @GetMapping("email")
     @Operation(summary = "이메일 중복체크")
     public ResultResponse<Integer> emailChk(@ParameterObject @ModelAttribute @Valid DuplicateEmailReq p){
@@ -44,7 +42,6 @@ public class UserController {
                 .build();
     }
 
-    //닉네임 중복체크
     @GetMapping("nickName")
     @Operation(summary = "닉네임 중복체크")
     public ResultResponse<Integer> nickNameChk(@ParameterObject @ModelAttribute @Valid DuplicateNickNameReq p) {
@@ -56,7 +53,6 @@ public class UserController {
                 .resultData(res.getCheck())
                 .build();
     }
-
 
     @PostMapping("signUp")
     @Operation(summary = "회원가입")
@@ -73,9 +69,7 @@ public class UserController {
         LocalDateTime expireTimes = LocalDateTime.now().plusMinutes(10);
         authKeyDto.setExpiryTime(expireTimes);
 
-        //DB에 authKey insert
         userService.insAuthKey(authKeyDto);
-
 
         return ResultResponse.<Integer>builder()
                 .statusCode(result == 1 ? "200" : "400")
@@ -94,21 +88,17 @@ public class UserController {
             userService.delUserFirst(authKeyDto);
             return "코드가 유효하지않습니다. 다시 요청해주세요.";
         } else if (isCodeValid == 0) {
-            userService.delAuthKey(authKeyDto); //만료되면 자동으로 삭제처리
-            userService.delUserFirst(authKeyDto); //이메일 다시 요청을 위해 기존 유저정보 삭제
+            userService.delAuthKey(authKeyDto);
+            userService.delUserFirst(authKeyDto);
             return "이메일 인증 코드가 만료되었습니다. 다시 요청해주세요.";
         }
 
-        // 인증코드 삭제
         userService.delAuthKey(authKeyDto);
-
         // 인증 코드가 유효하다면 회원가입 처리 로직 실행
         String msg = "회원가입이 완료되었습니다.";
 
         return "redirect:http://localhost:9090/login?msg=" + msg;
     }
-
-
 
     @PostMapping("signIn")
     @Operation(summary = "로그인")
@@ -150,7 +140,6 @@ public class UserController {
                 .build();
     }
 
-
     @DeleteMapping
     @Operation(summary = "회원탈퇴")
     public ResultResponse<Integer> deleteUser(@ParameterObject @ModelAttribute @Valid UserDeleteReq p){
@@ -177,7 +166,6 @@ public class UserController {
                 .build();
 
     }
-
 
     // 임시 비밀번호 발급
     @PostMapping("password")
