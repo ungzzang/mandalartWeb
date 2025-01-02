@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @Schema(title = "이메일 중복체크")
 public class DuplicateEmailReq {
-
     @NotEmpty
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "유효하지 않은 형식의 이메일입니다.")
     @Schema(title = "유저이메일")

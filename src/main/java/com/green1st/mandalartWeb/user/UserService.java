@@ -1,16 +1,15 @@
 package com.green1st.mandalartWeb.user;
 
 import com.green1st.mandalartWeb.common.MyFileUtils;
-import com.green1st.mandalartWeb.user.delete.model.ProjectCommentAndLikeDeleteReq;
-import com.green1st.mandalartWeb.user.delete.model.ProjectDeleteReq;
+
 import com.green1st.mandalartWeb.user.model.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
+
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -19,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Slf4j
@@ -34,18 +33,17 @@ public class UserService {
     @Value("${spring.mail.username}")
     private static String FROM_ADDRESS;
 
-
     //이메일 중복체크
     public DuplicateEmailRes emailChk(String userId){
         DuplicateEmailRes res = userMapper.checkEmailPw(userId);
 
         if(res == null){
             res = new DuplicateEmailRes();
-            res.setCheck(1); //중복되는 이메일없을때
+            res.setCheck(1);
             res.setMessage("사용가능한 이메일입니다.");
             return res;
         }else {
-            res.setCheck(0); //중복되는 이메일있을때
+            res.setCheck(0);
             res.setMessage("중복된 이메일입니다.");
             return res;
         }
@@ -57,16 +55,15 @@ public class UserService {
 
         if(res == null){
             res = new DuplicateNickNameRes();
-            res.setCheck(1); //중복되는 닉네임없을때
+            res.setCheck(1);
             res.setMessage("사용가능한 닉네임입니다.");
             return res;
         }else {
-            res.setCheck(0); //중복되는 닉네임있을때
+            res.setCheck(0);
             res.setMessage("중복된 닉네임입니다.");
             return res;
         }
     }
-
 
     //회원가입
     public int postSignUp(MultipartFile pic, UserSignUpReq p){
@@ -106,7 +103,7 @@ public class UserService {
 
     }
 
-    //데이터베이스내 인증코드 저장
+    // 인증 코드 저장
     public void insAuthKey(AuthKeyDto p) {
 
         userMapper.insAuth(p);
@@ -121,7 +118,6 @@ public class UserService {
             return 2;  // 해당 이메일로 저장된 인증 코드가 없으면 유효하지 않음
         }
 
-        // 인증 코드가 일치하고, 만료 시간이 지나지 않았는지 확인
         LocalDateTime now = LocalDateTime.now();
         if (record.getAuthKey().equals(p.getAuthKey()) && record.getExpiryTime().isAfter(now)) {
             return 1;  // 인증 코드와 만료 시간 모두 유효
@@ -151,7 +147,6 @@ public class UserService {
             return res;
         }
 
-
         UserSignInRes res = userMapper.selUser(p);
         log.info("조회된 회원정보: {}", res);
         if(res == null || !BCrypt.checkpw(p.getUpw(), res.getUpw())){
@@ -171,7 +166,6 @@ public class UserService {
     public UserInfoGetRes getUserInfo(UserInfoGetReq p){
         return userMapper.selUserInfo(p);
     }
-
 
     //회원정보수정
     public UserUpdateRes patchUser(MultipartFile pic, UserUpdateReq p) {
@@ -220,12 +214,12 @@ public class UserService {
                 String deletePath = String.format("%s/user/%s", myFileUtils.getUploadPath(), p.getUserId());
                 myFileUtils.deleteFolder(deletePath, false);
 
-                // 파일 이동
+                // 파일 저장
                 String filePath = String.format("%s/%s", targetDir, savedFileName);
                 myFileUtils.transferTo(pic, filePath);
             }
 
-            // DB에 튜플을 수정(Update)
+            // 최종 수정
             int result = userMapper.updUser(p);
             res.setMessage("회원수정이 완료되었습니다.");
             res.setResult(result);
@@ -233,12 +227,10 @@ public class UserService {
             res.setMessage("파일 업로드 중 오류 발생");
             res.setResult(0);
         }
-
         return res;
     }
 
-
-    //내가 좋아요한거, 댓글 삭제
+    //유저 정보 삭제
     public UserDeleteRes deleteLikeComment(UserDeleteReq p){
         UserDeleteRes userDeleteRes = userMapper.checkPassWord2(p);
 
@@ -254,40 +246,23 @@ public class UserService {
         return userDeleteRes;
     }
 
-    //공유 프로젝트 좋아요, 댓글 삭제
-    public void delSharedProjectLikeAndComment(UserDeleteReq p){
-        userMapper.delSharedProjectLikeAndComment(p);
-    }
+    public void delSharedProjectLikeAndComment(UserDeleteReq p){ userMapper.delSharedProjectLikeAndComment(p); }
 
-    //공유 프로젝트 삭제
-    public void delSharedProject(UserDeleteReq p){
-        userMapper.delSharedProject(p);
-    }
+    public void delSharedProject(UserDeleteReq p){ userMapper.delSharedProject(p); }
 
-    //만다라트 삭제
-    public void delMandalart(UserDeleteReq p){
-        userMapper.delMandalart(p);
-    }
+    public void delMandalart(UserDeleteReq p){ userMapper.delMandalart(p); }
 
-    //프로젝트 삭제
-    public void delProject(UserDeleteReq p){
-        userMapper.delProject(p);
-    }
+    public void delProject(UserDeleteReq p){ userMapper.delProject(p); }
 
-    //임시비밀번호 데이터 삭제
     public void delFindPw(UserDeleteReq p){
         userMapper.delFindPw(p);
     }
 
-    //유저 삭제
     public int delUser(UserDeleteReq p){
         int result = userMapper.delUser(p);
         return result;
     }
 
-
-
-    // -------------------------------------------------------
     // 임시 비밀번호 발급
     public int tempPassword(TempPasswordDto tempPasswordDto) {
         String userId = userMapper.checkPasswordId(tempPasswordDto.getUserId());

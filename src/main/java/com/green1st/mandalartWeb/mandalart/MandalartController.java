@@ -107,4 +107,24 @@ public class MandalartController {
                 .resultData(imminentResList)
                 .build();
     }
+
+    @GetMapping("/calendar")
+    @Operation(summary = "캘린더 만다라트 조회", description = "월에 맞는 만다라트 조회")
+    public ResultResponse<?> getMandalart(@Valid @ParameterObject @ModelAttribute MandalartCalendarGetReq p) {
+       List<MandalartCalendarGetRes> res = service.getMandalartCalendar(p);
+
+        if (res == null) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("만다라트 켈린더 조회 실패")
+                    .resultData(0)
+                    .build();
+        }
+
+        return ResultResponse.<List<MandalartCalendarGetRes>>builder()
+                .statusCode("200")
+                .resultMsg("만다라트 켈린더 조회 완료")
+                .resultData(res)
+                .build();
+    }
 }

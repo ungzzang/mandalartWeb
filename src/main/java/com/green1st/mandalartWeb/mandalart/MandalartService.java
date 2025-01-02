@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 
@@ -204,5 +205,17 @@ public class MandalartService {
             }
         }
         return completedCnt;
+    }
+
+    public List<MandalartCalendarGetRes> getMandalartCalendar(MandalartCalendarGetReq p) {
+        String monthStr = p.getMonth() < 10 ? "0" + p.getMonth() : String.valueOf(p.getMonth());
+
+        p.setStartDate(p.getYear() + "-" + monthStr + "-01");
+
+        YearMonth yearMonth = YearMonth.of(p.getYear(), p.getMonth());
+
+        p.setFinishDate(p.getYear() + "-" + monthStr + yearMonth.atEndOfMonth());
+
+        return mapper.selMandalartCalendar(p);
     }
 }

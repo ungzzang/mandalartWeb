@@ -12,4 +12,5 @@ public interface MandalartMapper {
     int patchMandalart (MandalartPostReq p);
     List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p);
     List<MandalartGetRes> selSiblingMandalart(long mandalartId);
+    List<MandalartCalendarGetRes> selMandalartCalendar (MandalartCalendarGetReq p);
 }
