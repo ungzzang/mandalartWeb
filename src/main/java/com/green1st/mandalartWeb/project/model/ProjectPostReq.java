@@ -12,7 +12,6 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @Schema(description = "프로젝트 등록 모델")
 public class ProjectPostReq {
-    @NotNull
     @Positive
     @Schema(description = "프로젝트 PK", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonIgnore
