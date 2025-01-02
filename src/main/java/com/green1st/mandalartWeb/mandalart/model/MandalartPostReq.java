@@ -27,6 +27,8 @@ public class MandalartPostReq {
     private LocalDate startDate;
     @Schema(description = "종료일")
     private LocalDate finishDate;
+    @Schema(description = "업데이트일")
+    private LocalDate updatedAt;
     @Schema(description = "부모 id")
     private int parentId;
 }
