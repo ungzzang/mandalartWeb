@@ -22,7 +22,7 @@ spring:
   #File 업로드 설정
   servlet:
     multipart:
-      max-file-size: 15MB
+      max-file-size: 50MB
 
 #MyBatis 설정
 mybatis:
