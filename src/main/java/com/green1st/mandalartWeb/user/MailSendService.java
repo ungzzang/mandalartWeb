@@ -45,7 +45,7 @@ public class MailSendService {
             sendMail.setText(new StringBuffer()
                     .append("<h1>[이메일 인증]</h1>")
                     .append("<p>아래 링크를 클릭하시면 이메일 인증이 완료됩니다.</p>")
-                    .append("<a href='http://localhost:8080/api/user/auth_num?email=")
+                    .append("<a href='http://112.222.157.156:5211/api/user/auth_num?email=")
                     .append(email)
                     .append("&authKey=")
                     .append(authKey)

@@ -14,7 +14,6 @@ public class UserSignInRes {
     private String userId;
     private String nickName;
 
-    @JsonIgnore
     private String pic;
 
     private List<LoginDto> imProject;

@@ -135,6 +135,7 @@ public class MandalartService {
             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
         }
 
+
         // DB 업데이트 실행
         int updatedRows = mapper.patchMandalart(p);
 
@@ -145,6 +146,12 @@ public class MandalartService {
             int completedCnt = 0;
             long parentId = siblingList.get(0).getParentId();
             int depth = siblingList.get(0).getDepth();
+
+            if (parentId > 0){
+                if (p.getTitle().equals("")){
+                    throw new NullPointerException();
+                }
+            }
 
             MandalartPostReq completedUpdateP = new MandalartPostReq();
             completedUpdateP.setMandalartId(parentId);
