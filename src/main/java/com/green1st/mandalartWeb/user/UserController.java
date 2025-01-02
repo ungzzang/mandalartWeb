@@ -185,9 +185,6 @@ public class UserController {
                     .resultMsg("아이디가 존재하지 않습니다.")
                     .resultData(0)
                     .build();
-        } catch (DuplicateKeyException e) {
-            throw new IllegalStateException("이미 임시 비밀번호가 발급되었습니다.", e);
         }
     }
-
 }

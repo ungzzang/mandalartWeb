@@ -164,6 +164,13 @@
              , tmp_password = #{tmpPassword}
     </insert>
 
+    <insert id="insPassword2">
+        INSERT INTO find_password (user_id, tmp_password)
+        VALUES (#{userId}, #{tmpPassword})
+            ON DUPLICATE KEY
+        UPDATE tmp_password = VALUES(tmp_password)
+    </insert>
+
 <!--임시 비밀번호로 수정-->
     <update id="updTmpPassword">
         UPDATE user
@@ -185,5 +192,11 @@
         FROM user
         WHERE user_id = #{userId}
     </select>
+
+    <update id="updTmpPasswordReissue">
+        UPDATE find_password
+           SET tmp_password = #{tmpPassword}
+         WHERE user_id = #{userId}
+    </update>
 
 </mapper>
