@@ -30,6 +30,7 @@ public class UserUpdateReq {
 
     @Schema(title = "바꿀닉네임")
     private String nickName;
+
     @Schema(title = "프로필등록")
     private String picName;
 
