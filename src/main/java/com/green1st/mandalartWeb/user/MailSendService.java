@@ -18,17 +18,13 @@ import java.time.format.DateTimeFormatter;
 public class MailSendService {
     @Autowired
     private JavaMailSenderImpl mailSender;
-
-    private static final long EXPIRATION_TIME = 10 * 60 * 1000; // 10분 (밀리초 단위)
     LocalDateTime expireTimes = LocalDateTime.now().plusMinutes(10);
-
 
     //인증키 생성
     private String getKey(int size) {
         return generateAuthCode(size);
     }
 
-    //인증코드 난수 발생
     private String generateAuthCode(int size) {
         SecureRandom random = new SecureRandom();
         StringBuilder buffer = new StringBuilder();
@@ -41,10 +37,8 @@ public class MailSendService {
 
     //인증메일 보내기
     public String sendAuthMail(String email) {
-        //6자리 난수 인증번호 생성
         String authKey = getKey(6);
 
-        //인증메일 보내기
         try {
             MailUtils sendMail = new MailUtils(mailSender);
             sendMail.setSubject("회원가입 이메일 인증");
@@ -73,7 +67,6 @@ public class MailSendService {
             // 로깅 처리 추가 (개선)
             log.error("이메일 인코딩 처리 실패: " + e.getMessage());
         }
-
         return authKey;
     }
 }
