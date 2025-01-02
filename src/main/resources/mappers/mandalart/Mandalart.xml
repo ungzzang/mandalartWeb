@@ -34,27 +34,25 @@
 
     <update id="patchMandalart">
         UPDATE mandalart
-        <set>
-            <if test="title != null">title = #{title},</if>
-            <if test="contents != null">contents = #{contents},</if>
-            <if test="completedFg != null">completed_fg = #{completedFg},</if>
-            <if test="startDate != null">start_date = #{startDate},</if>
-            <if test="finishDate != null">finish_date = #{finishDate},</if>
-        </set>
-        WHERE mandalart_id = #{mandalartId}
+        SET
+        title = IF(title IS NOT NULL, title, NULL),
+        contents = IF(contents IS NOT NULL, contents, NULL),
+        completed_fg = IF(completed_fg IS NOT NULL, completed_fg, NULL),
+        start_date = IF(start_date IS NOT NULL, start_date, NULL),
+        finish_date = IF(finish_date IS NOT NULL, finish_date, NULL)
+        WHERE mandalart_id = 1
         <if test="parentId != 0">
-            AND (
-            #{startDate} IS NULL OR #{finishDate} IS NULL
-            OR EXISTS (
+            AND EXISTS (
             SELECT 1
             FROM mandalart parent
-            WHERE parent.mandalart_id = #{parentId}
-            AND (#{startDate} IS NULL OR parent.start_date <![CDATA[ <= ]]> #{startDate})
-            AND (#{finishDate} IS NULL OR parent.finish_date <![CDATA[ >= ]]> #{finishDate})
-            AND (#{startDate} IS NULL OR parent.finish_date <![CDATA[ <> ]]> #{startDate})
+            WHERE parent.mandalart_id = 1
+            AND (
+            (parent.start_date IS NULL OR start_date <![CDATA[ >= ]]> parent.start_date)
+            AND (parent.finish_date IS NULL OR finish_date <![CDATA[ <= ]]> parent.finish_date)
+            AND (parent.start_date IS NULL OR finish_date <![CDATA[ >= ]]> parent.start_date)
             )
             )
-        </if>
+        </if>;
     </update>
 
    <select id="selSiblingMandalart">

@@ -299,7 +299,9 @@ public class UserService {
 
         tempPasswordDto.setTmpPassword(tmpPassword);
         String tmpPasswordOriginal = tempPasswordDto.getTmpPassword();
-        int result = userMapper.insPassword(tempPasswordDto);
+        int result = userMapper.insPassword2(tempPasswordDto);
+
+        int reIssue = userMapper.updTmpPasswordReissue(tempPasswordDto);
 
         String hashedPassWord = BCrypt.hashpw(tempPasswordDto.getTmpPassword(), BCrypt.gensalt());
         tempPasswordDto.setTmpPassword(hashedPassWord);
