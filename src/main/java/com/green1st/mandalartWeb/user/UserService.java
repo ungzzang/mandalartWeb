@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -266,16 +267,37 @@ public class UserService {
     // 임시 비밀번호 발급
     public int tempPassword(TempPasswordDto tempPasswordDto) {
         String userId = userMapper.checkPasswordId(tempPasswordDto.getUserId());
-        char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                '!', '@', '#', '$', '%', '^', '&', '*'};
+        char[] upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        char[] numbers = "0123456789".toCharArray();
+        char[] specialCharacters = "!@#$%^&*".toCharArray();
+        char[] allCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*".toCharArray();
 
         StringBuilder tmpPasswordBuilder = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            int idx = (int) (charSet.length * Math.random());
-            tmpPasswordBuilder.append(charSet[idx]);
+        Random random = new Random();
+
+        // 각 조건을 만족하도록 하나씩 추가
+        tmpPasswordBuilder.append(upperCaseLetters[random.nextInt(upperCaseLetters.length)]);
+        tmpPasswordBuilder.append(numbers[random.nextInt(numbers.length)]);
+        tmpPasswordBuilder.append(specialCharacters[random.nextInt(specialCharacters.length)]);
+
+        // 나머지 5개 문자는 무작위로 추가
+        for (int i = 0; i < 5; i++) {
+            tmpPasswordBuilder.append(allCharacters[random.nextInt(allCharacters.length)]);
         }
-        tempPasswordDto.setTmpPassword(tmpPasswordBuilder.toString());
+
+        // 문자 배열로 변환하여 섞음
+        char[] passwordArray = tmpPasswordBuilder.toString().toCharArray();
+        for (int i = 0; i < passwordArray.length; i++) {
+            int randomIndex = random.nextInt(passwordArray.length);
+            char temp = passwordArray[i];
+            passwordArray[i] = passwordArray[randomIndex];
+            passwordArray[randomIndex] = temp;
+        }
+
+        // 최종 임시 비밀번호 생성
+        String tmpPassword = new String(passwordArray);
+
+        tempPasswordDto.setTmpPassword(tmpPassword);
         String tmpPasswordOriginal = tempPasswordDto.getTmpPassword();
         int result = userMapper.insPassword(tempPasswordDto);
 
