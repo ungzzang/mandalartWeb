@@ -27,6 +27,7 @@
         JOIN project B
         ON A.project_id = B.project_id
         WHERE B.user_id = #{userId}
+        AND depth = 2
         AND DATEDIFF(finish_date , CURDATE()) <![CDATA[ <= ]]> 7
         AND DATEDIFF(finish_date , CURDATE()) <![CDATA[ >= ]]> 0
         GROUP BY A.project_id;
@@ -118,6 +119,7 @@
         SELECT mandalart_id AS id, title, start_date AS start, finish_date AS end, contents AS description
         FROM mandalart
         WHERE depth = 1
+            AND user_id = #{userId}
             AND (start_date IS NOT NULL AND finish_date IS NOT NULL)
             AND (
                 (start_date <![CDATA[ >= ]]> #{startDate} AND finish_date <![CDATA[ <= ]]> #{finishDate})
