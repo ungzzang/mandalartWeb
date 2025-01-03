@@ -10,6 +10,7 @@ import java.util.List;
 public interface MandalartMapper {
     List<MandalartGetRes> getMandalart (MandalartGetReq p);
     int patchMandalart (MandalartPostReq p);
+    int patchMandalartCompletedFg (MandalartPostReq p);
     List<MandalartGetImminentRes> getImProject (MandalartGetImminentReq p);
     List<MandalartGetRes> selSiblingMandalart(long mandalartId);
     List<MandalartCalendarGetRes> selMandalartCalendar (MandalartCalendarGetReq p);

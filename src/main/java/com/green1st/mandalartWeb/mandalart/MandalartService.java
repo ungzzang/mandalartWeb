@@ -206,7 +206,7 @@ public class MandalartService {
                 completedUpdateP.setCompletedFg(0);
             }
 
-            mapper.patchMandalart(completedUpdateP);
+            mapper.patchMandalartCompletedFg(completedUpdateP);
 
             // 최하위
             if (depth == 2) {
@@ -232,7 +232,7 @@ public class MandalartService {
                         completedUpdateP.setCompletedFg(0);
                     }
 
-                    mapper.patchMandalart(completedUpdateP);
+                    mapper.patchMandalartCompletedFg(completedUpdateP);
                 }
             }
         }
