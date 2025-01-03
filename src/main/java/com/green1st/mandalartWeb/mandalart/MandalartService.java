@@ -131,14 +131,18 @@ public class MandalartService {
 
     @Transactional
     public int patchMandalart(MandalartPostReq p) {
-        MandalartGetRes parentMand = mapper.selMandalartByMandalartId(p.getParentId());
-
         if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
         }
 
+        MandalartGetRes parentMand = mapper.selMandalartByMandalartId(p.getParentId());
+
         if(parentMand != null) {
-            if(parentMand.getFinishDate().equals(p.getStartDate()) || parentMand.getStartDate().isBefore(p.getStartDate()) || parentMand.getFinishDate().isAfter(p.getFinishDate())) {
+            if(parentMand.getStartDate() == null || parentMand.getFinishDate() == null) {
+                throw new IllegalArgumentException("상위 목표의 기간이 설정 되지 않았습니다.");
+            }
+
+            if(parentMand.getFinishDate().equals(p.getStartDate()) || p.getStartDate().isBefore(parentMand.getStartDate()) || p.getFinishDate().isAfter(parentMand.getFinishDate())) {
                 throw new IllegalArgumentException("상위 목표의 기간을 벗어 납니다.");
             }
 
