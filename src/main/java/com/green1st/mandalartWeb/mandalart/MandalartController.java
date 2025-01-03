@@ -63,9 +63,11 @@ public class MandalartController {
 
     @PatchMapping("/update")
     @Operation(summary = "만다라트 수정")
-    public ResultResponse<Integer> updateMandalart(@Valid @RequestBody MandalartPostReq p) {
-        int updatedRows = service.patchMandalart(p);
+    public ResultResponse<?> updateMandalart(@Valid @RequestBody MandalartPostReq p) {
+        ResultResponse<?> result = service.patchMandalart(p);
 
+        return result;
+        /*
         if (updatedRows == 0) {
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
@@ -78,7 +80,7 @@ public class MandalartController {
                 .statusCode("200")
                 .resultMsg("만다라트 수정 완료")
                 .resultData(updatedRows)
-                .build();
+                .build();*/
     }
 
     @GetMapping("/imminent")
