@@ -131,10 +131,12 @@ public class MandalartService {
 
     @Transactional
     public int patchMandalart(MandalartPostReq p) {
+        // 시작일, 종료일 검사
         if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
         }
 
+        // 부모가 있다면 유효한지, 그리고 그 기간안에 일자인지 검사
         MandalartGetRes parentMand = mapper.selMandalartByMandalartId(p.getParentId());
 
         if(parentMand != null) {
@@ -151,6 +153,32 @@ public class MandalartService {
             }
         }
 
+        // 하위 목표의 기간에 맞는지(부모가 일자를 변경시 기존에 자식 일자를 포함하는 일자로만 변경이 가능해야 한다.)
+        MandalartChildDate mandalartChildDate = mapper.selChildMandalartMinStartDateAndMaxFinishDateByMandalartId(p.getMandalartId());
+
+        // 하위 목표가 존재하는경우
+        if(mandalartChildDate != null) {
+            // 하위 날짜가 존재하는데 부모가 날짜를 null로 처리하려는 경우 오류 처리
+            if(mandalartChildDate.getMinStartDate() != null && p.getStartDate() == null) {
+                throw new IllegalArgumentException("하위 목표의 시작일("+ mandalartChildDate.getMinStartDate() +")이 존재합니다 시작일을 초기화 할 수 없습니다.");
+            }
+
+            if(mandalartChildDate.getMaxFinishDate() != null && p.getFinishDate() == null) {
+                throw new IllegalArgumentException("하위 목표의 종료일("+ mandalartChildDate.getMaxFinishDate() +")이 존재합니다 종료일을 초기화 할 수 없습니다.");
+            }
+
+            if(mandalartChildDate.getMinStartDate() != null && p.getStartDate() != null) {
+                if(p.getStartDate().isAfter(mandalartChildDate.getMinStartDate())) {
+                    throw new IllegalArgumentException("하위 목표의 최소 시작일("+ mandalartChildDate.getMinStartDate() +") 보다 큰 날짜는 입력할 수 없습니다.");
+                }
+            }
+
+            if(mandalartChildDate.getMaxFinishDate() != null && p.getFinishDate() != null) {
+                if(p.getFinishDate().isBefore(mandalartChildDate.getMaxFinishDate())) {
+                    throw new IllegalArgumentException("하위 목표의 최대 종료일("+ mandalartChildDate.getMaxFinishDate() +") 보다 작은 날짜는 입력할 수 없습니다.");
+                }
+            }
+        }
 
         // DB 업데이트 실행
         int updatedRows = mapper.patchMandalart(p);
