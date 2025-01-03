@@ -48,6 +48,18 @@
 
     <update id="patchMandalart">
         UPDATE mandalart
+        <set>
+            <if test="title != null">title = #{title}</if>
+            <if test="contents != null">, contents = #{contents}</if>
+            <if test="completedFg != null">, completed_fg = #{completedFg}</if>
+            <if test="startDate != null">, start_date = #{startDate}</if>
+            <if test="finishDate != null">, finish_date = #{finishDate}</if>
+        </set>
+        WHERE mandalart_id = #{mandalartId}
+    </update>
+
+    <update id="patchMandalartBefore">
+        UPDATE mandalart
         SET
         title = IF(title IS NOT NULL, title, NULL),
         contents = IF(contents IS NOT NULL, contents, NULL),
