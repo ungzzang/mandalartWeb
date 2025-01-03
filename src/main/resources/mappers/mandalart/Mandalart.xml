@@ -65,6 +65,14 @@
         WHERE mandalart_id = #{mandalartId}
     </update>
 
+    <update id="patchMandalartCompletedFg">
+        UPDATE mandalart
+        <set>
+            <if test="completedFg != null">completed_fg = #{completedFg},</if>
+        </set>
+        WHERE mandalart_id = #{mandalartId}
+    </update>
+
     <update id="patchMandalartBefore">
         UPDATE mandalart
         SET
