@@ -16,8 +16,6 @@ public class UserSignInRes {
 
     private String pic;
 
-    private List<LoginDto> imProject;
-
     @JsonIgnore
     private String upw;
     @JsonIgnore

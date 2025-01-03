@@ -157,7 +157,6 @@ public class UserService {
         }
 
         List<LoginDto> loginList = userMapper.selUserList(p);
-        res.setImProject(loginList);
 
         res.setMessage("로그인성공");
         return res;
