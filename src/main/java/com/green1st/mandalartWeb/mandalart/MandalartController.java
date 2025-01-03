@@ -63,16 +63,9 @@ public class MandalartController {
 
     @PatchMapping("/update")
     @Operation(summary = "만다라트 수정")
-    public ResultResponse<Integer> updateMandalart(@Valid @RequestBody MandalartPostReq p, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResultResponse.<Integer>builder()
-                    .statusCode("400")
-                    .resultMsg("만다라트 수정 실패")
-                    .resultData(0)
-                    .build();
-        }
-
+    public ResultResponse<Integer> updateMandalart(@Valid @RequestBody MandalartPostReq p) {
         int updatedRows = service.patchMandalart(p);
+
         if (updatedRows == 0) {
             return ResultResponse.<Integer>builder()
                     .statusCode("400")
