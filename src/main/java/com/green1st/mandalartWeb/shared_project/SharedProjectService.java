@@ -97,6 +97,12 @@ public class SharedProjectService {
         ProjectResultDto projectResultDto = projectMapper.selProjectByUserIdAndProjectId(projectSelDto);
 
         if(projectResultDto != null) {
+            // 공유 프로젝트 좋아요 삭제
+            sharedProjectMapper.delSharedProjectLike(p.getProjectId());
+
+            // 공유 프로젝트 댓글 삭제
+            sharedProjectMapper.delSharedProjectComment(p.getProjectId());
+
             // 공유 프로젝트 삭제
             int result = sharedProjectMapper.delSharedProject(p);
 
@@ -124,9 +130,10 @@ public class SharedProjectService {
         if(result == 1) {
             List<MandalartCopyDto> mandalartCopyDtos = projectMapper.selMandalartByProjectId(p.getCopyProjectId());
 
-            // 만다라트 생성(9 x 9 = 81 개)
+            // 만다라트 생성(73 개)
             long projectId = p.getProjectId();
 
+            // 최상위 만다라트 생성(depth 0)
             MandalartCopyDto firstMandalart = mandalartCopyDtos.get(0);
 
             firstMandalart.setProjectId(projectId);
@@ -137,6 +144,7 @@ public class SharedProjectService {
             if(result != 0) {
                 List<Long> parentIds = new ArrayList<>(8);
 
+                // 최상위의 세부 목표 만다라트(depth 1)
                 for (int i = 0; i < 8; i++) {
                     MandalartCopyDto secondMandalart = mandalartCopyDtos.get(i + 1);
                     secondMandalart.setProjectId(projectId);
@@ -147,17 +155,18 @@ public class SharedProjectService {
                     parentIds.add(secondMandalart.getMandalartId());
                 }
 
-                int depth3Cnt = 9;
+                int depth2Cnt = 9;
 
+                // 최하위 세부 목표 만다라트(depth 2)
                 for (long item : parentIds) {
                     for (int i = 0; i < 8; i++) {
-                        MandalartCopyDto lastMandalart = mandalartCopyDtos.get(depth3Cnt);
+                        MandalartCopyDto lastMandalart = mandalartCopyDtos.get(depth2Cnt);
                         lastMandalart.setProjectId(projectId);
                         lastMandalart.setParentId(item);
 
                         result = projectMapper.insCopyMandalart(lastMandalart);
 
-                        depth3Cnt++;
+                        depth2Cnt++;
                     }
                 }
             }
