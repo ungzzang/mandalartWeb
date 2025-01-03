@@ -116,16 +116,16 @@
    </select>
 
     <select id="selMandalartCalendar">
-        SELECT mandalart_id AS id, title, start_date AS start, finish_date AS end, contents AS description
-        FROM mandalart
-        WHERE depth = 1
-            AND user_id = #{userId}
-            AND (start_date IS NOT NULL AND finish_date IS NOT NULL)
-            AND (
-                (start_date <![CDATA[ >= ]]> #{startDate} AND finish_date <![CDATA[ <= ]]> #{finishDate})
-                OR (start_date <![CDATA[ < ]]> #{startDate} AND finish_date <![CDATA[ >= ]]> #{startDate})
-                OR (finish_date <![CDATA[ >= ]]> #{finishDate} AND start_date <![CDATA[ >= ]]> #{startDate})
-            );
+        SELECT A.mandalart_id AS id, A.title, A.start_date AS start, A.finish_date AS end, A.contents AS DESCRIPTION
+        FROM mandalart A LEFT JOIN project B
+        ON A.project_id = B.project_id
+        WHERE A.depth = 1
+        AND B.user_id = #{userId}
+        AND (start_date IS NOT NULL AND finish_date IS NOT NULL)
+        AND (
+            (start_date <![CDATA[ >= ]]> #{startDate} AND finish_date <![CDATA[ <= ]]> #{finishDate})
+            OR (start_date <![CDATA[ < ]]> #{startDate} AND finish_date <![CDATA[ >= ]]> #{startDate})
+            OR (finish_date <![CDATA[ >= ]]> #{finishDate} AND start_date <![CDATA[ >= ]]> #{startDate})
+        );
     </select>
-
 </mapper>
