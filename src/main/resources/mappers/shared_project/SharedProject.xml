@@ -80,6 +80,12 @@
         WHERE A.project_id = #{projectId}
     </select>
 
+    <select id="selSharedProjectByProjectId">
+        SELECT project_id AS projectId, title, content
+        FROM shared_project
+        WHERE project_id = #{projectId}
+    </select>
+
     <update id="updSharedProject">
         UPDATE shared_project
         <set>
@@ -92,6 +98,16 @@
         </set>
         WHERE project_id = #{projectId}
     </update>
+
+    <delete id="delSharedProjectLike">
+        DELETE FROM shared_project_like
+        WHERE project_id = #{projectId}
+    </delete>
+
+    <delete id="delSharedProjectComment">
+        DELETE FROM shared_project_comment
+        WHERE project_id = #{projectId}
+    </delete>
 
     <delete id="delSharedProject">
         DELETE FROM shared_project

@@ -3,6 +3,8 @@ package com.green1st.mandalartWeb.project;
 import com.green1st.mandalartWeb.common.MyFileUtils;
 import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.project.model.*;
+import com.green1st.mandalartWeb.shared_project.SharedProjectMapper;
+import com.green1st.mandalartWeb.shared_project.model.SharedProjectSelDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProjectService {
     private final ProjectMapper projectMapper;
+    private final SharedProjectMapper sharedProjectMapper;
     private final MyFileUtils myFileUtils;
 
     @Transactional
@@ -148,31 +151,43 @@ public class ProjectService {
 
     @Transactional
     public ResultResponse<?> delProject(ProjectDelReq p) {
-        // 만다라트 삭제
-        int result = projectMapper.delMandalart(p.getProjectId());
+        String message = "프로젝트 삭제실패";
+
+        // 공유 만다라트 여부 검사
+        SharedProjectSelDto sharedProjectSelDto = sharedProjectMapper.selSharedProjectByProjectId(p.getProjectId());
+
+        // 공유 만다라트가 아니라면(정상 삭제 처리)
+        if(sharedProjectSelDto == null) {
+            // 만다라트 삭제
+            int result = projectMapper.delMandalart(p.getProjectId());
 
 
-        if(result > 0) {
-            // 프로젝트 삭제
-            result = projectMapper.delProject(p);
+            if(result > 0) {
+                // 프로젝트 삭제
+                result = projectMapper.delProject(p);
 
-            // 프로젝트 사진 파일이 존재할 경우 삭제
-            String deletePath = String.format("%s/project/%d",myFileUtils.getUploadPath(), p.getProjectId());
-            myFileUtils.deleteFolder(deletePath, true);
+                // 프로젝트 사진 파일이 존재할 경우 삭제
+                String deletePath = String.format("%s/project/%d", myFileUtils.getUploadPath(), p.getProjectId());
+                myFileUtils.deleteFolder(deletePath, true);
 
-            if(result == 1) {
-                return ResultResponse.<Integer>builder()
-                        .statusCode("200")
-                        .resultData(1)
-                        .resultMsg("프로젝트 삭제완료")
-                        .build();
+                if (result == 1) {
+                    message = "프로젝트 삭제완료";
+
+                    return ResultResponse.<Integer>builder()
+                            .statusCode("200")
+                            .resultData(1)
+                            .resultMsg(message)
+                            .build();
+                }
             }
+        } else {
+            message = "해당 만다라트는 공유되어 있어 삭제가 불가합니다.";
         }
 
         return ResultResponse.<Integer>builder()
                 .statusCode("400")
                 .resultData(0)
-                .resultMsg("프로젝트 삭제실패")
+                .resultMsg(message)
                 .build();
     }
 }
