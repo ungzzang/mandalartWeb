@@ -56,11 +56,11 @@
     <update id="patchMandalart">
         UPDATE mandalart
         <set>
-            <if test="title != null">title = #{title}</if>
-            <if test="contents != null">, contents = #{contents}</if>
-            <if test="completedFg != null">, completed_fg = #{completedFg}</if>
-            , start_date = #{startDate}
-            , finish_date = #{finishDate}
+            <if test="title != null">title = #{title},</if>
+            <if test="contents != null">contents = #{contents},</if>
+            <if test="completedFg != null">completed_fg = #{completedFg},</if>
+            start_date = #{startDate},
+            finish_date = #{finishDate},
         </set>
         WHERE mandalart_id = #{mandalartId}
     </update>
