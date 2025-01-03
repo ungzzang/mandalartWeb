@@ -46,14 +46,21 @@
         WHERE a.mandalart_id = #{mandalartId}
     </select>
 
+    <select id="selChildMandalartMinStartDateAndMaxFinishDateByMandalartId">
+        SELECT MIN(start_date) AS minStartDate, MAX(finish_date) AS maxFinishDate
+        FROM mandalart
+        WHERE parent_id = #{mandalartId}
+        GROUP BY parent_id
+    </select>
+
     <update id="patchMandalart">
         UPDATE mandalart
         <set>
             <if test="title != null">title = #{title}</if>
             <if test="contents != null">, contents = #{contents}</if>
             <if test="completedFg != null">, completed_fg = #{completedFg}</if>
-            <if test="startDate != null">, start_date = #{startDate}</if>
-            <if test="finishDate != null">, finish_date = #{finishDate}</if>
+            , start_date = #{startDate}
+            , finish_date = #{finishDate}
         </set>
         WHERE mandalart_id = #{mandalartId}
     </update>
