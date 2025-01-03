@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `mandalart` (
                                            `mandalart_id` bigint(20) NOT NULL AUTO_INCREMENT,
     `project_id` bigint(20) NOT NULL COMMENT 'AUTO_INCREMENT로 처리할 예정',
     `parent_id`	bigint	NULL,
-    `title` varchar(50) NOT NULL,
+    `title` varchar(50) DEFAULT NULL,
     `contents` text DEFAULT NULL,
     `completed_fg` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0: 미완료 1: 완료',
     `depth` tinyint(4) NOT NULL COMMENT '0:최상위 1:1단계 , 2 : 최하위',

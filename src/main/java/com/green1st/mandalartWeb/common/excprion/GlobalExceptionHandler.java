@@ -42,15 +42,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResultResponse<List<String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         List<String> messages = new ArrayList<>();
         Map<String, String> errors = new HashMap<>();
+        String errMsg = "";
+
         ex.getBindingResult().getFieldErrors().forEach(error -> {
                     errors.put(error.getField(), error.getDefaultMessage());
                     messages.add("속성명: " + error.getField() + ", 메세지: " + error.getDefaultMessage());
                 }
         );
 
+        for(String msg : messages) {
+            errMsg = errMsg + msg + "\n";
+        }
+
         ResultResponse<List<String>> response = new ResultResponse<List<String>>(
                 String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                "속성 유효성 오류",
+                errMsg,
                 messages
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
