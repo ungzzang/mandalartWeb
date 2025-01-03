@@ -1,5 +1,6 @@
 package com.green1st.mandalartWeb.mandalart;
 
+import com.green1st.mandalartWeb.common.model.ResultResponse;
 import com.green1st.mandalartWeb.mandalart.model.*;
 import com.green1st.mandalartWeb.project.ProjectMapper;
 import com.green1st.mandalartWeb.project.model.ProjectDetailDto;
@@ -48,6 +49,8 @@ public class MandalartService {
                 case 0:
                     if(index > 0) {
                         item.setBgColor(colorCodes.getTitleColor().get(index - 1));
+                    } else {
+                        item.setBgColor("#FFFFFF");
                     }
                     break;
                 case 1:
@@ -55,11 +58,15 @@ public class MandalartService {
                         double percentage = (double) index / total * 100;
                         item.setCompletedPer(percentage);
                         item.setBgColor(colorCodes.getSubTitleColor().get(index - 1));
+                    } else {
+                        item.setBgColor("#FFFFFF");
                     }
                     break;
                 case 2:
                     if(item.getCompletedFg() == 1) {
                         item.setBgColor(colorCodes.getDefaultColor().get(0));
+                    } else {
+                        item.setBgColor("#FFFFFF");
                     }
                     break;
             }
@@ -101,6 +108,8 @@ public class MandalartService {
                 case 0:
                     if(index > 0) {
                         item.setBgColor(colorCodes.getTitleColor().get(index - 1));
+                    } else {
+                        item.setBgColor("#FFFFFF");
                     }
                     break;
                 case 1:
@@ -108,11 +117,15 @@ public class MandalartService {
                         double percentage = (double) index / total * 100;
                         item.setCompletedPer(percentage);
                         item.setBgColor(colorCodes.getSubTitleColor().get(index - 1));
+                    } else {
+                        item.setBgColor("#FFFFFF");
                     }
                     break;
                 case 2:
                     if(item.getCompletedFg() == 1) {
                         item.setBgColor(colorCodes.getDefaultColor().get(0));
+                    } else {
+                        item.setBgColor("#FFFFFF");
                     }
                     break;
             }
@@ -130,52 +143,84 @@ public class MandalartService {
     }
 
     @Transactional
-    public int patchMandalart(MandalartPostReq p) {
-        // 시작일, 종료일 검사
-        if (p.getStartDate() != null && p.getFinishDate() != null && !p.getStartDate().isBefore(p.getFinishDate())) {
-            throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
+    public ResultResponse<?> patchMandalart(MandalartPostReq p) {
+        // 객체 자체에 검사
+        // 시작일, 종료일이 모두 입력 되었는지
+        if(p.getStartDate() != null || p.getFinishDate() != null) {
+            if(p.getStartDate() == null || p.getFinishDate() == null) {
+                return ResultResponse.<Integer>builder()
+                        .statusCode("400")
+                        .resultMsg("시작일, 종료일을 모두 입력해 주십시오.")
+                        .resultData(0)
+                        .build();
+            } else {
+                // 시작일이 종료일 보다 크다면
+                if(p.getStartDate().isAfter(p.getFinishDate())) {
+                    return ResultResponse.<Integer>builder()
+                            .statusCode("400")
+                            .resultMsg("시작일은 종료일 보다 클 수 업습니다.")
+                            .resultData(0)
+                            .build();
+                }
+            }
         }
 
         // 부모가 있다면 유효한지, 그리고 그 기간안에 일자인지 검사
         MandalartGetRes parentMand = mapper.selMandalartByMandalartId(p.getParentId());
 
         if(parentMand != null) {
-            if(parentMand.getStartDate() == null || parentMand.getFinishDate() == null) {
-                throw new IllegalArgumentException("상위 목표의 기간이 설정 되지 않았습니다.");
-            }
+            // 상위 목표의 기간이 null 인데 본 목표가 일자를 가진 경우
+            if(p.getStartDate() != null && parentMand.getStartDate() == null) {
+                return ResultResponse.<Integer>builder()
+                        .statusCode("400")
+                        .resultMsg("상위 목표의 기간이 설정 되지 않았습니다.")
+                        .resultData(0)
+                        .build();
+            } else if(p.getStartDate() != null && parentMand.getStartDate() != null){ // 만약 상위 목표의 기간이 설정 되어있고 본 목표가 설정되어있다면
+                if(p.getStartDate().isBefore(parentMand.getStartDate())) {
+                    return ResultResponse.<Integer>builder()
+                            .statusCode("400")
+                            .resultMsg("시작일은 상위 목표의 시작일을 보다 전일 수 없습니다.(상위 목표 시작일: " + parentMand.getStartDate() + ")")
+                            .resultData(0)
+                            .build();
+                }
 
-            if(parentMand.getFinishDate().equals(p.getStartDate()) || p.getStartDate().isBefore(parentMand.getStartDate()) || p.getFinishDate().isAfter(parentMand.getFinishDate())) {
-                throw new IllegalArgumentException("상위 목표의 기간을 벗어 납니다.");
-            }
-
-            if(parentMand.getTitle().equals("") || parentMand.getTitle() == null) {
-                throw new IllegalArgumentException("상위 목표를 생성해 주세요.");
+                if(p.getFinishDate().isAfter(parentMand.getFinishDate())) {
+                    return ResultResponse.<Integer>builder()
+                            .statusCode("400")
+                            .resultMsg("종료일은 상위 목표의 종료일을 보다 후일 수 없습니다.(상위 목표 종료일: " + parentMand.getFinishDate() + ")")
+                            .resultData(0)
+                            .build();
+                }
             }
         }
 
-        // 하위 목표의 기간에 맞는지(부모가 일자를 변경시 기존에 자식 일자를 포함하는 일자로만 변경이 가능해야 한다.)
+        // 자식 요소가 기간을 가진 경우 상위요소가 그 안의 일자로 들어가지 않도록
         MandalartChildDate mandalartChildDate = mapper.selChildMandalartMinStartDateAndMaxFinishDateByMandalartId(p.getMandalartId());
 
-        // 하위 목표가 존재하는경우
+        // 하위 목표 일자가 존재하는경우
         if(mandalartChildDate != null) {
-            // 하위 날짜가 존재하는데 부모가 날짜를 null로 처리하려는 경우 오류 처리
-            if(mandalartChildDate.getMinStartDate() != null && p.getStartDate() == null) {
-                throw new IllegalArgumentException("하위 목표의 시작일("+ mandalartChildDate.getMinStartDate() +")이 존재합니다 시작일을 초기화 할 수 없습니다.");
-            }
-
-            if(mandalartChildDate.getMaxFinishDate() != null && p.getFinishDate() == null) {
-                throw new IllegalArgumentException("하위 목표의 종료일("+ mandalartChildDate.getMaxFinishDate() +")이 존재합니다 종료일을 초기화 할 수 없습니다.");
-            }
-
-            if(mandalartChildDate.getMinStartDate() != null && p.getStartDate() != null) {
+            if(p.getStartDate() == null) {
+                return ResultResponse.<Integer>builder()
+                        .statusCode("400")
+                        .resultMsg("하위 목표의 일자가 존재하여 일자를 초기화 할 수 없습니다.")
+                        .resultData(0)
+                        .build();
+            } else {
                 if(p.getStartDate().isAfter(mandalartChildDate.getMinStartDate())) {
-                    throw new IllegalArgumentException("하위 목표의 최소 시작일("+ mandalartChildDate.getMinStartDate() +") 보다 큰 날짜는 입력할 수 없습니다.");
+                    return ResultResponse.<Integer>builder()
+                            .statusCode("400")
+                            .resultMsg("하위 목표의 최소 시작일("+ mandalartChildDate.getMinStartDate() +") 보다 큰 일자는 입력할 수 없습니다.")
+                            .resultData(0)
+                            .build();
                 }
-            }
 
-            if(mandalartChildDate.getMaxFinishDate() != null && p.getFinishDate() != null) {
                 if(p.getFinishDate().isBefore(mandalartChildDate.getMaxFinishDate())) {
-                    throw new IllegalArgumentException("하위 목표의 최대 종료일("+ mandalartChildDate.getMaxFinishDate() +") 보다 작은 날짜는 입력할 수 없습니다.");
+                    return ResultResponse.<Integer>builder()
+                            .statusCode("400")
+                            .resultMsg("하위 목표의 최대 종료일("+ mandalartChildDate.getMaxFinishDate() +") 보다 작은 일자는 입력할 수 없습니다.")
+                            .resultData(0)
+                            .build();
                 }
             }
         }
@@ -237,9 +282,19 @@ public class MandalartService {
             }
         }
 
-
-        // 업데이트된 튜플 수 반환
-        return updatedRows;
+        if(updatedRows > 0) {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("200")
+                    .resultMsg("만다라트 수정 성공.")
+                    .resultData(0)
+                    .build();
+        } else {
+            return ResultResponse.<Integer>builder()
+                    .statusCode("400")
+                    .resultMsg("만다라트 수정 실패.")
+                    .resultData(0)
+                    .build();
+        }
     }
 
     public int getCompleted(MandalartGetRes res,  List<MandalartGetRes> list) {

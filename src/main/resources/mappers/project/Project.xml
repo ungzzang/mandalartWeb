@@ -12,9 +12,9 @@
 
     <insert id="insMandalart" useGeneratedKeys="true" keyProperty="mandalartId">
         INSERT INTO mandalart
-        (project_id, parent_id, title, depth, order_id)
+        (project_id, parent_id, depth, order_id)
         VALUES
-        (#{projectId},#{parentId}, '', #{depth}, #{orderId})
+        (#{projectId},#{parentId}, #{depth}, #{orderId})
     </insert>
 
     <insert id="insCopyMandalart" useGeneratedKeys="true" keyProperty="mandalartId">
