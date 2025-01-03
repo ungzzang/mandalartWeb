@@ -14,4 +14,5 @@ public interface MandalartMapper {
     List<MandalartGetRes> selSiblingMandalart(long mandalartId);
     List<MandalartCalendarGetRes> selMandalartCalendar (MandalartCalendarGetReq p);
     MandalartGetRes selMandalartByMandalartId (long mandalartId);
+    MandalartChildDate selChildMandalartMinStartDateAndMaxFinishDateByMandalartId(long mandalartId);
 }
