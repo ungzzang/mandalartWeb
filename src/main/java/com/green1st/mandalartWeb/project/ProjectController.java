@@ -33,7 +33,7 @@ public class ProjectController {
 
     @PatchMapping
     @Operation(summary = "프로젝트 수정", description = "프로젝트를 수정하는 API")
-    public ResultResponse<?> postProject(@RequestPart MultipartFile pic, @RequestPart @Valid ProjectPatchReq p) {
+    public ResultResponse<?> postProject(@RequestPart(required = false) MultipartFile pic, @RequestPart @Valid ProjectPatchReq p) {
         return projectService.patchProject(pic, p);
     }
 

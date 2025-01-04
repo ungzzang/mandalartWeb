@@ -180,6 +180,14 @@ public class UserService {
                 return res;
             }
 
+            //아무것도 입력안했을 때
+            if(pic ==null && p.getNickName()==null && p.getPicName()==null
+                    && p.getNewUpw()==null && p.getCheckUpw()==null ){
+                res.setMessage("값을 입력해 주십시오");
+                res.setResult(0);
+                return res;
+            }
+
             // 비밀번호 변경 처리
             if (p.getNewUpw() != null && p.getCheckUpw() != null) {
                 if (p.getNewUpw().equals(p.getCheckUpw())) {
