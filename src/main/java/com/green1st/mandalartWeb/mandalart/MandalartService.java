@@ -158,7 +158,7 @@ public class MandalartService {
                 if(p.getStartDate().isAfter(p.getFinishDate())) {
                     return ResultResponse.<Integer>builder()
                             .statusCode("400")
-                            .resultMsg("시작일은 종료일 보다 클 수 업습니다.")
+                            .resultMsg("시작일은 종료일 보다 클 수 없습니다.")
                             .resultData(0)
                             .build();
                 }
