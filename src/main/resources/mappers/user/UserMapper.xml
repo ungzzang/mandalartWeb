@@ -95,7 +95,7 @@
             <if test=" nickName != null and nickName != '' ">
                 , nick_name = #{nickName}
             </if>
-            <if test="picName != null">
+            <if test="picName != null and picName != '' ">
                 , pic = #{picName}
             </if>
         </set>

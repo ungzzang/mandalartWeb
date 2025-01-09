@@ -181,8 +181,11 @@ public class UserService {
             }
 
             //아무것도 입력안했을 때
-            if(pic ==null && p.getNickName()==null && p.getPicName()==null
-                    && p.getNewUpw()==null && p.getCheckUpw()==null ){
+            if(pic ==null  && (p.getNickName()==null || p.getNickName() =="")
+                    && (p.getPicName()==null || p.getPicName()=="")
+                    && (p.getNewUpw()==null || p.getNewUpw()=="")
+                    && (p.getCheckUpw()==null || p.getCheckUpw()=="")
+            ){
                 res.setMessage("값을 입력해 주십시오");
                 res.setResult(0);
                 return res;
@@ -262,9 +265,7 @@ public class UserService {
 
     public void delProject(UserDeleteReq p){ userMapper.delProject(p); }
 
-    public void delFindPw(UserDeleteReq p){
-        userMapper.delFindPw(p);
-    }
+    public void delFindPw(UserDeleteReq p){ userMapper.delFindPw(p);}
 
     public int delUser(UserDeleteReq p){
         int result = userMapper.delUser(p);
